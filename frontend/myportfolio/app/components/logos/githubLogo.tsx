@@ -8,12 +8,13 @@ const GithubLogo = () => {
 
   return (
 
-      <LogoSvg>
+      <LogoSvg minX={0} minY={0} width={98} height={96}>
         <LogoPath
           isComplete={isComplete}
           fillColor="#5865f2"
           svgMotionProps={{
 			onAnimationComplete: () => {
+      
 				setIsComplete(true);
 			  },
 			stroke:"#5865f2",

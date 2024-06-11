@@ -12,9 +12,9 @@ import LogoSvg from "./SvgMotionComponents/LogoSvg";
 
 const GoogleLogo = () => {
   const [isComplete, setIsComplete] = useState(false);
-
+"52 42 88 66"
   return (
- <LogoSvg>
+ <LogoSvg minX={52} minY={42} width={88} height={66}>
         <LogoPath
           isComplete={isComplete}
           fillColor="#4285f4"
