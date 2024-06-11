@@ -1,5 +1,4 @@
 "use client";
-import { LogoAnimationDuration } from "@/app";
 import {
   motion,
   motionValue,
@@ -26,7 +25,7 @@ const LogoSvg: FC<Props> = ({children, minX, minY, width, height}) => {
    
   
    <motion.svg
-
+     
     viewBox={`${minX} ${minY} ${width} ${height}`}
      xmlns="http://www.w3.org/2000/svg"
    >

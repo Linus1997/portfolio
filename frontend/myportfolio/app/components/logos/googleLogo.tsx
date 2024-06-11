@@ -1,5 +1,5 @@
 "use client";
-import { LogoAnimationDuration } from "@/app";
+
 import {
   motion,
   motionValue,
