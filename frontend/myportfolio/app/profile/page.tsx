@@ -7,15 +7,18 @@ import LinkedInLogo from "../components/logos/linkedInLogo";
 import ScrollContainer from "../components/scroll/ScrollContainer";
 import ScrollItemOne from "../components/scroll/scrollItemOne";
 
+import React from "react";
+
 
 
 const Profile = () => {
-
-
   return (
-<ScrollContainer>
-  <ScrollItemOne />
-</ScrollContainer>
+    <>
+      <ScrollContainer>
+        <ScrollItemOne />
+      </ScrollContainer>
+     
+    </>
   );
 };
 

@@ -14,8 +14,8 @@ import {
   useRef,
   useState,
 } from "react";
-import LogoPath from "./SvgMotionComponents/LogoPath";
-import LogoSvg from "./SvgMotionComponents/LogoSvg";
+import SvgPath from "../SvgMotionComponents/SvgPath";
+import SvgWrapper from "../SvgMotionComponents/SvgWrapper";
 import { Button, Tooltip } from "@nextui-org/react";
 import { COPIED, COPY as COPY } from "@/app";
 import LogoButtonAnimation from "./LogoButtonAnimation";
@@ -29,8 +29,14 @@ const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
   const [isComplete, setIsComplete] = useState(false);
 
   return (
-    <LogoSvg minX={52} minY={42} width={88} height={66} targetRef={targetRef}>
-      <LogoPath
+    <SvgWrapper
+      minX={52}
+      minY={42}
+      width={88}
+      height={66}
+      targetRef={targetRef}
+    >
+      <SvgPath
         isComplete={isComplete}
         fillColor="#4285f4"
         svgMotionProps={{
@@ -38,7 +44,7 @@ const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
           d: "M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6",
         }}
       />
-      <LogoPath
+      <SvgPath
         isComplete={isComplete}
         fillColor="#34a853"
         svgMotionProps={{
@@ -47,7 +53,7 @@ const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
         }}
       />
 
-      <LogoPath
+      <SvgPath
         isComplete={isComplete}
         fillColor="#fbbc04"
         svgMotionProps={{
@@ -56,7 +62,7 @@ const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
         }}
       />
 
-      <LogoPath
+      <SvgPath
         isComplete={isComplete}
         fillColor="#ea4335"
         svgMotionProps={{
@@ -68,7 +74,7 @@ const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
         }}
       />
 
-      <LogoPath
+      <SvgPath
         isComplete={isComplete}
         fillColor="#c5221f"
         svgMotionProps={{
@@ -76,7 +82,7 @@ const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
           d: "M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2",
         }}
       />
-    </LogoSvg>
+    </SvgWrapper>
   );
 };
 
@@ -102,11 +108,7 @@ const GoogleLogo = () => {
       
       isOpen={true}
     > */
-    <TooltipWrapper
-      hasClicked={false}
-      defaultContent={""}
-      targetRef={rect}
-    >
+
       <Button
         className="w-full h-full p-6 bg-opacity-0"
         isIconOnly
@@ -114,11 +116,13 @@ const GoogleLogo = () => {
           clickHandler(setHasClicked);
         }}
         disableRipple
-        startContent={<GoogleSVG targetRef={targetRef} />}
+        /**
+         * TODO: Move button inside wrapper component, pass logo as prop/ref etc.
+         */
+        startContent={<TooltipWrapper hasClicked={false} defaultContent={""} targetRef={rect}><GoogleSVG targetRef={targetRef} /></TooltipWrapper>}
       />
-    </TooltipWrapper>
+    
   );
 };
-
 
 export default GoogleLogo;

@@ -2,8 +2,13 @@ import { Tooltip } from "@nextui-org/react";
 import ProfilePicture from "../logos/ProfilePicture";
 import DiscordLogo from "../logos/discordLogo";
 import GithubLogo from "../logos/githubLogo";
-import GoogleLogo from "../logos/googleLogo";
+
 import LinkedInLogo from "../logos/linkedInLogo";
+import GoogleLogo from "../logos/googleLogo";
+import Signature from "../pageLoader/Signature";
+
+
+
 
 
 
@@ -16,8 +21,6 @@ const ScrollItemOne = () => {
       
       <DiscordLogo />
    
-      <ProfilePicture />
-  
       <GithubLogo />
       <LinkedInLogo />
     </div>
