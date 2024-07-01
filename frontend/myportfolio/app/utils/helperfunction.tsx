@@ -7,3 +7,9 @@ export const clickHandler = (setHasClicked: Dispatch<SetStateAction<boolean>>) =
     }, 3000)
 
   };
+
+
+export  const openNewTab = (url?: string) => {
+  if(url)
+    window.open(url);
+}

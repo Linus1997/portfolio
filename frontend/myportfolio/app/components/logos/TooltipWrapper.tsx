@@ -32,7 +32,7 @@ const TooltipWrapper = ({
     }
   }, [domRect]);
   return (
-    <LogoButtonAnimation>
+    
       <div className="flex flex-col content-center justify-center w-full h-full relative ">
         <motion.div
           className={`h-3 absolute z-10 
@@ -64,7 +64,7 @@ const TooltipWrapper = ({
         </motion.div>
         <div className="w-full h-full">{children}</div>
       </div>
-    </LogoButtonAnimation>
+   
   );
 };
 

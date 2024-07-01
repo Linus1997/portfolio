@@ -8,13 +8,16 @@ import ScrollContainer from "../components/scroll/ScrollContainer";
 import ScrollItemOne from "../components/scroll/scrollItemOne";
 
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
 
 
 const Profile = () => {
   return (
     <>
+    <Toaster />
       <ScrollContainer>
+        
         <ScrollItemOne />
       </ScrollContainer>
      

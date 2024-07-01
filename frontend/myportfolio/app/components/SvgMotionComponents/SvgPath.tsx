@@ -20,7 +20,9 @@ const SvgPath: FC<Props> = ({ isComplete, fillColor, svgMotionProps }) => {
   return (
     <>
       <motion.path
-        initial={{ pathLength: 0, strokeDasharray: "0, 1", strokeOpacity: 1 }}
+        initial={{ pathLength: 0, strokeDasharray: "0, 1", strokeOpacity: 1,
+          fill: "none"
+         }}
         animate={{
           pathLength: 1,
           strokeDasharray: "5, 20, 22 ",
@@ -42,6 +44,7 @@ const SvgPath: FC<Props> = ({ isComplete, fillColor, svgMotionProps }) => {
             ? { delay: 0, duration: 1, ease: "easeInOut" }
             : {},
         }}
+        viewport={{once: true}}
         strokeWidth={0.2}
         {...svgMotionProps}
       />

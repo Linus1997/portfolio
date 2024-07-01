@@ -8,7 +8,7 @@ interface Props {
 const LogoButtonAnimation = ({ children }: Props) => {
   return (
     <motion.div
-      className="w-full h-full "
+      className=" flex content-center justify-center w-full h-full "
       whileHover={{
         scale: 1.1,
       }}

@@ -1,41 +1,17 @@
 "use client";
 
-import {
-  motion,
-  motionValue,
-  useMotionValue,
-  useTransform,
-} from "framer-motion";
-import {
-  ReactNode,
-  RefAttributes,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useState } from "react";
 import SvgPath from "../SvgMotionComponents/SvgPath";
 import SvgWrapper from "../SvgMotionComponents/SvgWrapper";
-import { Button, Tooltip } from "@nextui-org/react";
-import { COPIED, COPY as COPY } from "@/app";
-import LogoButtonAnimation from "./LogoButtonAnimation";
-import { clickHandler } from "@/app/utils/helperfunction";
-import TooltipWrapper from "./TooltipWrapper";
+import { COPIED, GMAIL } from "@/app";
+import toast from "react-hot-toast";
+import LogoButtonWrapper from "./LogoButtonWrapper";
 
-interface LogoSVGProps {
-  targetRef: RefObject<SVGSVGElement> | null;
-}
-const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
+const GoogleSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   return (
-    <SvgWrapper
-      minX={52}
-      minY={42}
-      width={88}
-      height={66}
-      targetRef={targetRef}
-    >
+    <SvgWrapper minX={52} minY={42} width={88} height={66}>
       <SvgPath
         isComplete={isComplete}
         fillColor="#4285f4"
@@ -87,41 +63,17 @@ const GoogleSVG = ({ targetRef }: LogoSVGProps) => {
 };
 
 const GoogleLogo = () => {
-  const [hasClicked, setHasClicked] = useState(false);
-  const targetRef = useRef<SVGSVGElement | null>(null);
-  const [rect, setRect] = useState<DOMRect | null>(null);
-
-  useEffect(() => {
-    if (targetRef.current) {
-      const rect = targetRef.current.getBoundingClientRect();
-      setRect(rect);
-    }
-  }, [targetRef]);
+  const copyHandler = () => {
+    navigator.clipboard.writeText(GMAIL).then(() => {
+      toast.success(COPIED + " " + GMAIL, {
+        id: "gmail",
+      });
+    });
+  };
   return (
-    /*        <Tooltip
-      content={`${hasClicked ? COPIED : COPY}`}
-      placement="bottom"
-      classNames={{
-        base: "text-black"
-      }}
-      
-      
-      isOpen={true}
-    > */
-
-      <Button
-        className="w-full h-full p-6 bg-opacity-0"
-        isIconOnly
-        onPress={() => {
-          clickHandler(setHasClicked);
-        }}
-        disableRipple
-        /**
-         * TODO: Move button inside wrapper component, pass logo as prop/ref etc.
-         */
-        startContent={<TooltipWrapper hasClicked={false} defaultContent={""} targetRef={rect}><GoogleSVG targetRef={targetRef} /></TooltipWrapper>}
-      />
-    
+    <LogoButtonWrapper onPress={copyHandler}>
+      <GoogleSVG />
+    </LogoButtonWrapper>
   );
 };
 

@@ -2,8 +2,11 @@
 import { useState } from "react";
 import SvgPath from "../SvgMotionComponents/SvgPath";
 import SvgWrapper from "../SvgMotionComponents/SvgWrapper";
+import LogoButtonWrapper from "./LogoButtonWrapper";
+import { openNewTab } from "@/app/utils/helperfunction";
+import { LINKEDINLINK } from "@/app";
 
-const LinkedInLogo = () => {
+const LinkedInSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   return (
@@ -43,5 +46,12 @@ const LinkedInLogo = () => {
     </SvgWrapper>
   );
 };
+const LinkedInLogo = () => {
+  return (
+    <LogoButtonWrapper onPress={() => openNewTab(LINKEDINLINK)}>
+      <LinkedInSVG />
+    </LogoButtonWrapper>
+  );
+}
 
 export default LinkedInLogo;

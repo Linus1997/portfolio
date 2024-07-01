@@ -5,6 +5,8 @@ import SvgWrapper from "../SvgMotionComponents/SvgWrapper";
 import { Button, Tooltip } from "@nextui-org/react";
 import { COPIED, COPY } from "@/app";
 import LogoButtonAnimation from "./LogoButtonAnimation";
+import LogoButtonWrapper from "./LogoButtonWrapper";
+import { openNewTab } from "@/app/utils/helperfunction";
 
 const DiscordSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
@@ -27,18 +29,15 @@ const DiscordSVG = () => {
 };
 
 const DiscordLogo = () => {
-  const [hasClicked, setHasClicked] = useState(false);
-
+ 
+ 
   return (
-    <Tooltip content={`${hasClicked ? COPIED : COPY}`} placement="bottom">
-      <LogoButtonAnimation>
-        <Button
-          className="w-full h-full p-6 bg-opacity-0"
-          isIconOnly
-          startContent={<DiscordSVG />}
-        />
-      </LogoButtonAnimation>
-    </Tooltip>
+   
+    <LogoButtonWrapper
+    onPress={() => openNewTab()} >
+      <DiscordSVG />
+    </LogoButtonWrapper>
+   
   );
 };
 
