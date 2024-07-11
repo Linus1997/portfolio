@@ -9,18 +9,17 @@ import ScrollItemOne from "../components/scroll/scrollItemOne";
 
 import React from "react";
 import { Toaster } from "react-hot-toast";
-
-
+import ProjectCard from "../components/projects/ProjectCard";
+import ScrollItemTwo from "../components/scroll/ScrollItemTwo";
 
 const Profile = () => {
   return (
     <>
-    <Toaster />
+      <Toaster />
       <ScrollContainer>
-        
-        <ScrollItemOne />
+       {/*  <ScrollItemOne /> */}
+        <ScrollItemTwo />
       </ScrollContainer>
-     
     </>
   );
 };

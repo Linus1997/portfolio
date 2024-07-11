@@ -13,3 +13,7 @@ export  const openNewTab = (url?: string) => {
   if(url)
     window.open(url);
 }
+
+export const getIndex = (current: number, direction: number, length: number) => {
+  return (current + direction + length) % length;
+};

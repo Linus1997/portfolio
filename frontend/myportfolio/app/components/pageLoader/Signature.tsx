@@ -7,7 +7,6 @@ const staggerMenuItems = stagger(0.1, { startDelay: 0.5 });
 
 function useMenuAnimation() {
   const [scope, animate] = useAnimate();
-
   useEffect(() => {
     animate(
       "path",
