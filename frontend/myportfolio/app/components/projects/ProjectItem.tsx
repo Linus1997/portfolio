@@ -12,6 +12,7 @@ import { Coord, rotateLeft, rotateRight } from "./ProjectCarousel";
 import { getIndex } from "@/app/utils/helperfunction";
 import { tv } from "tailwind-variants";
 import { baseStyles } from "@nextui-org/react";
+import React from "react";
 
 
 
@@ -25,24 +26,21 @@ interface ListProps {
 
 const ProjectItem = forwardRef<HTMLLIElement, ScriptProps & ListProps>(
   (props, ref) => {
-    const { className, front, initIndex, items, direction } = props;
-    const [startCoord, setCoord] = useState<Coord | null>(null);
-    console.log(props.className);
+    const {initIndex, items, direction } = props;
     const x = useMotionValue<number>(0);
     const y = useMotionValue<number>(0);
-    const init = useRef<boolean>(true);
     const [index, setIndex] = useState<number>(initIndex);
-    const [itemList, setItems] = useState<Coord[]>();
-    const [update, setUpdate] = useState<boolean>(false);
+    const [boxShadow,setBoxShadow] = useState<string>("");
+    
 
     useEffect(() => {
       if (items[initIndex].x != null && items[initIndex].y != null) {
-        console.log("index", initIndex, index);
-        init.current = false;
+       
+       
         x.set(items[initIndex].x);
         y.set(items[initIndex].y);
 
-        //console.log(y, x)
+       
       }
     }, [initIndex, items]);
     useEffect(() => {
@@ -62,7 +60,7 @@ const ProjectItem = forwardRef<HTMLLIElement, ScriptProps & ListProps>(
         x.get() != items[index].x
       ) {
         const time = 0.4;
-
+        
         animate(x, items[index].x, {
           type: "spring",
             
@@ -75,57 +73,31 @@ const ProjectItem = forwardRef<HTMLLIElement, ScriptProps & ListProps>(
         });
       }
     }, [index]);
-    /*  useEffect(() => {
-      //console.log("DIRECTION", props.direction)
-      if (false) {
-       if(direction == -1){
-        const time = 0.5;
-        animate(x, left.x, {
-          type: "spring",
-
-          duration: time,
-        })
-
-        animate(y, 2, {
-          type: "spring",
-          duration: time,
-        });
-       } else if(direction == 1){
-        const time = 0.5;
-        animate(x, 2, {
-          type: "spring",
-
-          duration: time,
-        })
-
-        animate(y, 2, {
-          type: "spring",
-          duration: time,
-        });
-       }
-        
-        
-      
-       
-      }
-    }, [direction,  update, x, y]); */
-    /*  if (!coord ){
-      return <div className={className}></div>
-    } */
-    const updateValues = () => {
-      console.log("eeeeh");
-    };
+    const renderChildrenWithProps = () => {
+      return React.Children.map(props.children, (child) => {
+        if (React.isValidElement(child)) {
+          // Check if the child is valid and pass additional props
+          return React.cloneElement(child, {
+            ...child.props,
+            setBoxShadow:{setBoxShadow}
+          });
+        }
+        return child;
+      });
+    }
+  
+ 
     return (
       <motion.li
         ref={ref}
         className={items[index].placement}
-        style={{ x, y }}
+        style={{ x, y, boxShadow: boxShadow }}
         whileHover={{
           scale: index == 0 ? 1.3 : 1.1,
         }}
       >
         {index == 0 || index == 1 || index == 4 ? (
-          props.children
+          renderChildrenWithProps()
         ) : (
           <div className=" w-full h-full bg-white" />
         )}

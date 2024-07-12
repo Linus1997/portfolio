@@ -46,6 +46,7 @@ const style = [
 ];
 const ProjectCarousel = () => {
   const [projects] = useState<ProjectInterface[]>([...testdata]);
+  
   const [currentIndex, setCurrentIndex] = useState<number>(0);
  
   const [front, setFront] = useState<number> (0);
@@ -90,7 +91,7 @@ console.log(coord)
         { placement: baseItem({ zIndex: 10 }), x: backLeftX, y: 0 },
         { placement: baseItem({ zIndex: 20 }), x: leftX, y: level2Y },
       ];
-      
+      console.log("projects", projects)
       setCoord(coordValues);
       
     }
@@ -151,7 +152,7 @@ console.log(coord)
         <motion.ul
           ref={wrapperRef}
         
-          className="relative w-4/6 h-96  py-2 gap-4"
+          className="relative w-4/6 h-96 py-2 gap-4"
         >
           {[0,1, 2, 3, 4].map((item, i) => (
             <ProjectItem
@@ -172,8 +173,8 @@ console.log(coord)
               initIndex={i} 
               >
               <ProjectCard
-                {...projects[getIndex(currentIndex, i, projects.length)]}
-              />
+              //TODO: adjust for project size larger than 5.
+              project={projects[getIndex(currentIndex, i, projects.length)]}              />
             </ProjectItem>
           ))}
         </motion.ul>
