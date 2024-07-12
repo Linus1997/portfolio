@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   animate,
   animationControls,
@@ -7,101 +8,127 @@ import {
 } from "framer-motion";
 import { ScriptProps } from "next/script";
 import { useRef, useEffect, forwardRef, useState } from "react";
-import { Coord } from "./ProjectCarousel";
+import { Coord, rotateLeft, rotateRight } from "./ProjectCarousel";
 import { getIndex } from "@/app/utils/helperfunction";
 import { tv } from "tailwind-variants";
+import { baseStyles } from "@nextui-org/react";
 
-const selectedItem = tv({
-  base: ["z-30"],
-});
-const layer2 = tv({
-  base: ["z-20"],
-});
 
-const layer3 = tv({
-  base: ["z-10"],
-});
-interface grid {
-  row: string;
-  col: string;
-}
 
 interface ListProps {
-  index: number;
-  coord: Coord | null;
-  newCoord: Coord | null;
-  // start: boolean;
-  // direction: number;
-  grid: grid;
-  grid2: grid | null;
+  initIndex: number;
+  items: Coord[];
+  direction: number;
+  front: number;
   targetRef: HTMLLIElement | null;
 }
 
 const ProjectItem = forwardRef<HTMLLIElement, ScriptProps & ListProps>(
   (props, ref) => {
-    const { grid2, coord, newCoord, className } = props;
-    const [grid, setGrid] = useState<grid>(props.grid);
+    const { className, front, initIndex, items, direction } = props;
+    const [startCoord, setCoord] = useState<Coord | null>(null);
     console.log(props.className);
     const x = useMotionValue<number>(0);
     const y = useMotionValue<number>(0);
-    const gridCol = useMotionValue(`var(${grid.col})`);
-    const gridRow = useMotionValue(`var(${grid.row})`);
+    const init = useRef<boolean>(true);
+    const [index, setIndex] = useState<number>(initIndex);
+    const [itemList, setItems] = useState<Coord[]>();
     const [update, setUpdate] = useState<boolean>(false);
 
     useEffect(() => {
-      if (coord) {
-        /*   x.set(coord.x);
-        y.set(coord.y); */
+      if (items[initIndex].x != null && items[initIndex].y != null) {
+        console.log("index", initIndex, index);
+        init.current = false;
+        x.set(items[initIndex].x);
+        y.set(items[initIndex].y);
+
+        //console.log(y, x)
       }
-    }, [className, coord, x, y]);
+    }, [initIndex, items]);
+    useEffect(() => {
+      if (direction == -1) {
+        setIndex(getIndex(index, -1, items.length));
+        //setItems(rotateLeft(items, 1));
+      } else if (direction == 1) {
+        //setItems(rotateRight(items, 1));
+        setIndex(getIndex(index, 1, items.length));
+      }
+    }, [direction]);
 
     useEffect(() => {
-      //console.log("DIRECTION", props.direction)
-      if (newCoord && grid2) {
-        const animation = new Promise(() => {
-          const time = 0.5;
-          animate(x, newCoord.x, {
-            type: "spring",
+      if (
+        items[index].x != null &&
+        items[index].y != null &&
+        x.get() != items[index].x
+      ) {
+        const time = 0.4;
 
-            duration: time,
-          }).then(() => {
+        animate(x, items[index].x, {
+          type: "spring",
             
-          });
+          duration: time,
+        });
 
-          animate(y, newCoord.y, {
-            type: "spring",
-            duration: time,
-          });
+        animate(y, items[index].y, {
+          type: "spring",
+          duration: time,
         });
-        animation.then(() => {
-          //setGrid(grid2);
-        });
-        setUpdate(true);
       }
-    }, [props.coord, grid2, props.newCoord, x, y]);
+    }, [index]);
+    /*  useEffect(() => {
+      //console.log("DIRECTION", props.direction)
+      if (false) {
+       if(direction == -1){
+        const time = 0.5;
+        animate(x, left.x, {
+          type: "spring",
+
+          duration: time,
+        })
+
+        animate(y, 2, {
+          type: "spring",
+          duration: time,
+        });
+       } else if(direction == 1){
+        const time = 0.5;
+        animate(x, 2, {
+          type: "spring",
+
+          duration: time,
+        })
+
+        animate(y, 2, {
+          type: "spring",
+          duration: time,
+        });
+       }
+        
+        
+      
+       
+      }
+    }, [direction,  update, x, y]); */
     /*  if (!coord ){
       return <div className={className}></div>
     } */
-    const updateValues = () => {};
+    const updateValues = () => {
+      console.log("eeeeh");
+    };
     return (
       <motion.li
         ref={ref}
-        className={props.className ? props.className : "invisible"}
-        style={{ gridColumn: gridCol, gridRow: gridRow }}
-        animate={
-          update && newCoord
-            ? {
-                x: newCoord.x,
-                y: newCoord.y,
-              }
-            : {}
-        }
-        onAnimationComplete={() => {
-          updateValues;
+        className={items[index].placement}
+        style={{ x, y }}
+        whileHover={{
+          scale: index == 0 ? 1.3 : 1.1,
         }}
-        layout
       >
-        {props.children}
+        {index == 0 || index == 1 || index == 4 ? (
+          props.children
+        ) : (
+          <div className=" w-full h-full bg-white" />
+        )}
       </motion.li>
     );
   }
