@@ -14,3 +14,15 @@ export interface ProjectInterface {
     externalLink?: string;
     screencast?: string;
   }
+
+
+  export interface ProjectIndices{
+    left: number;
+    start: number;
+    right: number;
+  }
+
+  export interface ToggleProject {
+    projects: ProjectInterface[];
+    indices: ProjectIndices;
+  }
