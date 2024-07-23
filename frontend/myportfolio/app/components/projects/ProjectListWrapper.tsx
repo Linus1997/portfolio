@@ -1,6 +1,6 @@
 import { getIndex, rotateArray } from "@/app/utils/helperfunction";
 import ProjectItem from "./ProjectListItem";
-import { motion } from "framer-motion";
+import { AnimationDefinition, LayoutGroup, motion } from "framer-motion";
 import {
   useEffect,
   useLayoutEffect,
@@ -13,10 +13,7 @@ import ProjectCard from "./ProjectCard";
 import testdata from "../../utils/testdata.json";
 
 export interface ItemData {
-  zIndex: number;
-  shouldDisplay: boolean;
-  x: number | null;
-  y: number | null;
+  animationCoord: AnimationCoord;
   project: ProjectInterface | null;
 }
 interface WrapperProps {
@@ -27,6 +24,8 @@ interface WrapperProps {
 interface CoordXY {
   x: number;
   y: number;
+  rotateX: number;
+  rotateY: number;
 }
 
 const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) => {
@@ -39,14 +38,71 @@ const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) => {
   const level3X = childDim.width / 3.1;
   const backRightX = rightX - level3X;
   const backLeftX = leftX + level3X;
-  const updatedCoord = [
-    { x: frontX, y: frontY },
-    { x: rightX, y: level2Y },
-    { x: backRightX, y: 0 },
-    { x: backLeftX, y: 0 },
-    { x: leftX, y: level2Y },
+  const updatedCoord: CoordXY[] = [
+    { x: frontX, y: frontY, rotateX: 0, rotateY: 0 },
+    { x: rightX, y: level2Y, rotateX: 20, rotateY: -70 },
+    { x: backRightX, y: 0, rotateX: 10, rotateY: -140 },
+    { x: backLeftX, y: 0, rotateX: -10, rotateY: -140 },
+    { x: leftX, y: level2Y, rotateX: 20, rotateY: 140 },
   ];
   return updatedCoord;
+};
+
+const event = new Event("build");
+interface VariantArg {
+  x: number;
+  y: number;
+  rotateX: number;
+  rotateY: number;
+  zIndex: number;
+}
+
+export interface AnimationCoord {
+  initial: VariantArg;
+  left: VariantArg;
+  right: VariantArg;
+}
+interface AnimationCoor {}
+const wrapperVariants = {
+  initial: { opacity: 0 },
+  test: {
+    opacity: 1,
+    transition: {
+      when: "afterChildren",
+      onComplete: () => {
+        console.log("Animation complete!");
+        // You can perform any action here after the animation completes
+      },
+    },
+  },
+};
+const duration: number = 0.4;
+const itemVariants = {
+  initial: (i: AnimationCoord) => ({
+    x: i.initial.x,
+    y: i.initial.y,
+    zIndex: i.initial.zIndex,
+    rotateX: i.initial.rotateX,
+    rotateY: i.initial.rotateY,
+    transition: { duration: 0 },
+  }),
+  left: (i: AnimationCoord) => ({
+    x: i.left.x,
+    y: i.left.y,
+    zIndex: i.left.zIndex,
+    rotateX: i.left.rotateX,
+    rotateY: i.left.rotateY,
+    
+    transition: { duration: duration },
+  }),
+  right: (i: AnimationCoord) => ({
+    x: i.right.x,
+    y: i.right.y,
+    zIndex: i.right.zIndex,
+    rotateX:  i.right.rotateX,
+    rotateY:  i.right.rotateX,
+    transition: { duration: duration },
+  }),
 };
 
 const ProjectListWrapper = ({
@@ -64,8 +120,10 @@ const ProjectListWrapper = ({
   );
 
   useEffect(() => {
-    direction !== 0 && dispatch({ type: "rotate", rotations: direction });
-  }, [direction]);
+    const timeOut = setTimeout(() => {}, 100);
+    return () => clearTimeout(timeOut);
+  }, [state]);
+
   useLayoutEffect(() => {
     const onDimChange = () => {
       if (wrapperRef.current && itemRef.current && itemRef.current.length > 0) {
@@ -83,34 +141,74 @@ const ProjectListWrapper = ({
       window.removeEventListener("resize", onDimChange);
     };
   }, []);
-
+  const reset = (definition: AnimationDefinition) => {
+    dispatch({ type: "resetVariant", definition: definition });
+  };
   if (!projects || projects.length == 0) return <></>;
   return (
-    <motion.ul ref={wrapperRef} className="relative  h-96 py-2 ">
-      {[0, 1, 2, 3, 4].map((item, i) => (
-        <ProjectItem
-          index={item}
-          targetRef={itemRef.current[i]}
-          ref={(el) => {
-            if (el) itemRef.current[i] = el;
-          }}
-          className={
-            "absolute w-56 h-56 self-stretch" +
-            `${
-              state.itemData[i].x && state.itemData[i].y
-                ? "visible"
-                : "invisible"
-            }`
-          }
-          coord={state.itemData[i]}
-          //className={rotatedCoord? rotatedCoord[i].placement : coord? coord[i].placement : "invisible"}
-          //newCoord={rotatedCoord? rotatedCoord[i] : null}
-          key={i}
+    <div className=" flex flex-row h-96 content-center justify-center">
+      <button
+        className={`w-28 `}
+        onClick={() => dispatch({ type: "rotateRight", variant: "left" })}
+      >
+        <svg
+          className="w-full h-full stroke-slate-400"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
         >
-          <ProjectCard project={state.itemData[i].project} />
-        </ProjectItem>
-      ))}
-    </motion.ul>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5 8.25 12l7.5-7.5"
+          />
+        </svg>
+      </button>
+      <div className="w-4/6 ">
+        <motion.ul ref={wrapperRef} style={{transformPerspective: "1000px",}}  className="relative  h-96 py-2 ">
+          {[0, 1, 2, 3, 4].map((item, i) => (
+            <ProjectItem
+              index={item}
+              ref={(el) => {
+                if (el) itemRef.current[i] = el;
+              }}
+              var={state.variant}
+              onAnimationComplete={(definition) => reset(definition)}
+              animationCoord={state.itemData[i].animationCoord}
+              callback={reset}
+              className={"absolute w-56 h-56 self-stretch  "}
+              project={state.itemData[i].project}
+              //className={rotatedCoord? rotatedCoord[i].placement : coord? coord[i].placement : "invisible"}
+              //newCoord={rotatedCoord? rotatedCoord[i] : null}
+              key={i}
+              animate={state.variant}
+              variants={itemVariants}
+            ></ProjectItem>
+          ))}
+        </motion.ul>
+      </div>
+      <button
+        className={`w-28`}
+        onClick={() => dispatch({ type: "rotateLeft", variant: "left" })}
+      >
+        <svg
+          className=" w-full h-full stroke-slate-400"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m8.25 4.5 7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
+    </div>
   );
 };
 
@@ -118,17 +216,21 @@ const ProjectListWrapper = ({
  * STATE REDUCER HANDLER
  */
 interface State {
-  rotation: number;
+  variant: string;
+
   itemData: ItemData[];
+  count: number;
+  completed: boolean;
   projects: ProjectInterface[];
   projectSize: number;
   focusedProject: number;
 }
 
 type CounterAction =
-  | { type: "rotate"; rotations: number }
-  | { type: "left" }
-  | { type: "right" }
+  | { type: "resetVariant"; definition: AnimationDefinition }
+  | { type: "setCount" }
+  | { type: "rotateLeft"; variant: string }
+  | { type: "rotateRight"; variant: string }
   | { type: "resize"; coords: CoordXY[] };
 interface InitParam {
   initRotation: number;
@@ -141,137 +243,153 @@ const shouldDisplay = (index: number, arraySize: number): number | null => {
   else return null;
 };
 
-const createInitialState = ({ initRotation, projects }: InitParam): State => {
-  let itemData = initialState.map((item, i) => {
-    let display = shouldDisplay(i, projects.length);
+const createInitialState = ({ projects }: InitParam): State => {
+  let projectSize = projects.length;
 
+  let itemData: ItemData[] = initialState().map((item, i, arr) => {
+    let display = shouldDisplay(i, 5);
+    let project =
+      display !== null ? projects[getIndex(0, display, projectSize)] : null;
     return {
-      ...item,
-      project:
-        display !== null
-          ? projects[getIndex(0, display, projects.length)]
-          : null,
-      shouldDisplay: display !== null,
+      animationCoord: item,
+      project: project,
     };
   });
-
   return {
-    rotation: initRotation,
+    variant: "initial",
+    count: 0,
+    completed: false,
     itemData: itemData,
+
     projects: projects,
     projectSize: projects.length,
     focusedProject: 0,
   };
 };
+
 export const zIndexes = [30, 20, 10, 10, 20];
-const d = [0, 1, null, null, -1];
+
+/**
+ * FIXA SÅ endast animation, ingen rotation.
+ * @param state
+ * @param action
+ * @returns
+ */
 const coordReducer = (state: State, action: CounterAction): State => {
   switch (action.type) {
-    case "rotate":
-      console.log("rotate", action.rotations);
-      let currSelected = getIndex(
-        state.focusedProject,
-        action.rotations,
-        state.projectSize
-      );
-      
-      let rotatedData: ItemData[] = state.itemData;
-      rotatedData = rotatedData.map((item, i) => {
-       if(action.rotations === 1){
-        if(i == 1){
-          return {...item, 
-            shouldDisplay: false,
-            project: null
-          }
-        } else if(i === 3){
-          return {
-            ...item, 
-            shouldDisplay: true,
-            project: state.projects[getIndex(currSelected, -action.rotations, state.projectSize)]  
-          }
-        }
-      }
-        return {...item}
-      })
-      console.log("innan",rotatedData)
-      rotatedData = rotateArray(rotatedData, state.itemData.length);
-      console.log("EFTER",rotatedData)
+    case "resetVariant":
+      if (action.definition.toLocaleString() !== "left") return { ...state };
+      let count = state.count + 1;
+      if (count < 5) return { ...state, count: count };
+      let newValue = getIndex(state.focusedProject, 1, state.projectSize);
+      let a = state.itemData.map((item, i, arr) => {
+        let display = shouldDisplay(i, 5);
+
+        return {
+          ...item,
+          project:
+            display !== null
+              ? state.projects[getIndex(newValue, display, state.projectSize)]
+              : null,
+        };
+      });
       return {
         ...state,
-        itemData: rotatedData,
-        rotation: state.rotation + action.rotations,
-        focusedProject: currSelected
+        focusedProject: newValue,
+        itemData: a,
+        variant: "initial",
+        count: 0,
+        completed: true,
       };
+
+    case "setCount":
+      let newCount = state.count + 1;
+      console.log(newCount);
+      return {
+        ...state,
+        count: newCount,
+        completed: newCount === state.itemData.length ? true : false,
+      };
+    case "rotateLeft":
+      return { ...state, variant: action.variant };
+    case "rotateRight":
+      let rightRotData: ItemData[] = rotateArray(state.itemData, 1);
+      return { ...state, itemData: rightRotData };
     case "resize":
-      let updatedItems: ItemData[] = new Array(...state.itemData);
+      let updatedData: ItemData[] = action.coords.map((item, i, arr) => {
+        let leftI: number = getIndex(i, -1, arr.length);
+        let left: CoordXY = arr[leftI];
+        let rightI: number = getIndex(i, 1, arr.length);
+        let right: CoordXY = arr[rightI];
+        let display = shouldDisplay(i, state.projectSize);
 
-      updatedItems = updatedItems.map((item, index) => {
-        // console.log(item)
-        // console.log(action.coords[index])
-        let project;
-        let display = shouldDisplay(index, state.projectSize);
-
-        project =
+        let project =
           display !== null
             ? state.projects[
                 getIndex(state.focusedProject, display, state.projectSize)
               ]
             : null;
-
         return {
-          ...item,
-          zIndex: zIndexes[index],
-          x: action.coords[index].x,
-          y: action.coords[index].y,
+          animationCoord: {
+            initial: {
+              x: item.x,
+              y: item.y,
+              rotateX: item.rotateX,
+              rotateY: item.rotateY,
+              zIndex: zIndexes[i],
+            },
+            left: {
+              x: left.x,
+              y: left.y,
+              rotateX: left.rotateX,
+              rotateY: left.rotateY,
+              zIndex: zIndexes[leftI],
+            },
+            right: {
+              x: right.x,
+              y: right.y,
+              rotateX: right.rotateX,
+              rotateY: right.rotateY,
+              zIndex: zIndexes[rightI],
+            },
+          },
           project: project,
         };
       });
-      if (state.rotation !== 0)
-        return {
-          ...state,
-          itemData: rotateArray(updatedItems, state.rotation),
-        };
-      else return { ...state, itemData: updatedItems };
+      return { ...state, itemData: updatedData };
     default:
       throw new Error("Unknown action");
   }
 };
 
-const initialState: ItemData[] = [
-  {
-    zIndex: 30,
-    x: null,
-    y: null,
-    project: null,
-    shouldDisplay: false,
-  },
-  {
-    zIndex: 20,
-    x: null,
-    y: null,
-    project: null,
-    shouldDisplay: false,
-  },
-  {
-    zIndex: 10,
-    x: null,
-    y: null,
-    project: null,
-    shouldDisplay: false,
-  },
-  {
-    zIndex: 10,
-    x: null,
-    y: null,
-    project: null,
-    shouldDisplay: false,
-  },
-  {
-    zIndex: 20,
-    x: null,
-    y: null,
-    project: null,
-    shouldDisplay: false,
-  },
-];
+const initialState = (): AnimationCoord[] => {
+  let arr: AnimationCoord[] = zIndexes.map((z, i, arr) => {
+    let left: number = arr[getIndex(i, -1, arr.length)];
+    let right: number = arr[getIndex(i, 1, arr.length)];
+    return {
+      initial: {
+        x: 0,
+        y: 0,
+        rotateX: 0,
+        rotateY: 0,
+        zIndex: z,
+      },
+      left: {
+        x: 0,
+        y: 0,
+        rotateX: 0,
+        rotateY: 0,
+        zIndex: left,
+      },
+      right: {
+        x: 0,
+        y: 0,
+        rotateX: 0,
+        rotateY: 0,
+        zIndex: right,
+      },
+    };
+  });
+  return arr;
+};
 export default ProjectListWrapper;

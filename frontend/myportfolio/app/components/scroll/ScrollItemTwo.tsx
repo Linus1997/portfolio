@@ -1,6 +1,6 @@
 import ProjectCarousel from "../projects/ProjectCarousel";
 
-import App from "../tests/GridContainer";
+
 
 interface State {
     count: number;

@@ -2,10 +2,12 @@
 import {
   animate,
   animationControls,
+  AnimationDefinition,
   HTMLMotionProps,
   motion,
   useMotionValue,
   useMotionValueEvent,
+  VariantLabels,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
 import { useRef, useEffect, forwardRef, useState, useMemo } from "react";
@@ -13,68 +15,77 @@ import { getIndex } from "@/app/utils/helperfunction";
 import { tv } from "tailwind-variants";
 import { baseStyles } from "@nextui-org/react";
 import React from "react";
-import { ItemData } from "./ProjectListWrapper";
+import { AnimationCoord, ItemData } from "./ProjectListWrapper";
+import ProjectCard from "./ProjectCard";
+import { ProjectInterface } from "@/app/utils/interfaces";
 
 interface ListProps {
-  coord: ItemData;
+
   index: number;
-  targetRef: HTMLLIElement | null;
+  animationCoord?: AnimationCoord;
+  callback: (definition: AnimationDefinition) => void;
+  project: ProjectInterface | null
+  var: string;
+  
 }
 
-const ProjectItem = forwardRef<HTMLLIElement, ScriptProps & ListProps>(
+const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProps & ListProps>(
   (props, ref) => {
-    const { coord } = props;
-
+    const { animate, initial, variants, animationCoord, project, onAnimationComplete } = props;
+  
+  
     const x = useMotionValue<number>(0);
     const y = useMotionValue<number>(0);
-
     const [boxShadow, setBoxShadow] = useState<string>("");
-    let oldX = x.get();
-    let oldY = y.get();
+    
 
-    useEffect(() => {
+    
+ /*    useEffect(() => {
       if (coord.x != null && coord.y != null) {
-        oldX = x.get();
-        oldY = y.get();
+       
         if(x.get() === 0){
           x.set(coord.x);
           y.set(coord.y);
+          setProject(coord.project)
         } else {
       //  console.log("Index: ", props.index, "coord: ", coord);
-        const duration: number = 0.4;
+      x2.set(x.get());
+      y2.set(y.get());
+      const duration: number = 0.4;
         
-        animate(x, coord.x, { type: "spring", duration: duration });
-        animate(y, coord.y, { type: "spring", duration: duration });
+        animate(x, coord.x, { type: "spring", duration: duration }).then(()=> {
+          x.set(x2.get());
+        });
+        animate(y, coord.y, { type: "spring", duration: duration }).then(()=> {
+          y.set(y2.get());
+        });
         }
+
+        
+       // console.log(props.index, project?.projectID, project?.images[0])
         //console.log(coord.zIndex,x.getPrevious(), x.get())
         //animate(x, x.getPrevious(),{type:"spring"})
       }
-    }, [coord]);
+      
+    }, [coord]); */
 
-    const renderChildrenWithProps = () => {
-      return React.Children.map(props.children, (child) => {
-        if (React.isValidElement(child)) {
-          // Check if the child is valid and pass additional props
-          return React.cloneElement(child, {
-            ...child.props,
-            setBoxShadow: { setBoxShadow },
-          });
-        }
-        return child;
-      });
-    };
 
     return (
       <motion.li
         ref={ref}
         className={props.className}
-        style={{ x, y, 
-          boxShadow: boxShadow, 
-          visibility: (coord.x && coord.y)===null? "hidden" : "visible",
-          zIndex: props.coord.zIndex }}
+        //onAnimationComplete={(definition) => props.callback(definition)}
+        style={{transformStyle: "preserve-3d"}}
+        onAnimationComplete={onAnimationComplete}
+        custom={animationCoord}
+        initial={initial}
+        animate={animate}
+        variants={variants}
         whileHover={{}}
+       
       >
-        {renderChildrenWithProps()}
+        {project ?  <ProjectCard project={project} /> :
+        <div className={props.className + "w-[100%] h-[100%] rounded-xl bg-white"} />}
       </motion.li>
     );
   }
