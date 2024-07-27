@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 interface Props{
   project: ProjectInterface|null;
+  
   setBoxShadow?: Dispatch<SetStateAction<string>>;
 }
 
