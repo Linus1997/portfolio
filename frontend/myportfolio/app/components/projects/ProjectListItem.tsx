@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import {
   animate,
   animationControls,
@@ -75,20 +75,42 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
         ref={ref}
         className={props.className}
         //onAnimationComplete={(definition) => props.callback(definition)}
-        style={{transformStyle: "preserve-3d"}}
+        style={{ backfaceVisibility: "visible",
+        
+        }}
         onAnimationComplete={onAnimationComplete}
         custom={animationCoord}
         initial={initial}
         animate={animate}
         variants={variants}
-        whileHover={{}}
+        whileHover={{scale: 1.2}}
        
       >
-        {project ?  <ProjectCard project={project} /> :
-        <div className={props.className + "w-[100%] h-[100%] rounded-xl bg-white"} />}
+      <div className=" relative w-full h-full rounded-2xl" 
+      
+      >
+       <div>
+      <motion.div className="absolute bg-zinc-400 w-full h-full rounded-xl shadow-inner  " style={{top: 0, right:0  , rotateX: 0, rotateY: 0}}/>
+      <motion.div className="absolute bg-zinc-500 w-full h-full rounded-xl shadow-inner" style={{top: 0, right:0 , rotateX: 20, rotateY: 0, }} />
+      <motion.div className="absolute bg-zinc-600 w-full h-full rounded-xl shadow-inner" style={{top: 0, right:0, rotateX: 50, rotateY: 0}} />
+      </div>
+        
+        <motion.div  className={props.className + "w-[95%] h-[95%]   rounded-xl bg-white "} >
+        {project ?  <ProjectCard project={null} /> :
+        <div className={props.className + "w-[95%] h-[95%] rounded-xl bg-white"} />}
+        </motion.div>
+      </div>
       </motion.li>
     );
   }
 );
+
+const itemVariants = {
+  initial: {rotateY: 0, zIndex:0, transition: {duration:0}},
+  left: {rotateY: 180, zIndex:20},
+  right: {rotate: 180}
+};
+
+
 ProjectItem.displayName = "ProjectItem";
 export default ProjectItem;

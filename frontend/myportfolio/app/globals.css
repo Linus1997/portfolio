@@ -6,18 +6,11 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  --front-col: 3 / 4;
-  --front-row: 3 / 4;
-  --right-col: 5 / 6;
-  --right-row: 2 / 3;
-  --right2-col: 4 / 5;
-  --right2-row: 1 / 2;
-  --left2-col: 2 / 3;
-  --left2-row: 1 / 2;
-  --left-col: 1 / 2;
-  --left-row: 2 / 3;
+
   
 }
+
+
 
 @media (prefers-color-scheme: dark) {
   :root {

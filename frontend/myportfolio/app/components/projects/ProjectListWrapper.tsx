@@ -24,26 +24,53 @@ interface WrapperProps {
 interface CoordXY {
   x: number;
   y: number;
+  z: number;
   rotateX: number;
   rotateY: number;
 }
 
 const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) => {
-  const frontX = wrapperDim.width / 2 - childDim.width / 2;
-  const frontY = wrapperDim.height / 2 - childDim.height / 3;
-  const level2X = childDim.width / 1.2;
-  const rightX = frontX + level2X;
-  const leftX = frontX - level2X;
-  const level2Y = frontY - childDim.height / 3;
-  const level3X = childDim.width / 3.1;
-  const backRightX = rightX - level3X;
-  const backLeftX = leftX + level3X;
+  const frontX = Math.round(wrapperDim.width / 2 - childDim.width / 2);
+  const frontY = Math.round(wrapperDim.height / 2 - childDim.height / 3);
+  const level2X = Math.round(childDim.width / 1);
+  const rightX = Math.round(frontX + level2X);
+  const leftX = Math.round(frontX - level2X);
+  const level2Y = Math.round(frontY - childDim.height / 4.5);
+  const level3X = Math.round(childDim.width / 10);
+  const backRightX = Math.round(rightX - level3X);
+  const backLeftX = Math.round(leftX + level3X);
+  
+  
+  let rotY2 = 40;
+  let rotX2 = 20;
+  let rotXBack3 = 10;
+  let rotYBack3 = -40;
+
   const updatedCoord: CoordXY[] = [
-    { x: frontX, y: frontY, rotateX: 0, rotateY: 0 },
-    { x: rightX, y: level2Y, rotateX: 20, rotateY: -70 },
-    { x: backRightX, y: 0, rotateX: 10, rotateY: -140 },
-    { x: backLeftX, y: 0, rotateX: -10, rotateY: -140 },
-    { x: leftX, y: level2Y, rotateX: 20, rotateY: 140 },
+    {
+      x: frontX, y: frontY, rotateX: 0, rotateY: 0,
+      z: 40
+    },
+    {
+      x: rightX, y: level2Y, rotateX: rotX2, rotateY: -rotY2,
+      z: 30
+    },
+    {
+      x: backRightX, y: 0, rotateX: rotXBack3, rotateY: -rotYBack3,
+      z: 20
+    },
+    {
+      x: frontX, y: 0, rotateX: 0, rotateY: 0,
+      z: 0
+    },
+    {
+      x: backLeftX, y: 0, rotateX: rotXBack3, rotateY: rotYBack3,
+      z: 20
+    },
+    {
+      x: leftX, y: level2Y, rotateX: rotX2, rotateY: rotY2,
+      z: 30
+    },
   ];
   return updatedCoord;
 };
@@ -62,25 +89,13 @@ export interface AnimationCoord {
   left: VariantArg;
   right: VariantArg;
 }
-interface AnimationCoor {}
-const wrapperVariants = {
-  initial: { opacity: 0 },
-  test: {
-    opacity: 1,
-    transition: {
-      when: "afterChildren",
-      onComplete: () => {
-        console.log("Animation complete!");
-        // You can perform any action here after the animation completes
-      },
-    },
-  },
-};
+
 const duration: number = 0.4;
 const itemVariants = {
   initial: (i: AnimationCoord) => ({
     x: i.initial.x,
     y: i.initial.y,
+    
     zIndex: i.initial.zIndex,
     rotateX: i.initial.rotateX,
     rotateY: i.initial.rotateY,
@@ -89,18 +104,20 @@ const itemVariants = {
   left: (i: AnimationCoord) => ({
     x: i.left.x,
     y: i.left.y,
+   
     zIndex: i.left.zIndex,
     rotateX: i.left.rotateX,
     rotateY: i.left.rotateY,
-    
+
     transition: { duration: duration },
   }),
   right: (i: AnimationCoord) => ({
     x: i.right.x,
     y: i.right.y,
+   
     zIndex: i.right.zIndex,
-    rotateX:  i.right.rotateX,
-    rotateY:  i.right.rotateX,
+    rotateX: i.right.rotateX,
+    rotateY: i.right.rotateX,
     transition: { duration: duration },
   }),
 };
@@ -146,10 +163,10 @@ const ProjectListWrapper = ({
   };
   if (!projects || projects.length == 0) return <></>;
   return (
-    <div className=" flex flex-row h-96 content-center justify-center">
+    <div className=" flex flex-row h-96 content-center justify-center bg-teal-400 ">
       <button
         className={`w-28 `}
-        onClick={() => dispatch({ type: "rotateRight", variant: "left" })}
+        onClick={() => dispatch({ type: "spin", variant: "right" })}
       >
         <svg
           className="w-full h-full stroke-slate-400"
@@ -166,9 +183,12 @@ const ProjectListWrapper = ({
           />
         </svg>
       </button>
-      <div className="w-4/6 ">
-        <motion.ul ref={wrapperRef} style={{transformPerspective: "1000px",}}  className="relative  h-96 py-2 ">
-          {[0, 1, 2, 3, 4].map((item, i) => (
+      
+      <div className="relative flex content-center justify-center w-[63em] h-96 py-4">
+        <motion.ul ref={wrapperRef} 
+        
+        className="absolute  w-full h-full  ">
+          {[0, 1, 2, 3, 4, 5].map((item, i) => (
             <ProjectItem
               index={item}
               ref={(el) => {
@@ -178,8 +198,9 @@ const ProjectListWrapper = ({
               onAnimationComplete={(definition) => reset(definition)}
               animationCoord={state.itemData[i].animationCoord}
               callback={reset}
-              className={"absolute w-56 h-56 self-stretch  "}
+              className={"absolute w-[14em] h-[14rem] self-stretch  "}
               project={state.itemData[i].project}
+              
               //className={rotatedCoord? rotatedCoord[i].placement : coord? coord[i].placement : "invisible"}
               //newCoord={rotatedCoord? rotatedCoord[i] : null}
               key={i}
@@ -191,7 +212,7 @@ const ProjectListWrapper = ({
       </div>
       <button
         className={`w-28`}
-        onClick={() => dispatch({ type: "rotateLeft", variant: "left" })}
+        onClick={() => dispatch({ type: "spin", variant: "left" })}
       >
         <svg
           className=" w-full h-full stroke-slate-400"
@@ -229,7 +250,7 @@ interface State {
 type CounterAction =
   | { type: "resetVariant"; definition: AnimationDefinition }
   | { type: "setCount" }
-  | { type: "rotateLeft"; variant: string }
+  | { type: "spin"; variant: string }
   | { type: "rotateRight"; variant: string }
   | { type: "resize"; coords: CoordXY[] };
 interface InitParam {
@@ -239,7 +260,7 @@ interface InitParam {
 const shouldDisplay = (index: number, arraySize: number): number | null => {
   if (index === 0) return 0;
   else if (index === 1) return 1;
-  else if (index === 4) return -1;
+  else if (index === 5) return -1;
   else return null;
 };
 
@@ -267,7 +288,7 @@ const createInitialState = ({ projects }: InitParam): State => {
   };
 };
 
-export const zIndexes = [30, 20, 10, 10, 20];
+export const zIndexes = [30, 20, 10, 0, 10, 20];
 
 /**
  * FIXA SÅ endast animation, ingen rotation.
@@ -278,7 +299,8 @@ export const zIndexes = [30, 20, 10, 10, 20];
 const coordReducer = (state: State, action: CounterAction): State => {
   switch (action.type) {
     case "resetVariant":
-      if (action.definition.toLocaleString() !== "left") return { ...state };
+      const variantDef = action.definition.toLocaleString(); 
+      if ( variantDef !== "left" && variantDef !== "right") return { ...state };
       let count = state.count + 1;
       if (count < 5) return { ...state, count: count };
       let newValue = getIndex(state.focusedProject, 1, state.projectSize);
@@ -310,12 +332,13 @@ const coordReducer = (state: State, action: CounterAction): State => {
         count: newCount,
         completed: newCount === state.itemData.length ? true : false,
       };
-    case "rotateLeft":
+    case "spin":
       return { ...state, variant: action.variant };
     case "rotateRight":
       let rightRotData: ItemData[] = rotateArray(state.itemData, 1);
       return { ...state, itemData: rightRotData };
     case "resize":
+      console.log("test")
       let updatedData: ItemData[] = action.coords.map((item, i, arr) => {
         let leftI: number = getIndex(i, -1, arr.length);
         let left: CoordXY = arr[leftI];

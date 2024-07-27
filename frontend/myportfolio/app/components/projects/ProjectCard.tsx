@@ -24,34 +24,33 @@ const ProjectCard = ({project, setBoxShadow}: Props) => {
       <Card
         isFooterBlurred
         radius="lg"
-        className="border-none m-0 w-full h-full bg-opacity-2"
+        className="border-none m-0 w-full h-full bg-opacity-2 bg-black"
         classNames={{
           body: ["m-0"],
           header: ["bg-transparent bg-opacity-0"]
         }}
       >
-        <CardBody className="overflow-visible p-0">
-          <motion.div
-          className="h-full w-full">
-            <Skeleton isLoaded={project? project.images && project.images.length > 0 : false}>
+        
+          
+          
+           
             <Image
               isBlurred
               width={"100%"}
               height={"100%"}
               ref={imageRef}
-              className="m-0 w-full h-full object-cover"
+              className="m-0 w-full h-full bg-black object-cover self-stretch"
               src={project? project.images[0] : undefined}
               alt="Hangry Frogs game project"
-            
-            isZoomed
-            shadow="lg"
+              isZoomed
+          
             
 
             />
-            </Skeleton>
-          </motion.div>
-        </CardBody>
-        <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+           
+          
+     
+        <CardFooter className="justify-between outline-offset-[-1px] before:bg-white/10 border-white/20 border-1  py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
          <Skeleton isLoaded>
           <p className="text-tiny text-white/80">Available soon.</p>
           <Button
