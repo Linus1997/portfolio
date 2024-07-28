@@ -10,20 +10,26 @@ import {
   Variants,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
-import { useRef, useEffect, forwardRef, useState, useMemo } from "react";
+import {
+  useRef,
+  useEffect,
+  forwardRef,
+  useState,
+  useMemo,
+  Children,
+} from "react";
 import { getIndex } from "@/app/utils/helperfunction";
 import { tv } from "tailwind-variants";
 import { baseStyles } from "@nextui-org/react";
 import React from "react";
-import { AnimationCoord, duration, ItemData } from "./ProjectListWrapper";
+import { RotationData, duration, ItemData } from "./ProjectListWrapper";
 import ProjectCard from "./ProjectCard";
 import { ProjectInterface } from "@/app/utils/interfaces";
 
 interface ListProps {
   index: number;
-  animationCoord?: AnimationCoord;
-  callback: (definition: AnimationDefinition) => void;
-  project: ProjectInterface | null;
+  coordXY: ItemData;
+
   var: string;
 }
 
@@ -35,8 +41,8 @@ const ProjectItem = forwardRef<
     animate,
     initial,
     variants,
-    animationCoord,
-    project,
+    coordXY,
+
     onAnimationComplete,
   } = props;
 
@@ -78,65 +84,57 @@ const ProjectItem = forwardRef<
       ref={ref}
       className={props.className}
       //onAnimationComplete={(definition) => props.callback(definition)}
-      style={{boxShadow: " 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)" }}
+      style={{
+        
+        boxShadow:
+          " 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      }}
       onAnimationComplete={onAnimationComplete}
-      custom={animationCoord}
+            custom={coordXY}
       initial={initial}
       animate={animate}
       variants={variants}
-      whileHover={{ scale: 1.2 }}
+      whileHover={{ scale: coordXY.rotationData.zIndex ===40?  1.5 : coordXY.rotationData.scale + 0.1  }}
     >
       <div className=" relative w-full h-full rounded-2xl">
         <motion.div
           variants={itemVariants}
           animate={props.animate}
-          custom={animationCoord}
+          custom={coordXY}
           className="absolute z-10 h-full w-full rounded-xl"
         />
 
-        <motion.div
-          className={
-            props.className + "w-[95%] h-[95%]  z-50 rounded-xl bg-white "
-          }
-        >
-          <ProjectCard project={project} />
-        </motion.div>
+        {props.children}
       </div>
     </motion.li>
   );
 });
 
 const itemVariants: Variants = {
-  initial: (i: AnimationCoord) => ({
-    backgroundImage: ` linear-gradient(${i.initial.rotateY}deg, rgba(255,0,0,0), rgba(255,0,0,1) )`,
+  initial: (i: RotationData) => ({
+    backgroundImage: ` linear-gradient(${i.rotateY}deg, rgba(255,0,0,0), rgba(255,0,0,1) )`,
     transition: { duration: 0 },
   }),
-  left: (i: AnimationCoord) => ({
+  left: (i: RotationData) => ({
     backgroundImage: ` linear-gradient(${
-      i.left.rotateY + i.left.rotateX
+      i.rotateY + i.rotateX
     }deg, rgba(255,0,0,0), rgba(255,0,0,1) )`,
 
     transition: { type: "spring", stiffness: 100, duration: duration },
   }),
-  right: (i: AnimationCoord) => ({
-    x: i.right.x,
-    y: i.right.y,
-
-    zIndex: i.right.zIndex,
-    rotateX: i.right.rotateX,
-    rotateY: i.right.rotateY,
+  right: (i: RotationData) => ({
     transition: { duration: duration },
   }),
 };
 
 // cool animation
 /* const itemVariants : Variants = {
-  initial: (i: AnimationCoord) => ({
+  initial: (i: CoordXY) => ({
 
     backgroundImage: ` linear-gradient(${i.initial.rotateY}, rgba(255,0,0,0), rgba(255,0,0,1) )`,
     transition: { duration: 0 },
   }),
-  left: (i: AnimationCoord) => ({
+  left: (i: CoordXY) => ({
     x: i.left.x,
     y: i.left.y,
 
@@ -146,7 +144,7 @@ const itemVariants: Variants = {
 
     transition: { type: "spring", stiffness: 100,  duration: duration },
   }),
-  right: (i: AnimationCoord) => ({
+  right: (i: CoordXY) => ({
     x: i.right.x,
     y: i.right.y,
 
