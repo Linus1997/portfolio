@@ -7,6 +7,11 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 
+
+  --shadow-width: 100%; /* Default width */
+  --shadow-height: 20%; /* Default height */
+  --shadow-color: rgba(173, 14, 194, 0.5); /* Default shadow color */
+  --shadow-opacity: 100; /* Default shadow opacity */
   
 }
 
@@ -30,7 +35,23 @@ body {
     rgb(var(--background-start-rgb));
 }
 @layer components {
-
+  .project {
+   position: absolute;
+  }
+  
+  .project:before {
+    content: '';
+  position: absolute;
+  top: 150%;
+  left:50%;
+  width: var(--shadow-width);
+  height: var(--shadow-height);
+  background: radial-gradient(circle at 100%, #333, #333 50%, #eee 75%, #333 75%);
+  border-radius: 100%;
+  offset: 150%;
+  
+  z-index: -1;
+  }
 }
 
 @layer utilities {

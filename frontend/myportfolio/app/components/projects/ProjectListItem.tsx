@@ -29,7 +29,7 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 interface ListProps {
   index: number;
   coordXY: ItemData;
-
+  isEnterComplete: boolean;
   var: string;
 }
 
@@ -42,6 +42,7 @@ const ProjectItem = forwardRef<
     initial,
     variants,
     coordXY,
+    isEnterComplete: hasEntered,
 
     onAnimationComplete,
   } = props;
@@ -50,57 +51,43 @@ const ProjectItem = forwardRef<
   const y = useMotionValue<number>(0);
   const [boxShadow, setBoxShadow] = useState<string>("");
 
-  /*    useEffect(() => {
-      if (coord.x != null && coord.y != null) {
-       
-        if(x.get() === 0){
-          x.set(coord.x);
-          y.set(coord.y);
-          setProject(coord.project)
-        } else {
-      //  console.log("Index: ", props.index, "coord: ", coord);
-      x2.set(x.get());
-      y2.set(y.get());
-      const duration: number = 0.4;
-        
-        animate(x, coord.x, { type: "spring", duration: duration }).then(()=> {
-          x.set(x2.get());
-        });
-        animate(y, coord.y, { type: "spring", duration: duration }).then(()=> {
-          y.set(y2.get());
-        });
-        }
 
-        
-       // console.log(props.index, project?.projectID, project?.images[0])
-        //console.log(coord.zIndex,x.getPrevious(), x.get())
-        //animate(x, x.getPrevious(),{type:"spring"})
-      }
-      
-    }, [coord]); */
 
   return (
     <motion.li
       ref={ref}
       className={props.className}
-      //onAnimationComplete={(definition) => props.callback(definition)}
-      style={{
-        
-        boxShadow:
-          " 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-      }}
+      
+      style={
+        {
+          filter: "drop-shadow(0 0 0.75rem crimson)"
+        }
+      }
       onAnimationComplete={onAnimationComplete}
-            custom={coordXY}
+      custom={coordXY}
       initial={initial}
       animate={animate}
       variants={variants}
-      whileHover={{ scale: coordXY.rotationData.zIndex ===40?  1.5 : coordXY.rotationData.scale + 0.1  }}
+      whileHover={
+        hasEntered
+          ? {
+              scale:
+                coordXY.rotationData.zIndex === 40
+                  ? 1.2
+                  : coordXY.rotationData.scale + 0.1,
+              rotateY: coordXY.rotationData.rotateY / 1.2,
+            }
+          : {}
+      }
     >
       <div className=" relative w-full h-full rounded-2xl">
-        <motion.div
+        <motion.circle
           variants={itemVariants}
           animate={props.animate}
           custom={coordXY}
+          style={{
+            filter: "drop-shadow(0 200px 0.75rem crimson)"
+          }}
           className="absolute z-10 h-full w-full rounded-xl"
         />
 
@@ -112,10 +99,10 @@ const ProjectItem = forwardRef<
 
 const itemVariants: Variants = {
   initial: (i: RotationData) => ({
-    backgroundImage: ` linear-gradient(${i.rotateY}deg, rgba(255,0,0,0), rgba(255,0,0,1) )`,
+    backgroundImage: ` linear-gradient(${i.rotateY}deg, rgba(255,2,3,4), rgba(25,2,3,1) )`,
     transition: { duration: 0 },
   }),
-  left: (i: RotationData) => ({
+  rotate: (i: RotationData) => ({
     backgroundImage: ` linear-gradient(${
       i.rotateY + i.rotateX
     }deg, rgba(255,0,0,0), rgba(255,0,0,1) )`,

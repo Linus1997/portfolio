@@ -44,7 +44,7 @@ const ProjectCard = ({project, setBoxShadow}: Props) => {
               src={project? project.images[0] : undefined}
               alt="Hangry Frogs game project"
               isZoomed
-          
+            
             
 
             />
