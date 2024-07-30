@@ -23,6 +23,7 @@ const ProjectCard = ({project, setBoxShadow}: Props) => {
   return (
    
       <Card
+      style={{transformStyle: "flat"}}
         isFooterBlurred
         radius="lg"
         className="border-none m-0 w-full h-full bg-opacity-2 bg-black"
@@ -51,19 +52,8 @@ const ProjectCard = ({project, setBoxShadow}: Props) => {
            
           
      
-        <CardFooter className="justify-between outline-offset-[-1px] before:bg-white/10 border-white/20 border-1  py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-         <Skeleton isLoaded>
-          <p className="text-tiny text-white/80">Available soon.</p>
-          <Button
-            className="text-tiny text-white bg-black/20"
-            variant="flat"
-            color="default"
-            radius="lg"
-            size="sm"
-          >
-            Notify me
-          </Button>
-          </Skeleton>
+        <CardFooter className="">
+      
         </CardFooter>
       </Card>
    

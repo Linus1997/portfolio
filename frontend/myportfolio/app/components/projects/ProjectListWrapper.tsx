@@ -31,15 +31,22 @@ import testdata from "../../utils/testdata.json";
 export interface ItemData {
   rotationData: RotationData;
   enterAnimation: EnterAnimation;
+  shadowProperties: ShadowProperties;
+  shouldDisplay: boolean;
 }
 interface WrapperProps {
   rotations: number;
   direction: number;
   projects: ProjectInterface[];
 }
-interface CoordXY {
+export interface CoordXY {
   x: number;
   y: number;
+}
+
+interface ShadowProperties {
+  skewY: number;
+  skewX: number;
 }
 
 export interface RotationData extends CoordXY {
@@ -67,6 +74,14 @@ const Variant = Object.freeze({
   ROTATE: "rotate",
 });
 
+const setPropertyStyle = (childDim: DOMRect) => {
+  [0, 1, 2, 3, 4, 5].forEach((i)=> {
+    const element: any = document.querySelector(`.project[data-index="${i}"]`);
+    if (element)
+      element.style.setProperty('--shadow-height', `${childDim.height}px`);
+    
+  })
+}
 const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) => {
   const frontX = Math.round(wrapperDim.width / 2 - childDim.width / 2);
   const frontY = Math.round(wrapperDim.height / 2 - childDim.height / 3);
@@ -78,14 +93,17 @@ const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) => {
   const backRightX = Math.round(rightX - level3X);
   const backLeftX = Math.round(leftX + level3X);
   const level3Y = 20;
-
+  
   let rotX2 = 20;
   let rotXBack3 = 10;
-  let itemRightY = -45;
+  let itemRightY = 135;
   let itemBackRightY = 45;
   let itemBackLeftY = -45;
   let itemLeftY = 45;
-  const nonSelectedOpacity = 0.75;
+  const nonSelectedOpacity = 1;
+  let sin = Math.sin
+  console.log("sinus")
+  console.log(sin(-45), sin(0))
   const updatedCoord: RotationData[] = [
     {
       x: frontX,
@@ -171,12 +189,12 @@ const itemVariants: Variants = {
     y: i.rotationData.y,
     scale: i.rotationData.scale,
     visibility: "visible",
-    background: "var",
+    
     opacity: i.rotationData.opacity,
     zIndex: i.rotationData.zIndex,
-    rotateX: i.rotationData.rotateX,
-    rotateY: i.rotationData.rotateY,
-    transition: { duration: 0.4 },
+   /*  rotateX: i.rotationData.rotateX,
+    rotateY: i.rotationData.rotateY, */
+    transition: { duration: duration },
   }),
 };
 
@@ -213,7 +231,7 @@ const ProjectListWrapper = ({
         const wrapperDim = wrapperRef.current.getBoundingClientRect();
         const childDim = itemRef.current[0].getBoundingClientRect();
         const updatedCoord = recalculateDimensions(wrapperDim, childDim);
-
+       // setPropertyStyle(childDim);
         dispatch({
           type: "resize",
           coords: updatedCoord,
@@ -226,10 +244,10 @@ const ProjectListWrapper = ({
     };
     onDimChange();
 
-    window.addEventListener("resize", onDimChange);
+/*     window.addEventListener("resize", onDimChange);
     return () => {
       window.removeEventListener("resize", onDimChange);
-    };
+    }; */
   }, []);
   const reset = (definition: AnimationDefinition) => {
     let def: string = definition.toString();
@@ -271,6 +289,7 @@ const ProjectListWrapper = ({
           {[0, 1, 2, 3, 4, 5].map((item, i) => (
             <ProjectItem
               index={item}
+              
               ref={(el) => {
                 if (el) itemRef.current[i] = el;
               }}
@@ -278,20 +297,21 @@ const ProjectListWrapper = ({
               onAnimationComplete={(e) => reset(e)}
               coordXY={state.itemData[i]}
               isEnterComplete={state.isEnterComplete}
-              className={"project w-[14em] h-[14rem] self-stretch rounded-xl "}
+              className={"absolute w-[14em] h-[14rem] self-stretch rounded-xl "}
               //className={rotatedCoord? rotatedCoord[i].placement : coord? coord[i].placement : "invisible"}
               //newCoord={rotatedCoord? rotatedCoord[i] : null}
               key={i}
+              dimension={state.dimensions.childDim}
               initial="initial"
               animate={state.variant}
               variants={itemVariants}
-            >
-              <motion.div
-                className={"w-[95%] h-[95%]  z-50 rounded-xl bg-white "}
-              >
-                <ProjectCard project={state.projects[i]} />
-              </motion.div>
-            </ProjectItem>
+              project={state.projects[i]}
+            />
+             
+            
+            
+            
+            
           ))}
         </motion.ul>
       </div>
@@ -382,7 +402,7 @@ const initEnterAnimation = (dimensions: Dimensions): EnterAnimation => {
     seqRotX: [],
     seqZindex: [],
   };
-  console.log(enterAnimation);
+ 
   return enterAnimation;
 };
 /**
@@ -421,16 +441,28 @@ const coordReducer = (state: State, action: CounterAction): State => {
         itemData: moveRight,
       };
     case "resize":
-      console.log("test");
+      
       if (!state.hasEntered) {
         const enterAnimation = initEnterAnimation(action.dimensions);
 
         let updatedData: ItemData[] = action.coords.map((item, i, arr) => {
+            let skewX= 0;
+            let skewY = 0;
+            if(i === 1 || i ===5){
+              skewX = -item.rotateY
+            } else if(i === 2 || i === 4){
+              skewX = item.rotateY
+            }
           return {
             rotationData: {
               ...item,
             },
             enterAnimation: enterAnimation,
+            shadowProperties:{
+              skewX: skewX,
+              skewY: skewY
+            },
+            shouldDisplay: i === 0 || i === 1 || i === 5
           };
         });
         return {
@@ -438,6 +470,7 @@ const coordReducer = (state: State, action: CounterAction): State => {
           variant: Variant.ENTER,
           itemData: updatedData,
           hasEntered: true,
+          dimensions: action.dimensions
         };
       } else {
         return { ...state };
@@ -467,8 +500,42 @@ const initialState = (): ItemData[] => {
         seqRotX: [],
         seqZindex: [],
       },
+      shadowProperties: {
+        skewX: 0,
+        skewY: 0
+      },
+      shouldDisplay: false
     };
   });
   return arr;
 };
+
+const shadowProperties : ShadowProperties[]=[
+  {
+    skewX: 0,
+    skewY: 0,
+  },
+  {
+    skewX: 0,
+    skewY: 0,
+  },
+  {
+    skewX: 0,
+    skewY: 0,
+  },
+  {
+    skewX: 0,
+    skewY: 0,
+  },
+  {
+    skewX: 0,
+    skewY: 0,
+  },
+  {
+    skewX: 0,
+    skewY: 0,
+  },
+
+
+]
 export default ProjectListWrapper;
