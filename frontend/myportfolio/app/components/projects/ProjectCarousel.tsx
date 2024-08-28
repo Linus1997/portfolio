@@ -65,9 +65,10 @@ const ProjectCarousel = () => {
   if (!projects || projects.length == 0) return <></>;
   return (
 
+    <>
 
         <ProjectListWrapper rotations={rotations} direction={direction} projects={projects}/>
- 
+    </>
   );
 };
 

@@ -1,44 +1,16 @@
-import {
-  animate,
-  animationControls,
-  AnimationDefinition,
-  HTMLMotionProps,
-  motion,
-  useAnimationFrame,
-  useMotionValue,
-  useMotionValueEvent,
-  VariantLabels,
-  Variants,
-} from "framer-motion";
+import { HTMLMotionProps, motion, Variants } from "framer-motion";
 import { ScriptProps } from "next/script";
-import {
-  useRef,
-  useEffect,
-  forwardRef,
-  useState,
-  useMemo,
-  Children,
-} from "react";
-import { getIndex } from "@/app/utils/helperfunction";
-import { tv } from "tailwind-variants";
-import { baseStyles, Image } from "@nextui-org/react";
+import { forwardRef, useEffect, useState } from "react";
 import React from "react";
-import {
-  RotationData,
-  duration,
-  ItemData,
-  CoordXY,
-} from "./ProjectListWrapper";
+import { ItemData, CoordXY } from "./ProjectListWrapper";
 import ProjectCard from "./ProjectCard";
 import { ProjectInterface } from "@/app/utils/interfaces";
 
 interface ListProps {
-  index: number;
-  coordXY: ItemData;
+  itemData: ItemData;
   isEnterComplete: boolean;
-  var: string;
   project: ProjectInterface;
-  dimension: CoordXY;
+  glowState: string;
 }
 
 const ProjectItem = forwardRef<
@@ -48,226 +20,243 @@ const ProjectItem = forwardRef<
   const {
     animate,
     initial,
-    variants,
-    coordXY,
+    itemData,
     isEnterComplete,
     project,
+    glowState,
     onAnimationComplete,
-    dimension,
   } = props;
-  const cardRef = useRef<HTMLDivElement>(null);
-  const backgroundRef = useRef<HTMLDivElement>(null);
-  const shadowRef = useRef<HTMLDivElement>(null);
-  const [startHovering, setStartHovering] = useState<boolean>(false);
-  
-  
-
-  useAnimationFrame((t, delta) => {
-    if(coordXY.rotationData.zIndex !== 40){
-    const distance = dimension.x * delta;
-    const rotate = Math.sin(t / 10000) * -45;
-
-    const y = (1 + Math.sin(t / 2500)) * 30;
-
-
-    if ( props.index === 1 && !isEnterComplete ) {
-      //console.log(t, delta, distance, distance / 1000);
-      console.log(y)
-      
-    }
-
-  
-    if (cardRef.current && startHovering && backgroundRef.current && shadowRef.current){
-      cardRef.current.style.transform = `translateY(${y}px) rotateY(${rotate}deg)`;
-      backgroundRef.current.style.transform = `translateY(${y}px) rotateY(${-rotate}deg)`;
-
-    }}
-  });
-
+  const [mouseEnter, setMouseEnter] = useState<boolean>(false);
+  const shineOnHoverDuration = 2;
   useEffect(() => {
-    const timeOut = setTimeout(() => {
-      setStartHovering(true);
-    }, 200);
-    return () => clearTimeout(timeOut);
-  }, [isEnterComplete]);
-  const x = useMotionValue<number>(0);
-  const y = useMotionValue<number>(0);
-  const [boxShadow, setBoxShadow] = useState<string>("");
+    const reset = setTimeout(() => {
+      if (mouseEnter) setMouseEnter(false);
+    }, shineOnHoverDuration * 1000);
+    return () => clearTimeout(reset);
+  }, [mouseEnter]);
 
   return (
     <motion.li
       ref={ref}
       className={props.className}
-      style={{
-        perspective: dimension.x*dimension.y
-      }}
       onAnimationComplete={onAnimationComplete}
-      custom={coordXY}
+      custom={itemData}
       initial={initial}
       animate={animate}
-      variants={variants}
+      variants={BaseItemVariants}
+      style={{ filter: "drop-shadow(0 1px 0rem #ccccff)" }}
+      whileHover={
+        isEnterComplete
+          ? {
+              scale:
+                itemData.rotationData.itemBase.zIndex === 40
+                  ? 1.2
+                  : itemData.rotationData.itemBase.scale,
+              rotateY: itemData.rotationData.itemBase.rotateY / 1.2,
+            }
+          : {}
+      }
     >
-      <div className=" relative w-full h-full rounded-2xl">
+      <div
+        className="relative w-full h-full rounded-2xl"
+        style={{ filter: "drop-shadow(0 1px 0.2rem white)" }}
+      >
+        {/**
+         * effect to hide clip glitch ------------------------
+         */}
         <motion.div
-          className={"relative w-[100%] h-[100%] top-0 z-50 rounded-xl bg-transparent "}
-          variants={projectVariants}
+          className="absolute rounded-2xl pointer-events-none "
+          custom={itemData}
+          initial="glowOff"
+          animate={glowState}
+          variants={glowVariant}
+          style={{
+            zIndex: 6,
+          }}
+        />
+        <motion.div
+          className="absolute inset-14 rounded-2xl pointer-events-none"
+          custom={itemData}
+          initial="glowOff"
+          animate={glowState}
+          variants={glowBackVariant}
+          style={{
+            zIndex: 0,
+          }}
+        />
+        {/**
+         * -----------------------------------------------------------------
+         */}
+        <motion.div
+          className={" relative w-[100%] h-[100%]  "}
+          variants={ItemWrapperVariants}
           animate={animate}
-          custom={coordXY}
-          style={{transformStyle: "preserve-3d"}}
-          whileHover={
-            isEnterComplete
-              ? {
-                  scale:
-                    coordXY.rotationData.zIndex === 40
-                      ? 1.2
-                      : coordXY.rotationData.scale + 0.1,
-                  rotateY: coordXY.rotationData.rotateY / 1.2,
-                }
-              : {}
-          }
+          custom={itemData}
+          onHoverStart={() => setMouseEnter(true)}
         >
-       {/*    <div ref={backgroundRef} className="absolute h-full w-full bg-white"
-          style={{transformStyle: "flat"}}>
-
-          </div> */}
-          <div className="cube" ref={cardRef}>
-        <div className="side front" >
-        <ProjectCard project={project} />
-          </div>
-        <div className="side left" />
-        <div className="side right" />
-        <div className="side top" />
-        <div className="side bottom" />
-        <div className="side back" />
-      </div>
-          {/**  CARD Ref */}
-          {/* <motion.div ref={cardRef} style={{
-            transformStyle: "flat"
-          }}>
-            <ProjectCard project={project} />
-          </motion.div> */}
-        </motion.div>
-
-        {isEnterComplete && (
           <motion.div
-            className={"absolute  opacity-25 z-0 rounded-xl bg-white "}
-            variants={shadowVariants}
-            animate={animate}
-            custom={coordXY}
-            style={{
-              // rotateX: 8,
+            className="z-[10] absolute w-full h-full pointer-events-none"
+            animate={
+              isEnterComplete
+                ? {
+                    opacity: [0, 8, 0],
 
-              height: dimension.y,
-              width: dimension.x,
-
-              bottom: -200,
+                    backgroundImage: backgroundImages,
+                  }
+                : {
+                    opacity: 0,
+                  }
+            }
+            transition={{
+              delay: 0.5,
+              duration: 1.5,
             }}
-            ref={shadowRef}
+          />
+          <motion.div
+            className=" z-[3] w-full h-full absolute opacity-10  "
+            style={{}}
+            variants={frontBgVariant}
+            animate={animate}
+            custom={itemData}
           >
-            <Image
-             
-              isBlurred
-              width={dimension.x}
-              height={dimension.y}
-              className="m-0 w-full h-full bg-black object-cover self-stretch"
-              src={project ? project.images[0] : undefined}
-              alt=""
-              isZoomed
+            <div
+              className="w-full h-full bg-white  "
+              style={{
+                borderRadius: `${itemData.backgroundProps.front.borderRadius}em`,
+              }}
             />
           </motion.div>
-        )}
+          <motion.div
+            className=" z-[1] w-full h-full absolute opacity-100 rounded-2xl    "
+            variants={rearBgVariant}
+            animate={animate}
+            custom={itemData}
+          />
+
+          <motion.div
+            className=" z-[4] absolute w-full h-full  "
+            style={{}}
+            variants={CardVariants}
+            animate={animate}
+            custom={itemData}
+          >
+            <ProjectCard project={project} />
+          </motion.div>
+        </motion.div>
       </div>
     </motion.li>
   );
 });
+const backgroundImages = [
+  `linear-gradient(${45}deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0))`,
 
-const itemVariants: Variants = {
-  initial: (i: RotationData) => ({
-    backgroundImage: ` linear-gradient(${i.rotateY}deg, rgba(255,2,3,4), rgba(25,2,3,1) )`,
-    transition: { duration: 0 },
-  }),
-  rotate: (i: RotationData) => ({
-    backgroundImage: ` linear-gradient(${
-      i.rotateY + i.rotateX
-    }deg, rgba(255,0,0,0), rgba(255,0,0,1) )`,
+  `linear-gradient(${45}deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4) 100%, rgba(255, 255, 255, 0.1))`,
+];
 
-    transition: { type: "spring", stiffness: 100, duration: duration },
+const duration: number = 0.4;
+const BaseItemVariants: Variants = {
+  initial: () => ({
+    visibility: "hidden",
+    opacity: 0,
   }),
-  right: (i: RotationData) => ({
+  enter: (i: ItemData) => (
+    console.log(i.enterData.itemBase),
+    {
+      ...i.enterData.itemBase,
+      transition: { duration: 1 },
+    }
+  ),
+  rotate: (i: ItemData) => ({
+    // opacity: 1,
+    // visibility: "visible",
+    // x: i.rotationData.x,
+    // y: i.rotationData.y,
+    // scale: i.rotationData.scale,
+    // rotateX: i.rotationData.rotateX,
+    // rotateY: i.rotationData.rotateY,
+    // zIndex: i.rotationData.zIndex,
+    ...i.rotationData.itemBase,
+  
     transition: { duration: duration },
   }),
 };
 
-const projectVariants: Variants = {
-  rotate: (i: ItemData) => ({
-    scale: i.rotationData.scale,
-    visibility: "visible",
-
-    opacity: i.rotationData.opacity,
-
-    rotateX: i.rotationData.rotateX,
-    rotateY: i.rotationData.rotateY,
-    transition: { duration: duration },
+const ItemWrapperVariants: Variants = {
+  enter: (i: ItemData) => ({
+    ...i.enterData.itemWrapper,
   }),
-  still: (i: ItemData) => ({
-    scale: i.rotationData.scale,
-    visibility: "visible",
-    rotateX: i.rotationData.rotateX,
-    rotateY: i.rotationData.rotateY,
-    opacity: i.rotationData.opacity,
-    transition: { repeat: Infinity, duration: 1 },
+  rotate: (i: ItemData) => ({
+    //scale: i.rotationData.scale, /// tabort?
+    visibility: "visible", ///ta bort
+    ...i.rotationData.itemWrapper,
+    transition: { duration: duration },
   }),
 };
 const CardVariants: Variants = {
+  enter: (i: ItemData) => ({
+    paddingTop: "10%",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingBottom: 0,
+  }),
   rotate: (i: ItemData) => ({
-    scale: i.rotationData.scale,
-    visibility: "visible",
+    ...i.rotationData.projectWrapper,
 
-    opacity: i.rotationData.opacity,
-
-    rotateX: i.rotationData.rotateX,
-    rotateY: i.rotationData.rotateY,
     transition: { duration: duration },
   }),
 };
 
-const shadowVariants: Variants = {
+const rearBgVariant: Variants = {
   rotate: (i: ItemData) => ({
-    visibility: "visible",
-    ...i.shadowProperties,
-    opacity: i.shouldDisplay ? 0.25 : 0.1,
-    rotateX: i.rotationData.rotateX,
-    rotateY: i.rotationData.rotateY,
+    backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #515252, #1B3541 )`,
     transition: { duration: duration },
   }),
 };
 
-// cool animation
-/* const itemVariants : Variants = {
-  initial: (i: CoordXY) => ({
+const frontBgVariant: Variants = {
+  rotate: (i: ItemData) => ({
+    bottom: 0,
+    top: `${i.backgroundProps.front.top}%`,
+    paddingLeft: `${i.backgroundProps.front.paddingLeft}%`,
+    paddingRight: `${i.backgroundProps.front.paddingRight}%`,
+    transition: { duration: duration },
+  }),
+};
 
-    backgroundImage: ` linear-gradient(${i.initial.rotateY}, rgba(255,0,0,0), rgba(255,0,0,1) )`,
+const glowVariant: Variants = {
+  glowOff: (i: ItemData) => ({
+    boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
+
+    ...i.rotationData.middleGlow,
+    transition: { duration: duration },
+  }),
+  glowOn: (i: ItemData) => ({
+    boxShadow:
+      "0 0 20px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.5)", // Glow during rotation
+    filter: "drop-shadow(0 -6mm 4mm rgb(160, 0, 210))",
+    //  scale: i.rotationData.scale,
+    transition: { duration: duration },
+  }),
+};
+
+/**
+ * TODO: Inset som parameter f;r att bakgre bilden ska lysa
+ */
+
+const glowBackVariant: Variants = {
+  glowOff: (i: ItemData) => ({
+    boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
+
+    ...i.rotationData.backGlow,
     transition: { duration: 0 },
   }),
-  left: (i: CoordXY) => ({
-    x: i.left.x,
-    y: i.left.y,
+  glowOn: (i: ItemData) => ({
+    filter: "drop-shadow(0 -6mm 4mm rgb(160, 0, 210))",
 
-    zIndex: i.left.zIndex,
-    rotateX: i.left.rotateX,
-    rotateY: i.left.rotateY,
-
-    transition: { type: "spring", stiffness: 100,  duration: duration },
-  }),
-  right: (i: CoordXY) => ({
-    x: i.right.x,
-    y: i.right.y,
-
-    zIndex: i.right.zIndex,
-    rotateX: i.right.rotateX,
-    rotateY: i.right.rotateY,
+    
     transition: { duration: duration },
   }),
-}; */
+};
 ProjectItem.displayName = "ProjectItem";
 export default ProjectItem;
