@@ -1,4 +1,4 @@
-import { HTMLMotionProps, motion, Variants } from "framer-motion";
+import { HTMLMotionProps, motion, useAnimation, Variants } from "framer-motion";
 import { ScriptProps } from "next/script";
 import { forwardRef, useEffect, useState } from "react";
 import React from "react";
@@ -11,6 +11,7 @@ interface ListProps {
   isEnterComplete: boolean;
   project: ProjectInterface;
   glowState: string;
+  index: number;
 }
 
 const ProjectItem = forwardRef<
@@ -28,6 +29,8 @@ const ProjectItem = forwardRef<
   } = props;
   const [mouseEnter, setMouseEnter] = useState<boolean>(false);
   const shineOnHoverDuration = 2;
+  const controls = useAnimation();
+
   useEffect(() => {
     const reset = setTimeout(() => {
       if (mouseEnter) setMouseEnter(false);
@@ -57,6 +60,7 @@ const ProjectItem = forwardRef<
           : {}
       }
     >
+   
       <div
         className="relative w-full h-full rounded-2xl"
         style={{ filter: "drop-shadow(0 1px 0.2rem white)" }}
@@ -64,7 +68,7 @@ const ProjectItem = forwardRef<
         {/**
          * effect to hide clip glitch ------------------------
          */}
-        <motion.div
+{/*         <motion.div
           className="absolute rounded-2xl pointer-events-none "
           custom={itemData}
           initial="glowOff"
@@ -83,7 +87,7 @@ const ProjectItem = forwardRef<
           style={{
             zIndex: 0,
           }}
-        />
+        /> */}
         {/**
          * -----------------------------------------------------------------
          */}
@@ -92,6 +96,7 @@ const ProjectItem = forwardRef<
           variants={ItemWrapperVariants}
           animate={animate}
           custom={itemData}
+          
           onHoverStart={() => setMouseEnter(true)}
         >
           <motion.div
@@ -159,38 +164,55 @@ const BaseItemVariants: Variants = {
     visibility: "hidden",
     opacity: 0,
   }),
-  enter: (i: ItemData) => (
-    console.log(i.enterData.itemBase),
-    {
-      ...i.enterData.itemBase,
-      transition: { duration: 1 },
-    }
-  ),
+  enter: (i: ItemData) => ({
+    ...i.enterData.itemBase,
+    transition: { duration: 1 },
+  }),
   rotate: (i: ItemData) => ({
-    // opacity: 1,
-    // visibility: "visible",
-    // x: i.rotationData.x,
-    // y: i.rotationData.y,
-    // scale: i.rotationData.scale,
-    // rotateX: i.rotationData.rotateX,
-    // rotateY: i.rotationData.rotateY,
-    // zIndex: i.rotationData.zIndex,
     ...i.rotationData.itemBase,
-  
+
     transition: { duration: duration },
   }),
-};
+  resting: (i: ItemData) => ({
+    ...i.rotationData.itemBase,
 
+    transition:{duration: 0}
+  }),
+};
+function polygonToPath(polygon: string, width:number, height:number) {
+  const points = polygon.split(',').map(point => {
+    const [xPercent, yPercent] = point.trim().split(/\s+/).map(parseFloat);
+    const x = (xPercent / 100) * width;
+    const y = (yPercent / 100) * height;
+    return [x, y];
+  });
+
+  let path = `M ${points[0][0]} ${points[0][1]}`;
+  for (let i = 1; i < points.length; i++) {
+    path += ` L ${points[i][0]} ${points[i][1]}`;
+  }
+  path += ' Z'; 
+  return path;
+}
 const ItemWrapperVariants: Variants = {
   enter: (i: ItemData) => ({
     ...i.enterData.itemWrapper,
   }),
   rotate: (i: ItemData) => ({
-    //scale: i.rotationData.scale, /// tabort?
     visibility: "visible", ///ta bort
     ...i.rotationData.itemWrapper,
-    transition: { duration: duration },
+    clipPath: polygonToPath(i.pathTo, i.dimension.childDim.x, i.dimension.childDim.y),
+    transition: { duration: duration, clipPath: {
+      scale: 17
+    } },
   }),
+  resting: (i: ItemData) => ({
+    visibility: "visible",
+    ...i.rotationData.itemWrapper,
+    clipPath: "path('" + polygonToPath(i.pathTo, i.dimension.childDim.x, i.dimension.childDim.y) + "')",
+ 
+  
+  })
 };
 const CardVariants: Variants = {
   enter: (i: ItemData) => ({
@@ -254,7 +276,6 @@ const glowBackVariant: Variants = {
   glowOn: (i: ItemData) => ({
     filter: "drop-shadow(0 -6mm 4mm rgb(160, 0, 210))",
 
-    
     transition: { duration: duration },
   }),
 };

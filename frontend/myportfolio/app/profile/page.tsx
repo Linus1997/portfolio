@@ -8,6 +8,7 @@ import React from "react";
 import { Toaster } from "react-hot-toast";
 
 import ScrollItemTwo from "../components/scroll/ScrollItemTwo";
+import ScrollItemOne from "../components/scroll/scrollItemOne";
 
 
 const Profile = () => {
@@ -15,7 +16,7 @@ const Profile = () => {
     <>
       <Toaster />
       <ScrollContainer>
-       {/*  <ScrollItemOne /> */}
+        {/* <ScrollItemOne /> */}
       
         <ScrollItemTwo />
       </ScrollContainer>
