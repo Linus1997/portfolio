@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 
 import ScrollItemTwo from "../components/scroll/ScrollItemTwo";
 import ScrollItemOne from "../components/scroll/scrollItemOne";
+import Signature from "../components/pageLoader/Signature";
 
 
 const Profile = () => {
@@ -16,8 +17,8 @@ const Profile = () => {
     <>
       <Toaster />
       <ScrollContainer>
-        {/* <ScrollItemOne /> */}
-      
+        {/* <ScrollItemOne />
+      <Signature ></Signature> */}
         <ScrollItemTwo />
       </ScrollContainer>
     </>

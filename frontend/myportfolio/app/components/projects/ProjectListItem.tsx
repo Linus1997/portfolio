@@ -1,10 +1,26 @@
-import { HTMLMotionProps, motion, useAnimation, Variants } from "framer-motion";
+import {
+  AnimationDefinition,
+  AnimationPlaybackControls,
+  HTMLMotionProps,
+  motion,
+  MotionValue,
+  progress,
+  TargetAndTransition,
+  useAnimate,
+  useAnimation,
+  useAnimationControls,
+  useMotionValue,
+  useTransform,
+  Variants,
+} from "framer-motion";
 import { ScriptProps } from "next/script";
 import { forwardRef, useEffect, useState } from "react";
 import React from "react";
 import { ItemData, CoordXY } from "./ProjectListWrapper";
 import ProjectCard from "./ProjectCard";
 import { ProjectInterface } from "@/app/utils/interfaces";
+import { ElementPair } from "./paths";
+import { interpolate, Interpolator } from "flubber";
 
 interface ListProps {
   itemData: ItemData;
@@ -12,6 +28,10 @@ interface ListProps {
   project: ProjectInterface;
   glowState: string;
   index: number;
+  currentPath: ElementPair<string, string>;
+  nextPath: ElementPair<string, string>;
+  dimension: CoordXY;
+ 
 }
 
 const ProjectItem = forwardRef<
@@ -24,19 +44,28 @@ const ProjectItem = forwardRef<
     itemData,
     isEnterComplete,
     project,
-    glowState,
+    dimension,
+    index,
+    currentPath,
+    nextPath,
+
     onAnimationComplete,
   } = props;
-  const [mouseEnter, setMouseEnter] = useState<boolean>(false);
-  const shineOnHoverDuration = 2;
-  const controls = useAnimation();
+const controls =useAnimationControls();
+const controlsShape =useAnimationControls();
 
-  useEffect(() => {
-    const reset = setTimeout(() => {
-      if (mouseEnter) setMouseEnter(false);
-    }, shineOnHoverDuration * 1000);
-    return () => clearTimeout(reset);
-  }, [mouseEnter]);
+  const progress = useMotionValue<number>(0)
+
+  const transform = useTransform(progress,[0, 1] , [currentPath.outer, nextPath.outer], {
+    mixer: (a, b) => interpolate(a, b, { maxSegmentLength: 0.5 })
+  });
+
+
+useEffect(()=> {
+  
+  animation(progress, 1, {duration:duration, ease:"easeIn"})
+  controls.set()
+}, [animate])
 
   return (
     <motion.li
@@ -45,7 +74,7 @@ const ProjectItem = forwardRef<
       onAnimationComplete={onAnimationComplete}
       custom={itemData}
       initial={initial}
-      animate={animate}
+     // animate={animate}
       variants={BaseItemVariants}
       style={{ filter: "drop-shadow(0 1px 0rem #ccccff)" }}
       whileHover={
@@ -60,15 +89,14 @@ const ProjectItem = forwardRef<
           : {}
       }
     >
-   
       <div
-        className="relative w-full h-full rounded-2xl"
+        className="relative w-full h-full "
         style={{ filter: "drop-shadow(0 1px 0.2rem white)" }}
       >
         {/**
          * effect to hide clip glitch ------------------------
          */}
-{/*         <motion.div
+        {/*         <motion.div
           className="absolute rounded-2xl pointer-events-none "
           custom={itemData}
           initial="glowOff"
@@ -85,19 +113,49 @@ const ProjectItem = forwardRef<
           animate={glowState}
           variants={glowBackVariant}
           style={{
-            zIndex: 0,
+            zIndex: 0, 
           }}
         /> */}
         {/**
          * -----------------------------------------------------------------
          */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="absolute"
+          viewBox={`0 0 ${dimension.x} ${dimension.y}`}
+          width={0}
+          height={0}
+        >
+          <defs>
+            <motion.clipPath
+              id={`item-shape-${index}`}
+              transform={`scale(${dimension.x / 100}, ${dimension.y / 100})`}
+            >
+              <motion.path
+              d={transform}
+                
+              />
+            </motion.clipPath>
+            {/* <motion.clipPath
+              id={`front-shape-${index}`}
+              transform={`scale(${dimension.x / 100}, ${dimension.y / 100})`}
+            >
+              <motion.path
+                animate={animate}
+                variants={ShapeVariants}
+              custom={{i: inner, curr:currentPath.inner}}
+              />
+            </motion.clipPath> */}
+          </defs>
+        </svg>
+              
         <motion.div
           className={" relative w-[100%] h-[100%]  "}
           variants={ItemWrapperVariants}
-          animate={animate}
+        //  animate={animate}
           custom={itemData}
-          
-          onHoverStart={() => setMouseEnter(true)}
+          ref={scope}
+          style={{ clipPath: `url(#item-shape-${index})` }}
         >
           <motion.div
             className="z-[10] absolute w-full h-full pointer-events-none"
@@ -118,34 +176,35 @@ const ProjectItem = forwardRef<
             }}
           />
           <motion.div
-            className=" z-[3] w-full h-full absolute opacity-10  "
-            style={{}}
+            className=" z-[3] w-full h-full absolute opacity-100 bg-slate-800 "
+            style={{  }}
             variants={frontBgVariant}
-            animate={animate}
+           // animate={animate}
             custom={itemData}
           >
             <div
               className="w-full h-full bg-white  "
               style={{
+               
                 borderRadius: `${itemData.backgroundProps.front.borderRadius}em`,
               }}
             />
           </motion.div>
           <motion.div
-            className=" z-[1] w-full h-full absolute opacity-100 rounded-2xl    "
+            className=" z-[1] w-full h-full absolute opacity-100     "
             variants={rearBgVariant}
             animate={animate}
             custom={itemData}
           />
 
           <motion.div
-            className=" z-[4] absolute w-full h-full  "
-            style={{}}
+            className=" z-[4] absolute w-full h-full overflow-hidden  "
+           
             variants={CardVariants}
-            animate={animate}
+           // animate={animate}
             custom={itemData}
           >
-            <ProjectCard project={project} />
+            {/* <ProjectCard project={project} /> */}
           </motion.div>
         </motion.div>
       </div>
@@ -160,100 +219,103 @@ const backgroundImages = [
 
 const duration: number = 0.4;
 const BaseItemVariants: Variants = {
-  initial: () => ({
+  initial: (): TargetAndTransition => ({
     visibility: "hidden",
     opacity: 0,
   }),
-  enter: (i: ItemData) => ({
+  enter: (i: ItemData): TargetAndTransition => ({
     ...i.enterData.itemBase,
-    transition: { duration: 1 },
+    transition: { duration: duration },
   }),
-  rotate: (i: ItemData) => ({
+  rotateLeft: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
 
     transition: { duration: duration },
   }),
-  resting: (i: ItemData) => ({
+  rotateRight: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
 
-    transition:{duration: 0}
+    transition: { duration: duration },
+  }),
+  still: (i: ItemData): TargetAndTransition => ({
+    ...i.rotationData.itemBase,
+
+    transition: { duration: duration },
   }),
 };
-function polygonToPath(polygon: string, width:number, height:number) {
-  const points = polygon.split(',').map(point => {
-    const [xPercent, yPercent] = point.trim().split(/\s+/).map(parseFloat);
-    const x = (xPercent / 100) * width;
-    const y = (yPercent / 100) * height;
-    return [x, y];
-  });
 
-  let path = `M ${points[0][0]} ${points[0][1]}`;
-  for (let i = 1; i < points.length; i++) {
-    path += ` L ${points[i][0]} ${points[i][1]}`;
-  }
-  path += ' Z'; 
-  return path;
-}
 const ItemWrapperVariants: Variants = {
-  enter: (i: ItemData) => ({
+  enter: (i: ItemData): TargetAndTransition => ({
     ...i.enterData.itemWrapper,
   }),
-  rotate: (i: ItemData) => ({
+  rotateLeft: (i: ItemData): TargetAndTransition => ({
     visibility: "visible", ///ta bort
     ...i.rotationData.itemWrapper,
-    clipPath: polygonToPath(i.pathTo, i.dimension.childDim.x, i.dimension.childDim.y),
-    transition: { duration: duration, clipPath: {
-      scale: 17
-    } },
+    //clipPath: `url(#item-shape-${i.index})`,
+    transition: { duration: duration },
   }),
-  resting: (i: ItemData) => ({
-    visibility: "visible",
+  rotateRight: (i: ItemData): TargetAndTransition => ({
+    visibility: "visible", ///ta bort
     ...i.rotationData.itemWrapper,
-    clipPath: "path('" + polygonToPath(i.pathTo, i.dimension.childDim.x, i.dimension.childDim.y) + "')",
- 
-  
-  })
+    //clipPath: `url(#item-shape-${i.index})`,
+    transition: { duration: duration },
+  }),
+  still: (i: ItemData): TargetAndTransition => ({
+    visibility: "visible", ///ta bort
+    ...i.rotationData.itemWrapper,
+    //clipPath: `url(#item-shape-${i.index})`,
+    transition: { duration: duration },
+  }),
 };
+const getShapes = (interPolator: Interpolator): string[] => {
+  const paths = [];
+  for (let i = 0; i <= 1; i += 0.5) {
+    paths.push(interPolator(i));
+  }
+  return paths;
+};
+
+
+
 const CardVariants: Variants = {
-  enter: (i: ItemData) => ({
+  enter: (i: ItemData): TargetAndTransition => ({
     paddingTop: "10%",
     left: 0,
     right: 0,
     bottom: 0,
     paddingBottom: 0,
   }),
-  rotate: (i: ItemData) => ({
+  rotate: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.projectWrapper,
+    bottom: 0,
 
     transition: { duration: duration },
   }),
 };
 
 const rearBgVariant: Variants = {
-  rotate: (i: ItemData) => ({
+  rotate: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #515252, #1B3541 )`,
     transition: { duration: duration },
   }),
 };
 
 const frontBgVariant: Variants = {
-  rotate: (i: ItemData) => ({
-    bottom: 0,
-    top: `${i.backgroundProps.front.top}%`,
-    paddingLeft: `${i.backgroundProps.front.paddingLeft}%`,
-    paddingRight: `${i.backgroundProps.front.paddingRight}%`,
+  rotate: (i: ItemData): TargetAndTransition => ({
+    ...i.backgroundProps.front,
+
     transition: { duration: duration },
   }),
 };
 
 const glowVariant: Variants = {
-  glowOff: (i: ItemData) => ({
+  glowOff: (i: ItemData): TargetAndTransition => ({
     boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
 
     ...i.rotationData.middleGlow,
     transition: { duration: duration },
   }),
-  glowOn: (i: ItemData) => ({
+  glowOn: (i: ItemData): TargetAndTransition => ({
     boxShadow:
       "0 0 20px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.5)", // Glow during rotation
     filter: "drop-shadow(0 -6mm 4mm rgb(160, 0, 210))",
@@ -262,22 +324,5 @@ const glowVariant: Variants = {
   }),
 };
 
-/**
- * TODO: Inset som parameter f;r att bakgre bilden ska lysa
- */
-
-const glowBackVariant: Variants = {
-  glowOff: (i: ItemData) => ({
-    boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
-
-    ...i.rotationData.backGlow,
-    transition: { duration: 0 },
-  }),
-  glowOn: (i: ItemData) => ({
-    filter: "drop-shadow(0 -6mm 4mm rgb(160, 0, 210))",
-
-    transition: { duration: duration },
-  }),
-};
 ProjectItem.displayName = "ProjectItem";
 export default ProjectItem;
