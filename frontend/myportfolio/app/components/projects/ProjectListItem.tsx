@@ -1,71 +1,134 @@
 import {
-  AnimationDefinition,
-  AnimationPlaybackControls,
+  easeInOut,
   HTMLMotionProps,
   motion,
   MotionValue,
-  progress,
   TargetAndTransition,
   useAnimate,
-  useAnimation,
   useAnimationControls,
   useMotionValue,
   useTransform,
   Variants,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import React from "react";
-import { ItemData, CoordXY } from "./ProjectListWrapper";
-import ProjectCard from "./ProjectCard";
 import { ProjectInterface } from "@/app/utils/interfaces";
-import { ElementPair } from "./paths";
-import { interpolate, Interpolator } from "flubber";
-
+import { Interpolator } from "flubber";
+import { VariantProps } from "@nextui-org/react";
+import { InterpolatedPath } from "./reducers/morphReducer";
+import { CoordXY, ItemData } from "./reducers/coordReducer";
+import { Variant } from "./ProjectListWrapper";
+import { animate } from "framer-motion";
+import ProjectCard from "./ProjectCard";
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
   project: ProjectInterface;
-  glowState: string;
   index: number;
-  currentPath: ElementPair<string, string>;
-  nextPath: ElementPair<string, string>;
   dimension: CoordXY;
+  interpolatedPath: InterpolatedPath;
+  isMoveLeft: boolean;
+  isMoveRight: boolean;
+  isStill: boolean;
+  isToStillCompleted: boolean;
  
+  reset: (definition: string) => void;
 }
 
+const morphStep = [0.2, 0.4, 0.6, 0.8, 1];
 const ProjectItem = forwardRef<
   HTMLLIElement,
   HTMLMotionProps<"li"> & ScriptProps & ListProps
 >((props, ref) => {
   const {
-    animate,
-    initial,
     itemData,
     isEnterComplete,
     project,
+    isStill,
     dimension,
     index,
-    currentPath,
-    nextPath,
-
+    isMoveLeft,
+    isMoveRight,
     onAnimationComplete,
+    interpolatedPath,
+    isToStillCompleted,
+    reset,
   } = props;
-const controls =useAnimationControls();
-const controlsShape =useAnimationControls();
+  // const morphValue = useMotionValue<number>(0);
+  // const value = useMotionValue<number>(1);
+ 
+  // const [scope, animatePath] = useAnimate();
+  // const move = useTransform(morphValue, (progress) => {
+  //   console.log(progress)
+  //   if (isMoveLeft) return interpolatedPath.next(progress);
+  //   else if (isMoveRight) return interpolatedPath.prev(progress);
+  //   else return interpolatedPath.current
+    
+  // });
 
-  const progress = useMotionValue<number>(0)
-
-  const transform = useTransform(progress,[0, 1] , [currentPath.outer, nextPath.outer], {
-    mixer: (a, b) => interpolate(a, b, { maxSegmentLength: 0.5 })
-  });
-
-
-useEffect(()=> {
+  // const moveLeft = useTransform(morphValue, (progress) => {
+  //   console.log(progress)
+  //   return interpolatedPath.next(progress)
+    
+    
+    
+  // });
+  // const moveRight = useTransform(morphValue, (progress) => {
+  //   console.log(progress)
+  //   return interpolatedPath.next(progress)
+    
+    
+    
+  // });
   
-  animation(progress, 1, {duration:duration, ease:"easeIn"})
-  controls.set()
-}, [animate])
+  //   useEffect(() => {
+  //   if(false)
+  //   if (isStill && !isToStillCompleted ) {
+  //     morphValue.set(1)
+  //     animatePath(morphValue, 1, {
+  //       duration: duration,
+  //      ease: easeInOut,
+  //       onComplete: () => {
+          
+  //         reset(Variant.isStill);
+  //         morphValue.set(0);          
+         
+  //       },
+  //     });
+  //   } else if (isMoveLeft) {
+      
+  //     animatePath(morphValue, 1, {
+  //       duration: duration,
+  //       ease: easeInOut,
+  //       onComplete: () => {
+          
+  //         reset(Variant.isMorphLeft);
+          
+  //       },
+  //     });
+  //   } else if (isMoveRight) {
+      
+  //     animatePath(morphValue, 1, {
+  //       duration: duration ,
+  //        ease: easeInOut,
+  //       onComplete: () => {
+          
+  //         reset(Variant.isMorphRight);
+          
+  //       },
+  //     });
+  //   }
+  // }, [
+  //   animatePath,
+  //   isMoveLeft,
+  //   isMoveRight,
+  //   isStill,
+  //   isToStillCompleted,
+  //   morphValue,
+  //   move,
+  //   reset,
+  // ]);
 
   return (
     <motion.li
@@ -73,8 +136,8 @@ useEffect(()=> {
       className={props.className}
       onAnimationComplete={onAnimationComplete}
       custom={itemData}
-      initial={initial}
-     // animate={animate}
+      initial={props.initial}
+      animate={props.animate}
       variants={BaseItemVariants}
       style={{ filter: "drop-shadow(0 1px 0rem #ccccff)" }}
       whileHover={
@@ -89,36 +152,11 @@ useEffect(()=> {
           : {}
       }
     >
-      <div
-        className="relative w-full h-full "
-        style={{ filter: "drop-shadow(0 1px 0.2rem white)" }}
+      <motion.div
+        className="relative w-[14em] h-[14em] overflow-hidden "
+        style={{ filter: "drop-shadow(0 1px 0.2rem white)"  }}
       >
-        {/**
-         * effect to hide clip glitch ------------------------
-         */}
-        {/*         <motion.div
-          className="absolute rounded-2xl pointer-events-none "
-          custom={itemData}
-          initial="glowOff"
-          animate={glowState}
-          variants={glowVariant}
-          style={{
-            zIndex: 6,
-          }}
-        />
-        <motion.div
-          className="absolute inset-14 rounded-2xl pointer-events-none"
-          custom={itemData}
-          initial="glowOff"
-          animate={glowState}
-          variants={glowBackVariant}
-          style={{
-            zIndex: 0, 
-          }}
-        /> */}
-        {/**
-         * -----------------------------------------------------------------
-         */}
+       
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="absolute"
@@ -129,11 +167,11 @@ useEffect(()=> {
           <defs>
             <motion.clipPath
               id={`item-shape-${index}`}
-              transform={`scale(${dimension.x / 100}, ${dimension.y / 100})`}
+              transform={`scale(${(dimension.x+20) / 100}, ${(dimension.x+20) / 100})`}
             >
               <motion.path
-              d={transform}
-                
+                // Start with the initial shape
+              d={interpolatedPath.current}
               />
             </motion.clipPath>
             {/* <motion.clipPath
@@ -148,14 +186,18 @@ useEffect(()=> {
             </motion.clipPath> */}
           </defs>
         </svg>
-              
+
         <motion.div
-          className={" relative w-[100%] h-[100%]  "}
-          variants={ItemWrapperVariants}
-        //  animate={animate}
-          custom={itemData}
-          ref={scope}
-          style={{ clipPath: `url(#item-shape-${index})` }}
+          className={" absolute w-[20em] h-[20em] "}
+          variants={ItemWrapperVariants2}
+          animate={props.animate}
+          custom={{i: itemData, inter: interpolatedPath}}
+          style={{ clipPath: `url(#item-shape-${index})`,
+              
+              
+              
+              
+        }}
         >
           <motion.div
             className="z-[10] absolute w-full h-full pointer-events-none"
@@ -177,15 +219,14 @@ useEffect(()=> {
           />
           <motion.div
             className=" z-[3] w-full h-full absolute opacity-100 bg-slate-800 "
-            style={{  }}
+            style={{}}
             variants={frontBgVariant}
-           // animate={animate}
+            animate={props.animate}
             custom={itemData}
           >
             <div
               className="w-full h-full bg-white  "
               style={{
-               
                 borderRadius: `${itemData.backgroundProps.front.borderRadius}em`,
               }}
             />
@@ -193,21 +234,20 @@ useEffect(()=> {
           <motion.div
             className=" z-[1] w-full h-full absolute opacity-100     "
             variants={rearBgVariant}
-            animate={animate}
+            animate={props.animate}
             custom={itemData}
           />
 
           <motion.div
             className=" z-[4] absolute w-full h-full overflow-hidden  "
-           
             variants={CardVariants}
-           // animate={animate}
+            animate={props.animate}
             custom={itemData}
           >
-            {/* <ProjectCard project={project} /> */}
+            <ProjectCard project={project} />
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
     </motion.li>
   );
 });
@@ -257,6 +297,7 @@ const ItemWrapperVariants: Variants = {
   rotateRight: (i: ItemData): TargetAndTransition => ({
     visibility: "visible", ///ta bort
     ...i.rotationData.itemWrapper,
+
     //clipPath: `url(#item-shape-${i.index})`,
     transition: { duration: duration },
   }),
@@ -275,7 +316,69 @@ const getShapes = (interPolator: Interpolator): string[] => {
   return paths;
 };
 
+const getShapes2 = (interPolator: Interpolator): string[] => {
+  const paths = [];
+  for (let i = 0; i <= 1; i += 0.5) {
+    paths.push("path('"+interPolator(i)+"')");
+  }
+  return paths;
+};
 
+interface bla{
+  i:ItemData;
+  inter: InterpolatedPath;
+}
+const ItemWrapperVariants2: Variants = {
+  enter: ({i, inter}: bla): TargetAndTransition => ({
+    ...i.enterData.itemWrapper,
+    
+  }),
+  rotateLeft: ({i, inter}: bla): TargetAndTransition => ({
+    visibility: "visible", ///ta bort
+    ...i.rotationData.itemWrapper,
+    
+    //clipPath: `url(#item-shape-${i.index})`,
+    transition: { duration: duration },
+  }),
+  rotateRight: ({i, inter}: bla): TargetAndTransition => ({
+    visibility: "visible", ///ta bort
+    ...i.rotationData.itemWrapper,
+    
+    //clipPath: `url(#item-shape-${i.index})`,
+    transition: { duration: duration },
+  }),
+  still: ({i, inter}: bla): TargetAndTransition => ({
+    visibility: "visible", ///ta bort
+    ...i.rotationData.itemWrapper,
+   
+    //clipPath: `url(#item-shape-${i.index})`,
+    transition: { duration: duration },
+  }),
+};
+
+interface ShapeData {
+  i: InterpolatedPath;
+  transform: MotionValue<any>;
+}
+const ShapeVariants: Variants = {
+  enter: (i: InterpolatedPath): VariantProps<any> => ({
+    d: i.current,
+  }),
+  rotateLeft: (i: InterpolatedPath): TargetAndTransition => ({
+    d: getShapes(i.next),
+
+    transition: { duration: duration },
+  }),
+  rotateRight: (i: InterpolatedPath): TargetAndTransition => ({
+    d: getShapes(i.prev),
+
+    transition: { duration: duration },
+  }),
+  still: (i: InterpolatedPath): TargetAndTransition => ({
+    d: i.current,
+    transition: {},
+  }),
+};
 
 const CardVariants: Variants = {
   enter: (i: ItemData): TargetAndTransition => ({
@@ -304,22 +407,6 @@ const frontBgVariant: Variants = {
   rotate: (i: ItemData): TargetAndTransition => ({
     ...i.backgroundProps.front,
 
-    transition: { duration: duration },
-  }),
-};
-
-const glowVariant: Variants = {
-  glowOff: (i: ItemData): TargetAndTransition => ({
-    boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
-
-    ...i.rotationData.middleGlow,
-    transition: { duration: duration },
-  }),
-  glowOn: (i: ItemData): TargetAndTransition => ({
-    boxShadow:
-      "0 0 20px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.5)", // Glow during rotation
-    filter: "drop-shadow(0 -6mm 4mm rgb(160, 0, 210))",
-    //  scale: i.rotationData.scale,
     transition: { duration: duration },
   }),
 };
