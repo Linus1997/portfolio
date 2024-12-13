@@ -74,7 +74,7 @@ const DynamicPath = ({ dim }: shiiet) => {
         >
           <motion.path
             // Start with the initial shape "M 3,3 0,12.5 V 50 87.5 L 8,100 H 50 87.5 92 l 8,-12.5 V 50 3 H 97 L 87.5,0 h -75 z"
-            d={"M 3,3 H 0 V 50 87.5 L 8,100 H 50 87.5 92 l 8,-12.5 V 50 3 H 97 L 87.5,0 h -75 z"}
+            d={"M 0,3 V 87.5 L 8,100 h 84 l 8,-12.5 V 3 L 87.5,0 h -75 z"}
           />
         </motion.clipPath>
 
@@ -139,11 +139,34 @@ const GeneralItem = () => {
   console.log((dim.x * factor) / 100);
   return (
     <div id="HAAAHAAA" className="bg-slate-400 h-[500px] w-[500px] relative py-7 px-7 ">
-      {dim && <DynamicPath dim={dim} />}
+      {dim && 
+         <svg
+         xmlns="http://www.w3.org/2000/svg"
+         className="absolute"
+         viewBox={`0 0 ${dim.x}} ${dim.y}}`}
+         width={0}
+         height={0}
+       >
+         <defs>
+   
+           <motion.clipPath
+             id={`detta`}
+             transform={`scale(${(dim.x ) / 100}, ${(dim.x ) / 100})`}
+           >
+             <motion.path
+              variants={pathVariant}
+              animate={variant}
+               // Start with the initial shape "M 3,3 0,12.5 V 50 87.5 L 8,100 H 50 87.5 92 l 8,-12.5 V 50 3 H 97 L 87.5,0 h -75 z"
+               d={"M 0,3 V 87.5 L 8,100 L 92,100 L 100,87.5 L 100,3 L 87.5,0 L 12.5,0 z"}
+             />
+           </motion.clipPath>
+   
+         </defs>
+       </svg>}
       <motion.div className=" ">
         <motion.div
           ref={test}
-          className="relative w-96 h-96 rounded-md overflow-hidden "
+          className="relative w-96 h-96  "
           variants={maskerVariant}
           animate={variant}
           onMouseEnter={() => setVariant("mouseEnter")}
@@ -165,14 +188,13 @@ const GeneralItem = () => {
             }}
 
           >
-
             <motion.div
-              className="absolute bg-blue-700"
-              variants={frontVariant}
-              animate={variant}
-         
-            >
-              {/* <motion.div
+            className="absolute hidden bg-blue-700"
+            variants={frontVariant}
+            animate={variant}
+
+          >
+            {/* <motion.div
               className="absolute"
               style={{
                 top: 25 + "%",
@@ -187,8 +209,10 @@ const GeneralItem = () => {
             >
               <ProjectCard project={testdata[1]} />
             </motion.div> */}
-            </motion.div>
           </motion.div>
+
+          </motion.div>
+          
         </motion.div>
       </motion.div>
       {/* <button
@@ -197,37 +221,29 @@ const GeneralItem = () => {
       >
         test
       </button> */}
-      <motion.div
-        ref={test2}
-        className="absolute  hidden bg-amber-200 ml-10 mt-10"
-        style={{
-          clipPath: "url(#detta)",
 
-          top: 0 + "%",
-          left: -3 + "%",
-          bottom: 7 + "%",
-          right: 3 + "%",
-
-          //  rotateY: 2.25+"%",
-          //  rotateX: 2.25 + "%",
-        }}
-        whileHover={{
-          rotateX: 20,
-          rotateY: 55,
-          scale: 0.98
-        }}
-      />
     </div>
   );
 };
 
+const pathVariant: Variants = {
+  default: {
+    d: [`M 0,3 L 0,100 L 8,100 L 100,100 L 100,87.5 L 100,3 L 87.5,0 L 12.5,0 z`]
 
+  },
+
+  mouseEnter: {
+    d:[`M 0,3 L 0,100 L 8,100 L 100,100 L 100,87.5 L 100,3 L 87.5,0 L 12.5,0 z`,
+      `M 0,12.5 L 0,100 L 8,100 L 87.5,100 L 100,87.5 L 100,3 L 87.5,0 L 12.5,0 z`
+    ]
+  },
+};
 const maskerVariant: Variants = {
   default: {
     top: 0 + "%",
-    left: -3 + "%",
-    bottom: 7 + "%",
-    right: 3 + "%",
+    left: 0 + "%",
+    bottom: 0+ "%",
+    right: 0 + "%",
 
   },
 
@@ -241,16 +257,16 @@ const maskerVariant: Variants = {
 const shapeBoxVariant: Variants = {
   default: {
     top: 0 + "%",
-    left: -3 + "%",
-    bottom: 7 + "%",
-    right: 3 + "%",
+    left:  0+ "%",
+    bottom: 0 + "%",
+    right: -10 + "%",
   },
 
   mouseEnter: {
-
-    top: -8 + "%",
-    left: -8 + "%",
-    bottom: 5 + "%",
+    borderTopLeftRadius: 0 + "%",
+    top: 0 + "%",
+    left: 0 + "%",
+    bottom: 0 + "%",
     right: 0 + "%",
   },
 };
@@ -259,12 +275,12 @@ const frontVariant: Variants = {
     top: 3 + "%",
     left: 0 + "%",
     bottom: 0 + "%",
-    right: 0 + "%",
+    right: 5 + "%",
   },
 
   mouseEnter: {
     top: 12 + "%",
-    left: 0 + "%",
+    left: 12 + "%",
     bottom: 0 + "%",
     right: 9 + "%",
   },

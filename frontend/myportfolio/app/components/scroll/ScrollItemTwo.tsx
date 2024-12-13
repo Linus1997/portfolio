@@ -4,6 +4,7 @@ import ProjectCarousel from "../projects/ProjectCarousel";
 import GeneralItem from "../projects/test files/generalItem";
 import Item1 from "../projects/test files/item1";
 import Item6 from "../projects/test files/item6";
+import { useState } from "react";
 
 
 
@@ -39,14 +40,15 @@ const ScrollItemTwo = () => {
     <div className="bg-white ">
      <ProjectCarousel /> 
       <GeneralItem />
-      <Item6 />
+     
       <svg
-   width="120"
-   height="120"
-   viewBox="0 0 120 120"
+   width="200"
+   height="200"
+   viewBox="0 0 100 100"
    version="1.1"
    id="svg1"
    xmlns="http://www.w3.org/2000/svg"
+
    >
           
 
@@ -55,7 +57,7 @@ const ScrollItemTwo = () => {
   <g
      id="layer1">
     <path
-       d="M 10,10 1.767767,18.232233 A 6.0355339,6.0355339 112.5 0 0 0,22.5 V 60 97.5 a 6.0355339,6.0355339 67.5 0 0 1.767767,4.26777 L 10,110 l 8.232233,8.23223 A 6.0355339,6.0355339 22.5 0 0 22.5,120 H 60 97.5 a 6.0355339,6.0355339 157.5 0 0 4.26777,-1.76777 L 110,110 l 8.23223,-8.23223 A 6.0355339,6.0355339 112.5 0 0 120,97.5 V 60 22.5 a 6.0355339,6.0355339 67.5 0 0 -1.76777,-4.267767 L 110,10 101.76777,1.767767 A 6.0355339,6.0355339 22.5 0 0 97.5,0 h -75 a 6.0355339,6.0355339 157.5 0 0 -4.267767,1.767767 z"
+       d={`M 0,3 V 87.5 L 8,100 h 84 l 8,-12.5 V 3 L 87.5,0 h -75 z`}
        id="path2" />
   </g>
 </svg>
