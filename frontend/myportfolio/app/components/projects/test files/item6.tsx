@@ -34,7 +34,7 @@ function scalePath(polygon: string, width: number, height: number) {
   return points;
 }
 
-const Test = () => {
+const Item6 = () => {
   const test = useRef<HTMLDivElement>(null);
   const test2 = useRef<HTMLDivElement>(null);
   const path =
@@ -139,8 +139,7 @@ const Test = () => {
                 right: 25 + "%",
               }}
               whileHover={{
-                rotateX:25,
-                rotateY: 20
+                
               }}
             >
               <ProjectCard project={testdata[1]} />
@@ -165,4 +164,4 @@ const testVariant: Variants = {
   },
 };
 
-export default Test;
+export default Item6;
