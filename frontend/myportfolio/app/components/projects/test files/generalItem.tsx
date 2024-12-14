@@ -234,8 +234,24 @@ L 100,3
 L 87.5,0 
 L 12.5,0 
 z`
+const paths = [    `M 0.5,11.5 
+  C 0.125,12   0,12.5   0,13
+  L 0,98 
+  C 0.125,99   0.5,99.5   2,100
+  L 7,100 
+  C 8,100   9,100   10,100
+  L 86,100
+  C 87,100   88,99   89,98 
+  L 99.5,88
+  C 100,87.5   100,87   100,86.5
+  L 100,1 
+  C 100,0.5   99.5,0   99,0 
+  L 87.5,0
+  C 87.5,0   87.5,0   87.5,0 
+  L 17,0 
+  C 16.2,0.125   15.8,0.5   15,1 
+  z`]
 
-"m 0,5 v 80.5 a 6.8352055,6.8352055 73.690378 0 0 1.0781074,3.684543 l 5.8437852,9.130914 A 3.6545315,3.6545315 28.690378 0 0 10,100 h 80 a 3.6545315,3.6545315 151.30962 0 0 3.078107,-1.684543 l 5.843786,-9.130914 A 6.8352055,6.8352055 106.30962 0 0 100,85.5 V 5 A 2.5367936,2.5367936 51.747867 0 0 98.055225,2.5332541 L 89.444775,0.4667459 A 16.903307,16.903307 6.7478666 0 0 85.5,0 h -71 A 16.903307,16.903307 173.25213 0 0 10.555225,0.4667459 L 1.9447746,2.5332541 A 2.5367936,2.5367936 128.25213 0 0 0,5 Z"
 /**
  * 
  */
@@ -299,16 +315,16 @@ const maskerVariant: Variants = {
     rotateY: 0,
     scale: 1, 
     transition:{
-      duration: 1.5
+      duration: 1
     }
   },
 
   mouseEnter: {
     rotateX: 20,
-    rotateY: 55,
+    rotateY: 45,
     scale: 1, 
     transition:{
-      duration: 1.5
+      duration: 1
     }
   },
 };
@@ -318,7 +334,7 @@ const shapeBoxVariant: Variants = {
     top: 0 + "%",
     left: 0 + "%",
     bottom: 0 + "%",
-    right: -10 + "%",
+    right: 0 + "%",
   },
 
   mouseEnter: {
@@ -342,7 +358,7 @@ const frontVariant: Variants = {
     right: 0 + "%",
     
     transition:{
-      duration: 2
+      duration: 1
     }
 
   },
@@ -350,12 +366,13 @@ const frontVariant: Variants = {
   mouseEnter: {
     borderBottomRightRadius: 1 + "%",
     borderTopRightRadius: 1 + "%",
+    borderTopLeftRadius: 1 + "%",
     top: 12 + "%",
     left: 0 + "%",
     bottom: 0 + "%",
     right: 12.8 + "%",
     transition:{
-      duration: 2
+      duration: 1
     }
   },
 };
