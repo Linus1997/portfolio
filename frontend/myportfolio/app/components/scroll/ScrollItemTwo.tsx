@@ -5,62 +5,44 @@ import GeneralItem from "../projects/test files/generalItem";
 import Item1 from "../projects/test files/item1";
 import Item6 from "../projects/test files/item6";
 import { useState } from "react";
+import { path0, path5 } from "@/app";
 
 
 
-interface State {
-  count: number;
-}
 
-enum ActionType {
-  Increment = "INCREMENT",
-  Decrement = "DECREMENT",
-}
-interface Action {
-  type: ActionType;
-  payload: number;
-}
 
-const initialState: State = { count: 0 };
 
-const reducer = (state: State, action: Action) => {
-  switch (action.type) {
-    case ActionType.Increment:
-      return { count: state.count + action.payload };
-    case ActionType.Decrement:
-      return { count: state.count - action.payload };
-    default:
-      return state;
-  }
-};
+const path1 = `
+  M 1.5,0
+  C 1,0.25  0,0.75  0,1
+  L 0,98
+  C 0,99   1,100  2,100 
+  L 7,100
+  C 7,100   8,100   9,100 
+  L 98,100
+  C 99,100   100,99   100,98      
+  L 100,87.5 
+  C 100,87.5   100,87.5   100,87.5
+  L 100,6
+  C 100,4   100,3   98.5,2.5
+  L 88.5,0.25
+  C 88,0.125   87.5,0   87,0  
+  L 13.5, 0
+  C 13,0   12.5,0.125   12,0.25
+  z`
+
+
+
 
 const ScrollItemTwo = () => {
- 
+
   return (
-    <div className="bg-white ">
-     <ProjectCarousel /> 
-      <GeneralItem />
-     
-      <svg
-   width="200"
-   height="200"
-   viewBox="0 0 100 100"
-   version="1.1"
-   id="svg1"
-   xmlns="http://www.w3.org/2000/svg"
-
-   >
-          
-
-  <defs
-     id="defs1" />
-  <g
-     id="layer1">
-    <path
-       d={`M 0,3 V 87.5 L 8,100 h 84 l 8,-12.5 V 3 L 87.5,0 h -75 z`}
-       id="path2" />
-  </g>
-</svg>
+    <div className="relative bg-white flex flex-col">
+      <ProjectCarousel />
+      <GeneralItem id={1} path={path5} rotX={20} rotY={45} />
+      <GeneralItem id={3} path={path1} rotX={20} rotY={-45} />
+      <GeneralItem id={2} path={path0} rotX={0} rotY={0} />
+    
 
     </div>
   );

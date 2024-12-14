@@ -68,12 +68,12 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
   const backLeftX = Math.round(leftX + level3X);
   const level3Y = 20;
 
-  let rotX2 = 0;
-  let rotXBack3 = 0;
-  let itemRightY = 0;
-  let itemBackRightY = 0;
-  let itemBackLeftY = 0;
-  let itemLeftY = 0;
+  let rotX2 = 20;
+  let rotXBack3 = 10;
+  let itemRightY = -45;
+  let itemBackRightY = 45;
+  let itemBackLeftY = -45;
+  let itemLeftY = 45;
 
   const updatedCoord: ItemBase[] = [
     {
@@ -129,8 +129,8 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
     {
       x: leftX,
       y: level2Y,
-      rotateX: 0,
-      rotateY: 0,
+      rotateX: rotX2,
+      rotateY: itemLeftY,
       zIndex: 30,
       scale: 0.9,
       visibility: "visible",
