@@ -16,7 +16,7 @@ import {
   ItemBase,
   recalculateDimensions,
 } from "./reducers/coordReducer";
-import { createMorphInitialState, morphReducer } from "./reducers/morphReducer";
+
 
 interface WrapperProps {
   rotations: number;
@@ -47,11 +47,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
     { initRotation: rotations, projects: projects },
     createCoordInitialState
   );
-  const [morphState, morphDispatch] = useReducer(
-    morphReducer,
-    undefined,
-    createMorphInitialState
-  );
+
   useEffect(() => {
     const clickTimeout = setTimeout(() => {
       setClickTimer(false);
@@ -82,9 +78,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
     coordDispatch({ type: "resetVariant", definition: definition });
   };
 
-  const resetMorphAnimation = (definition: string) => {
-    morphDispatch({ type: "resetMorph", definition: definition });
-  };
+
 
   if (!projects || projects.length == 0) return <></>;
   return (
@@ -95,7 +89,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
           if (!clickTimer) {
             setClickTimer(true)
           coordDispatch({ type: "moveRight" });
-          morphDispatch({ type: "morphRight" });
+          
         }}}
       >
         <svg
@@ -123,8 +117,8 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
                   if (el) itemRef.current[i] = el;
                 }}
                 index={i}
-                interpolatedPath={morphState.interpolatedPaths[i]}
-                reset={resetMorphAnimation}
+               
+                reset={resetCoordVariant}
                 itemData={coordState.itemData[i]}
                 isEnterComplete={coordState.isEnterComplete}
                 className={"absolute w-[14em] h-[14rem] self-stretch  "}
@@ -133,10 +127,9 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
                 onAnimationComplete={resetCoordVariant}
                 dimension={coordState.dimensions.childDim}
                 project={coordState.projects[i]}
-                isMoveLeft={morphState.isMorphLeft}
-                isMoveRight={morphState.isMorphRight}
-                isStill={morphState.isStill}
-                isToStillCompleted={morphState.toStillComplete}
+               
+                
+               
               />
             ))}
           </motion.ul>
@@ -148,7 +141,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
           if (!clickTimer) {
             setClickTimer(true)
             coordDispatch({ type: "moveLeft" });
-            morphDispatch({ type: "morphLeft" });
+           
           }
         }}
       >

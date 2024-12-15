@@ -3,6 +3,7 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 import { TargetAndTransition, AnimationDefinition } from "framer-motion";
 
 import { Variant } from "../ProjectListWrapper";
+import { path0, path1, path5 } from "@/app";
 
 export interface ItemData {
   index: number;
@@ -10,6 +11,7 @@ export interface ItemData {
   enterData: EnterAnimationData;
   backgroundProps: BackgroundProps;
   dimension: Dimensions;
+  path: string;
 }
 export interface CoordXY {
   x: number;
@@ -306,6 +308,7 @@ export const coordReducer = (state: State, action: CounterAction): State => {
 
 const initialState = (): ItemData[] => {
   const zIndexes = [30, 20, 10, 0, 10, 20];
+  const paths=[path0,path1,path5,path0, path1, path5]
   const projectWrapper: ProjectWrapper[] = [
     { top: "10%", paddingLeft: "0%", paddingRight: "0%" },
     { top: "10%", paddingLeft: "10%", paddingRight: "0%" },
@@ -395,8 +398,6 @@ const initialState = (): ItemData[] => {
         projectWrapper: {
           ...projectWrapper[i],
         },
-      
-      
       },
       enterData: {
         itemBase: {
@@ -428,6 +429,7 @@ const initialState = (): ItemData[] => {
           y: 0,
         },
       },
+      path: paths[i]
     };
     return iData;
   });
