@@ -12,6 +12,8 @@ export interface ItemData {
   backgroundProps: BackgroundProps;
   dimension: Dimensions;
   path: string;
+  listItemZ: number;
+  
 }
 export interface CoordXY {
   x: number;
@@ -23,6 +25,13 @@ interface BackgroundProps {
   front: TargetAndTransition;
 }
 
+/**
+ * TODO: Fixa så yttersta elementet står för x och y koordinater.
+ */
+interface ProjectListItem {
+  
+  listItemZ: number;
+}
 export interface RotationData {
   itemBase: ItemBase;
   itemWrapper: ItemWrapper;
@@ -42,7 +51,7 @@ export interface ItemBase extends TargetAndTransition {
   scale: number[] | number;
   visibility: "visible" | "hidden";
   opacity: number[] | number;
-  zIndex: number;
+ 
   rotateX: number;
   rotateY: number;
 }
@@ -83,7 +92,6 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: frontY,
       rotateX: 0,
       rotateY: 0,
-      zIndex: 40,
       scale: 1,
       visibility: "visible",
       opacity: 1,
@@ -93,7 +101,6 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: level2Y,
       rotateX: rotX2,
       rotateY: itemRightY,
-      zIndex: 30,
       scale: 0.99,
       visibility: "visible",
       opacity: 1,
@@ -103,7 +110,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: level3Y,
       rotateX: rotXBack3,
       rotateY: itemBackRightY,
-      zIndex: 20,
+     
       scale: 0.95,
       visibility: "visible",
       opacity: 1,
@@ -113,7 +120,6 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: 0,
       rotateX: 0,
       rotateY: 0,
-      zIndex: 0,
       scale: 0.9,
       visibility: "visible",
       opacity: 1,
@@ -123,7 +129,6 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: level3Y,
       rotateX: rotXBack3,
       rotateY: itemBackLeftY,
-      zIndex: 20,
       scale: 0.95,
       visibility: "visible",
       opacity: 1,
@@ -133,7 +138,6 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: level2Y,
       rotateX: rotX2,
       rotateY: itemLeftY,
-      zIndex: 30,
       scale: 0.9,
       visibility: "visible",
       opacity: 1,
@@ -311,13 +315,20 @@ const initialState = (): ItemData[] => {
   const paths=[path0,path1,path5,path0, path1, path5]
   const projectWrapper: ProjectWrapper[] = [
     { top: "10%", paddingLeft: "0%", paddingRight: "0%" },
-    { top: "10%", paddingLeft: "10%", paddingRight: "0%" },
+    { top: "8%", left: "-12.8%", right: "0%" },
     { top: "10%", paddingLeft: "0%", paddingRight: "10%" },
     { top: "10%", paddingLeft: "0%", paddingRight: "0%" },
-    { top: "10%", paddingLeft: "10%", paddingRight: "0%" },
+    { top: "12%", paddingLeft: "-12.8%", paddingRight: "0%" },
     {},
   ];
-
+  // borderTopLeftRadius: 2 + "%",
+  // borderTopRightRadius: 2 + "%",
+  // borderBottomLeftRadius: 1 + "%",
+  // borderBottomRightRadius: 1 + "%",
+  // top: 12 + "%",
+  // left: 12.8 + "%",
+  // bottom: 0 + "%",
+  // right: 0 + "%",
 
   const backgroundProps: BackgroundProps[] = [
     {
@@ -385,7 +396,6 @@ const initialState = (): ItemData[] => {
         itemBase: {
           x: 0,
           y: 0,
-          zIndex: zIndexes[i],
           rotateX: 0,
           rotateY: 0,
           scale: 1,
@@ -407,7 +417,7 @@ const initialState = (): ItemData[] => {
           scale: [0, 1],
           visibility: "visible",
           opacity: i === 0 ? [0, 0.8] : 0,
-          zIndex: 0,
+          
           rotateX: 0,
           rotateY: 0,
         },
@@ -429,7 +439,8 @@ const initialState = (): ItemData[] => {
           y: 0,
         },
       },
-      path: paths[i]
+      path: paths[i],
+      listItemZ: zIndexes[i]
     };
     return iData;
   });

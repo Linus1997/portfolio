@@ -110,7 +110,10 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
       <div>
         <div className="relative  w-[63em] h-96 py-4">
           <motion.ul ref={wrapperRef} className="absolute w-full h-full ">
+      
+            
             {[0, 1, 2, 3, 4, 5].map((item, i) => (
+              
               <ProjectItem
                 key={i}
                 ref={(el) => {
@@ -121,7 +124,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
                 reset={resetCoordVariant}
                 itemData={coordState.itemData[i]}
                 isEnterComplete={coordState.isEnterComplete}
-                className={"absolute w-[14em] h-[14rem] self-stretch  "}
+                className={"absolute  w-56 h-56 " }
                 initial="initial"
                 animate={coordState.variant}
                 onAnimationComplete={resetCoordVariant}

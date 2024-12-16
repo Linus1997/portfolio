@@ -28,12 +28,12 @@ interface ListProps {
   project: ProjectInterface;
   index: number;
   dimension: CoordXY;
-  
- 
+
+
   reset: (definition: string) => void;
 }
 
-const morphStep = [0.2, 0.4, 0.6, 0.8, 1];
+
 const ProjectItem = forwardRef<
   HTMLLIElement,
   HTMLMotionProps<"li"> & ScriptProps & ListProps
@@ -42,92 +42,104 @@ const ProjectItem = forwardRef<
     itemData,
     isEnterComplete,
     project,
-  
+
     dimension,
     index,
-  
-  
+
+
     onAnimationComplete,
-  
-    
-  
+
+
+
   } = props;
-  
+
 
   return (
     <motion.li
       ref={ref}
       className={props.className}
       onAnimationComplete={onAnimationComplete}
-      custom={itemData}
-      initial={props.initial}
-      animate={props.animate}
-      variants={BaseItemVariants}
-      style={{ filter: "drop-shadow(0 1px 0rem #ccccff)" }}
+
+      style={{
+        filter: "drop-shadow(0 1px 0rem #ccccff)",
+        zIndex: itemData.listItemZ
+      }}
       whileHover={
         isEnterComplete
           ? {
-              scale:
-                itemData.rotationData.itemBase.zIndex === 40
-                  ? 1.2
-                  : itemData.rotationData.itemBase.scale,
-              rotateY: itemData.rotationData.itemBase.rotateY / 1.2,
-            }
+            scale:
+              itemData.rotationData.itemBase.zIndex === 40
+                ? 1.2
+                : itemData.rotationData.itemBase.scale,
+            rotateY: itemData.rotationData.itemBase.rotateY / 1.2,
+          }
           : {}
       }
     >
-      <motion.div
-        className="relative w-[14em] h-[14em] overflow-hidden "
-        style={{ filter: "drop-shadow(0 1px 0.2rem white)"  }}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="absolute"
+        viewBox={`0 0 ${dimension.x} ${dimension.y}`}
+        width={0}
+        height={0}
       >
-       
-       <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="absolute"
-          viewBox={`0 0 ${dimension.x} ${dimension.y}`}
-          width={0}
-          height={0}
-        >
-          <defs>
+        <defs>
 
-            <motion.clipPath
-              id={`clippath-${index}`}
-              transform={`scale(${(dimension.x) / 100}, ${(dimension.x) / 100})`}
-            >
-              <motion.path
-                variants={pathVariant}
-                animate={props.animate}
-                custom={itemData.path}
-                
-              />
-            </motion.clipPath>
+          <motion.clipPath
+            id={`clippath-${index}`}
+            transform={`scale(${(dimension.x) / 100}, ${(dimension.x) / 100})`}
+          >
+            <motion.path
+              variants={pathVariant}
+              animate={props.animate}
+              custom={itemData.path}
 
-          </defs>
-        </svg>
+            />
+          </motion.clipPath>
+
+        </defs>
+      </svg>
+      <motion.div
+        className=""
+        style={{
+          filter: "drop-shadow(0 1px 0.2rem white)",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0
+        }}
+      >
+
+
         <motion.div
-          className={" absolute w-[20em] h-[20em] "}
+          className={" relative w-56 h-56  "}
           // variants={varia}
           // animate={props.animate}
           // custom={{i: itemData}}
-          style={{ clipPath: `url(#clippath-${index})`,
-              
-              
-              
-              
-        }}
+          custom={itemData}
+          initial={props.initial}
+          animate={props.animate}
+          variants={BaseItemVariants}
+          style={{
+            clipPath: `url(#clippath-${index})`,
+
+
+
+
+          }}
         >
           <motion.div
             className="z-[10] absolute w-full h-full pointer-events-none"
             animate={
               isEnterComplete
                 ? {
-                    opacity: [0, 8, 0],
+                  opacity: [0, 8, 0],
 
-                    backgroundImage: backgroundImages,
-                  }
+                  backgroundImage: backgroundImages,
+                }
                 : {
-                    opacity: 0,
-                  }
+                  opacity: 0,
+                }
             }
             transition={{
               delay: 0.5,
@@ -156,14 +168,14 @@ const ProjectItem = forwardRef<
           />
 
           <motion.div
-            className=" z-[4] absolute  overflow-hidden  "
+            className=" z-[4] absolute overflow-hidden  "
             variants={CardVariants}
             animate={props.animate}
             custom={itemData}
           >
             <ProjectCard project={project} />
           </motion.div>
-        
+
         </motion.div>
       </motion.div>
     </motion.li>
@@ -179,6 +191,10 @@ const duration: number = 0.4;
 const BaseItemVariants: Variants = {
   initial: (): TargetAndTransition => ({
     visibility: "hidden",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
     opacity: 0,
   }),
   enter: (i: ItemData): TargetAndTransition => ({
@@ -197,7 +213,10 @@ const BaseItemVariants: Variants = {
   }),
   still: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
-
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
     transition: { duration: duration },
   }),
 };
@@ -211,36 +230,36 @@ const pathVariant: Variants = {
   enter: (path: string): TargetAndTransition => ({
     d: path0
     ,
-    transition:{
+    transition: {
       duration: duration
     }
   }),
-  rotateLeft:  (path: string): TargetAndTransition => ({
+  rotateLeft: (path: string): TargetAndTransition => ({
     d: path
     ,
-   
-    transition:{
+
+    transition: {
       duration: duration
     }
   }),
   rotateRight: (path: string): TargetAndTransition => ({
     d: path
     ,
-   
-    transition:{
+
+    transition: {
       duration: duration
     }
   }),
   still: (path: string): TargetAndTransition => ({
     d: path
     ,
-   
-    transition:{
+
+    transition: {
       duration: duration
     }
   }),
 
-  
+
 };
 
 
@@ -254,9 +273,13 @@ const CardVariants: Variants = {
     bottom: 0,
     paddingBottom: 0,
   }),
+  still: (i: ItemData): TargetAndTransition => ({
+    ...i.rotationData.projectWrapper,
+
+  }),
   rotate: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.projectWrapper,
- 
+
     borderTopLeftRadius: 2 + "%",
     borderTopRightRadius: 2 + "%",
     borderBottomLeftRadius: 1 + "%",
@@ -272,6 +295,10 @@ const CardVariants: Variants = {
 const rearBgVariant: Variants = {
   rotate: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #515252, #1B3541 )`,
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
     transition: { duration: duration },
   }),
 };
