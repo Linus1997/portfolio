@@ -1,27 +1,19 @@
 import {
-  easeInOut,
   HTMLMotionProps,
   motion,
-  MotionValue,
   TargetAndTransition,
-  useAnimate,
-  useAnimationControls,
-  useMotionValue,
-  useTransform,
   Variants,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef } from "react";
 import React from "react";
 import { ProjectInterface } from "@/app/utils/interfaces";
-import { Interpolator } from "flubber";
-import { VariantProps } from "@nextui-org/react";
 
-import { CoordXY, ItemData } from "./reducers/coordReducer";
-import { Variant } from "./ProjectListWrapper";
-import { animate } from "framer-motion";
-import ProjectCard from "./ProjectCard";
-import { path0 } from "@/app";
+
+
+import ProjectCard from "../projectcontent/ProjectCard";
+import { path0 } from "../paths";
+import { CoordXY, ItemData } from "../utils/sharedInterfaces";
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
@@ -42,15 +34,9 @@ const ProjectItem = forwardRef<
     itemData,
     isEnterComplete,
     project,
-
     dimension,
     index,
-
-
     onAnimationComplete,
-
-
-
   } = props;
 
 
@@ -74,9 +60,9 @@ const ProjectItem = forwardRef<
             scale:
               itemData.zIndex === 30
                 ? 1.2
-                : 
-                itemData.zIndex === 0?
-                 1: itemData.rotationData.itemBase.scale,
+                :
+                itemData.zIndex === 0 ?
+                  1 : itemData.rotationData.itemBase.scale,
             rotateY: itemData.rotationData.itemBase.rotateY / 1.2,
           }
           : {}
@@ -119,9 +105,7 @@ const ProjectItem = forwardRef<
 
         <motion.div
           className={" relative w-56 h-56  "}
-          // variants={varia}
-          // animate={props.animate}
-          // custom={{i: itemData}}
+
 
           style={{
             clipPath: `url(#clippath-${index})`,
@@ -169,16 +153,22 @@ const ProjectItem = forwardRef<
             animate={props.animate}
             custom={itemData}
           />
-
-          <motion.div
-            className=" z-[4] absolute overflow-hidden w-full h-full  "
-            variants={CardVariants}
+          <motion.div className=" z-[4] absolute   w-full h-full "
+            variants={CardWrapperVariants}
             animate={props.animate}
             custom={itemData}
-          >
-            <ProjectCard project={project} />
-          </motion.div>
 
+          >
+            <motion.div
+              className=" z-[4] absolute   w-full h-full "
+              variants={CardVariants}
+              animate={props.animate}
+              custom={itemData}
+
+            >
+              <ProjectCard project={project} />
+            </motion.div>
+          </motion.div>
         </motion.div>
       </motion.div>
     </motion.li>
@@ -199,6 +189,7 @@ const BaseItemVariants: Variants = {
     bottom: 0,
     right: 0,
     opacity: 0,
+
   }),
   enter: (i: ItemData): TargetAndTransition => ({
     ...i.enterData.itemBase,
@@ -216,7 +207,7 @@ const BaseItemVariants: Variants = {
   }),
   still: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
-  
+
     transition: { duration: duration },
   }),
 };
@@ -263,28 +254,61 @@ const pathVariant: Variants = {
 };
 
 
+const CardWrapperVariants: Variants = {
+  enter: (i: ItemData): TargetAndTransition => ({
+    //paddingTop: "10%",
 
+
+    top: "6%",
+    left: 0,
+    right: 0,
+    bottom: 0,
+
+  }),
+  still: (i: ItemData): TargetAndTransition => ({
+    ...i.rotationData.frame,
+    bottom: 0,
+
+  }),
+  rotateLeft: (i: ItemData): TargetAndTransition => ({
+    ...i.rotationData.frame,
+
+    bottom: 0,
+    transition: { duration: duration },
+  }),
+  rotateRight: (i: ItemData): TargetAndTransition => ({
+    ...i.rotationData.frame,
+
+    bottom: 0,
+    transition: { duration: duration },
+  }),
+};
 
 const CardVariants: Variants = {
   enter: (i: ItemData): TargetAndTransition => ({
     //paddingTop: "10%",
-   top: 3,
+
+
+    top: "6%",
     left: 0,
     right: 0,
     bottom: 0,
-    
+
   }),
   still: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.projectWrapper,
+    ...i.rotationData.frame,
+    bottom: 0,
+
+  }),
+  rotateLeft: (i: ItemData): TargetAndTransition => ({
+    ...i.rotationData.frame,
+
+    bottom: 0,
     transition: { duration: duration },
   }),
-  rotate: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.projectWrapper,
+  rotateRight: (i: ItemData): TargetAndTransition => ({
+    ...i.rotationData.frame,
 
-    borderTopLeftRadius: 2 + "%",
-    borderTopRightRadius: 2 + "%",
-    borderBottomLeftRadius: 1 + "%",
-    borderBottomRightRadius: 1 + "%",
     bottom: 0,
     transition: { duration: duration },
   }),

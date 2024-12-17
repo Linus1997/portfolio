@@ -1,7 +1,10 @@
 "use client";
-import ProjectItem from "./ProjectListItem";
-import { AnimationDefinition, motion, useMotionValue } from "framer-motion";
+import ProjectItem from "../listitem/ProjectListItem";
+import { AnimationDefinition, motion } from "framer-motion";
 import {
+  Dispatch,
+  MutableRefObject,
+  RefObject,
   useEffect,
   useLayoutEffect,
   useReducer,
@@ -12,10 +15,10 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 
 import {
   coordReducer,
-  createCoordInitialState,
-  ItemBase,
-  recalculateDimensions,
-} from "./reducers/coordReducer";
+  CounterAction,
+} from "../reducers/coordReducer";
+import { createCoordInitialState } from "../reducers/setUpReducer";
+import { recalculateDimensions } from "../reducers/setUpReducer";
 
 
 interface WrapperProps {
@@ -23,24 +26,35 @@ interface WrapperProps {
   direction: number;
   projects: ProjectInterface[];
 }
+interface DimChange {
+  parentRef: RefObject<HTMLUListElement>;
+  childRef: MutableRefObject<HTMLLIElement[]>;
+  coordDispatch: Dispatch<CounterAction>;
+}
 
-export const Variant = Object.freeze({
-  INIT: "initial",
-  ENTER: "enter",
-  ROTATE: "rotate",
-  ROTATELEFT: "rotateLeft",
-  ROTATERIGHT: "rotateRight",
-  STILL: "still",
-  GLOW: "glowOn",
-  GLOWOFF: "glowOff",
-  isMorphLeft: "isMoveLeft",
-  isMorphRight: "isMoveRight",
-  isStill: "isStill",
-});
+
+
+const onDimChange = ({ parentRef, childRef: itemRef, coordDispatch }: DimChange) => {
+  if (parentRef && parentRef.current && itemRef.current && itemRef.current.length > 0) {
+    const parentDim = parentRef.current.getBoundingClientRect();
+    const childDim = itemRef.current[0].getBoundingClientRect();
+    const updatedCoords = recalculateDimensions(parentDim, childDim);
+
+    coordDispatch({
+      type: "resize",
+      coords: updatedCoords,
+      dimensions: {
+        wrapperDim: { x: parentDim.width, y: parentDim.height },
+        childDim: { x: childDim.width, y: childDim.height },
+      },
+    });
+  }
+};
+
 
 const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
-  const wrapperRef = useRef<HTMLUListElement>(null);
-  const itemRef = useRef<Array<HTMLLIElement>>([]);
+  const parentRef = useRef<HTMLUListElement>(null);
+  const childRef = useRef<HTMLLIElement[]>([]);
   const [clickTimer, setClickTimer] = useState<boolean>(false);
   const [coordState, coordDispatch] = useReducer(
     coordReducer,
@@ -56,24 +70,10 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
     return () => clearTimeout(clickTimeout);
   }, [clickTimer]);
   useLayoutEffect(() => {
-    const onDimChange = () => {
-      if (wrapperRef.current && itemRef.current && itemRef.current.length > 0) {
-        const wrapperDim = wrapperRef.current.getBoundingClientRect();
-        const childDim = itemRef.current[0].getBoundingClientRect();
-        const updatedCoord = recalculateDimensions(wrapperDim, childDim);
 
-        coordDispatch({
-          type: "resize",
-          coords: updatedCoord,
-          dimensions: {
-            wrapperDim: { x: wrapperDim.width, y: wrapperDim.height },
-            childDim: { x: childDim.width, y: childDim.height },
-          },
-        });
-      }
-    };
-    onDimChange();
+    onDimChange({ parentRef, childRef, coordDispatch });
   }, []);
+
   const resetCoordVariant = (definition: AnimationDefinition) => {
     coordDispatch({ type: "resetVariant", definition: definition });
   };
@@ -88,9 +88,10 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
         onClick={() => {
           if (!clickTimer) {
             setClickTimer(true)
-          coordDispatch({ type: "moveRight" });
-          
-        }}}
+            coordDispatch({ type: "moveRight" });
+
+          }
+        }}
       >
         <svg
           className="w-full h-full stroke-slate-400"
@@ -109,30 +110,30 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
       </button>
       <div>
         <div className="relative  w-[63em] h-96 py-4">
-          <motion.ul ref={wrapperRef} className="absolute w-full h-full ">
-      
-            
+          <motion.ul ref={parentRef} className="absolute w-full h-full ">
+
+
             {[0, 1, 2, 3, 4, 5].map((item, i) => (
-              
+
               <ProjectItem
                 key={i}
                 ref={(el) => {
-                  if (el) itemRef.current[i] = el;
+                  if (el) childRef.current[i] = el;
                 }}
                 index={i}
-               
+
                 reset={resetCoordVariant}
                 itemData={coordState.itemData[i]}
                 isEnterComplete={coordState.isEnterComplete}
-                className={"absolute  w-56 h-56 " }
+                className={"absolute  w-56 h-56 "}
                 initial="initial"
                 animate={coordState.variant}
                 onAnimationComplete={resetCoordVariant}
                 dimension={coordState.dimensions.childDim}
                 project={coordState.projects[i]}
-               
-                
-               
+
+
+
               />
             ))}
           </motion.ul>
@@ -144,7 +145,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
           if (!clickTimer) {
             setClickTimer(true)
             coordDispatch({ type: "moveLeft" });
-           
+
           }
         }}
       >
@@ -168,3 +169,5 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
 };
 
 export default ProjectListWrapper;
+
+

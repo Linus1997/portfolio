@@ -1,6 +1,6 @@
 "use client";
 import { LayoutGroup, motion } from "framer-motion";
-import ProjectCard from "./ProjectCard";
+import ProjectCard from "./projectcontent/ProjectCard";
 
 import {
   SetStateAction,
@@ -16,8 +16,8 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 
 import { getIndex } from "@/app/utils/helperfunction";
 import { tv } from "tailwind-variants";
-import ProjectItem from "./ProjectListItem";
-import ProjectListWrapper from "./ProjectListWrapper";
+import ProjectItem from "./listitem/ProjectListItem";
+import ProjectListWrapper from "./listwrapper/ProjectListWrapper";
 
 interface ProjectIndices {
   left: number;
