@@ -12,7 +12,7 @@ export interface ItemData {
   backgroundProps: BackgroundProps;
   dimension: Dimensions;
   path: string;
-  listItemZ: number;
+  zIndex: number;
   
 }
 export interface CoordXY {
@@ -25,13 +25,7 @@ interface BackgroundProps {
   front: TargetAndTransition;
 }
 
-/**
- * TODO: Fixa så yttersta elementet står för x och y koordinater.
- */
-interface ProjectListItem {
-  
-  listItemZ: number;
-}
+
 export interface RotationData {
   itemBase: ItemBase;
   itemWrapper: ItemWrapper;
@@ -138,7 +132,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: level2Y,
       rotateX: rotX2,
       rotateY: itemLeftY,
-      scale: 0.9,
+      scale: 0.99,
       visibility: "visible",
       opacity: 1,
     },
@@ -314,12 +308,41 @@ const initialState = (): ItemData[] => {
   const zIndexes = [30, 20, 10, 0, 10, 20];
   const paths=[path0,path1,path5,path0, path1, path5]
   const projectWrapper: ProjectWrapper[] = [
-    { top: "10%", paddingLeft: "0%", paddingRight: "0%" },
-    { top: "8%", left: "-12.8%", right: "0%" },
-    { top: "10%", paddingLeft: "0%", paddingRight: "10%" },
-    { top: "10%", paddingLeft: "0%", paddingRight: "0%" },
-    { top: "12%", paddingLeft: "-12.8%", paddingRight: "0%" },
-    {},
+    { top: "3%", left: "0%", right: "0%", 
+      borderTopLeftRadius: 2 + "%",
+      borderTopRightRadius: 2 + "%",
+      borderBottomLeftRadius: 1 + "%",
+      borderBottomRightRadius: 1 + "%", },
+    { top: "8%", left: "12.8%", right: "0%",
+      borderTopLeftRadius: 2 + "%",
+      borderTopRightRadius: 2 + "%",
+      borderBottomLeftRadius: 1 + "%",
+      borderBottomRightRadius: 1 + "%",
+     },
+    { top: "10%", left: "0%", right: "10%",
+      borderTopLeftRadius: 2 + "%",
+      borderTopRightRadius: 2 + "%",
+      borderBottomLeftRadius: 1 + "%",
+      borderBottomRightRadius: 1 + "%",
+     },
+    { top: "10%", left: "0%", right: "0%",
+      borderTopLeftRadius: 2 + "%",
+      borderTopRightRadius: 2 + "%",
+      borderBottomLeftRadius: 1 + "%",
+      borderBottomRightRadius: 1 + "%",
+     },
+    { top: "12%", left: "-12.8%", right: "0%",
+      borderTopLeftRadius: 2 + "%",
+      borderTopRightRadius: 2 + "%",
+      borderBottomLeftRadius: 1 + "%",
+      borderBottomRightRadius: 1 + "%",
+     },
+    {top: "12%", left: "-12.8%", right: "0%",
+      borderTopLeftRadius: 2 + "%",
+      borderTopRightRadius: 2 + "%",
+      borderBottomLeftRadius: 1 + "%",
+      borderBottomRightRadius: 1 + "%",
+     },
   ];
   // borderTopLeftRadius: 2 + "%",
   // borderTopRightRadius: 2 + "%",
@@ -335,19 +358,21 @@ const initialState = (): ItemData[] => {
       //   1
       gradientAngle: 0,
       front: {
-        top: 5,
-        paddingLeft: "0%",
-        paddingRight: "0%",
-        borderRadius: "0%",
+        top: "9%",
+        left: "0%",
+        right: "8%",
+        bottom: "0%",
+        borderRadius: "1%",
       },
     },
     {
       //   2
       gradientAngle: 45,
       front: {
-        top: 8,
-        paddingLeft: "8%",
-        paddingRight: "0%",
+        top: "9%",
+        left: "0%",
+        right: "8%",
+        bottom: "0%",
         borderRadius: "1%",
       },
     },
@@ -356,19 +381,21 @@ const initialState = (): ItemData[] => {
       gradientAngle: -45,
       front: {
         top: "9%",
-        paddingRight: "8%",
-        paddingLeft: "0%",
-        borderRadius: "0%",
+        left: "0%",
+        right: "8%",
+        bottom: "0%",
+        borderRadius: "1%",
       },
     },
     {
       // 4
       gradientAngle: 175,
       front: {
-        top: "8%",
-        paddingLeft: "0%",
-        paddingRight: "0%",
-        borderRadius: "0%",
+        top: "9%",
+        left: "0%",
+        right: "8%",
+        bottom: "0%",
+        borderRadius: "1%",
       },
     },
     {
@@ -376,20 +403,27 @@ const initialState = (): ItemData[] => {
       gradientAngle: 45,
       front: {
         top: "9%",
-        paddingRight: "0%",
-        paddingLeft: "8%",
+        left: "0%",
+        right: "8%",
+        bottom: "0%",
         borderRadius: "1%",
       },
     },
     {
       //6
       gradientAngle: -45,
-      front: {},
+      front: {    
+        top: "9%",
+        left: "0%",
+        right: "8%",
+        bottom: "0%",
+        borderRadius: "1%",
+      },
     },
   ];
 
-  let arr: ItemData[] = zIndexes.map((z, i) => {
-    const iData: ItemData = {
+  let itemData: ItemData[] = zIndexes.map((z, i) => {
+   return {
       index: i,
 
       rotationData: {
@@ -440,9 +474,9 @@ const initialState = (): ItemData[] => {
         },
       },
       path: paths[i],
-      listItemZ: zIndexes[i]
+      zIndex: z
     };
-    return iData;
+
   });
-  return arr;
+  return itemData;
 };

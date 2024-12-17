@@ -59,18 +59,24 @@ const ProjectItem = forwardRef<
       ref={ref}
       className={props.className}
       onAnimationComplete={onAnimationComplete}
-
+      custom={itemData}
+      initial={props.initial}
+      animate={props.animate}
+      variants={BaseItemVariants}
       style={{
         filter: "drop-shadow(0 1px 0rem #ccccff)",
-        zIndex: itemData.listItemZ
+        zIndex: itemData.zIndex
       }}
+      // FLYTTA WHILE HOVER till Variant
       whileHover={
         isEnterComplete
           ? {
             scale:
-              itemData.rotationData.itemBase.zIndex === 40
+              itemData.zIndex === 30
                 ? 1.2
-                : itemData.rotationData.itemBase.scale,
+                : 
+                itemData.zIndex === 0?
+                 1: itemData.rotationData.itemBase.scale,
             rotateY: itemData.rotationData.itemBase.rotateY / 1.2,
           }
           : {}
@@ -100,7 +106,7 @@ const ProjectItem = forwardRef<
         </defs>
       </svg>
       <motion.div
-        className=""
+        className="absolute"
         style={{
           filter: "drop-shadow(0 1px 0.2rem white)",
           top: 0,
@@ -116,10 +122,7 @@ const ProjectItem = forwardRef<
           // variants={varia}
           // animate={props.animate}
           // custom={{i: itemData}}
-          custom={itemData}
-          initial={props.initial}
-          animate={props.animate}
-          variants={BaseItemVariants}
+
           style={{
             clipPath: `url(#clippath-${index})`,
 
@@ -168,7 +171,7 @@ const ProjectItem = forwardRef<
           />
 
           <motion.div
-            className=" z-[4] absolute overflow-hidden  "
+            className=" z-[4] absolute overflow-hidden w-full h-full  "
             variants={CardVariants}
             animate={props.animate}
             custom={itemData}
@@ -213,10 +216,7 @@ const BaseItemVariants: Variants = {
   }),
   still: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+  
     transition: { duration: duration },
   }),
 };
@@ -267,15 +267,16 @@ const pathVariant: Variants = {
 
 const CardVariants: Variants = {
   enter: (i: ItemData): TargetAndTransition => ({
-    paddingTop: "10%",
+    //paddingTop: "10%",
+   top: 3,
     left: 0,
     right: 0,
     bottom: 0,
-    paddingBottom: 0,
+    
   }),
   still: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.projectWrapper,
-
+    transition: { duration: duration },
   }),
   rotate: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.projectWrapper,
@@ -284,10 +285,7 @@ const CardVariants: Variants = {
     borderTopRightRadius: 2 + "%",
     borderBottomLeftRadius: 1 + "%",
     borderBottomRightRadius: 1 + "%",
-    top: 12 + "%",
-    left: 12.8 + "%",
-    bottom: 0 + "%",
-    right: 0 + "%",
+    bottom: 0,
     transition: { duration: duration },
   }),
 };
