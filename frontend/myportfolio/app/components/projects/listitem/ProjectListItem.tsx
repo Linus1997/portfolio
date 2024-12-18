@@ -14,6 +14,7 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 import ProjectCard from "../projectcontent/ProjectCard";
 import { path0 } from "../paths";
 import { CoordXY, ItemData } from "../utils/sharedInterfaces";
+import { BaseItemVariants, ContentWrapperVariants, frontBgVariant, FrontFrameVariants, pathVariant, BackgroundVariants } from "./listItemVariants";
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
@@ -51,6 +52,7 @@ const ProjectItem = forwardRef<
       variants={BaseItemVariants}
       style={{
         filter: "drop-shadow(0 1px 0rem #ccccff)",
+
         zIndex: itemData.zIndex
       }}
       // FLYTTA WHILE HOVER till Variant
@@ -110,63 +112,37 @@ const ProjectItem = forwardRef<
           style={{
             clipPath: `url(#clippath-${index})`,
 
-
-
-
           }}
         >
-          <motion.div
-            className="z-[10] absolute w-full h-full pointer-events-none"
-            animate={
-              isEnterComplete
-                ? {
-                  opacity: [0, 8, 0],
 
-                  backgroundImage: backgroundImages,
-                }
-                : {
-                  opacity: 0,
-                }
-            }
-            transition={{
-              delay: 0.5,
-              duration: 1.5,
+
+          <motion.div
+            className=" w-full h-full absolute opacity-100     "
+            variants={BackgroundVariants}
+            animate={props.animate}
+            custom={itemData}
+            style={{
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
             }}
-          />
-          <motion.div
-            className=" z-[3] w-full h-full absolute opacity-100 bg-slate-800 "
-            style={{}}
-            variants={frontBgVariant}
-            animate={props.animate}
-            custom={itemData}
           >
-            <div
-              className="w-full h-full bg-white  "
-              style={{
-                borderRadius: `${itemData.backgroundProps.front.borderRadius}em`,
-              }}
-            />
-          </motion.div>
-          <motion.div
-            className=" z-[1] w-full h-full absolute opacity-100     "
-            variants={rearBgVariant}
-            animate={props.animate}
-            custom={itemData}
-          />
-          <motion.div className=" z-[4] absolute   w-full h-full "
-            variants={CardWrapperVariants}
-            animate={props.animate}
-            custom={itemData}
-
-          >
-            <motion.div
-              className=" z-[4] absolute   w-full h-full "
-              variants={CardVariants}
+            <motion.div className=" absolute   w-full h-full "
+              variants={FrontFrameVariants}
               animate={props.animate}
               custom={itemData}
 
             >
-              <ProjectCard project={project} />
+              <motion.div
+                className="  absolute   w-full h-full "
+                variants={ContentWrapperVariants}
+                animate={props.animate}
+                custom={itemData}
+
+              >
+                <ProjectCard project={project} />
+              </ motion.div>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -174,164 +150,9 @@ const ProjectItem = forwardRef<
     </motion.li>
   );
 });
-const backgroundImages = [
-  `linear-gradient(${45}deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0))`,
-
-  `linear-gradient(${45}deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4) 100%, rgba(255, 255, 255, 0.1))`,
-];
-
-const duration: number = 0.4;
-const BaseItemVariants: Variants = {
-  initial: (): TargetAndTransition => ({
-    visibility: "hidden",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    opacity: 0,
-
-  }),
-  enter: (i: ItemData): TargetAndTransition => ({
-    ...i.enterData.itemBase,
-    transition: { duration: duration },
-  }),
-  rotateLeft: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.itemBase,
-
-    transition: { duration: duration },
-  }),
-  rotateRight: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.itemBase,
-
-    transition: { duration: duration },
-  }),
-  still: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.itemBase,
-
-    transition: { duration: duration },
-  }),
-};
 
 
-const pathVariant: Variants = {
-  initial: (path: string): TargetAndTransition => ({
-    visibility: "hidden",
-    opacity: 0,
-  }),
-  enter: (path: string): TargetAndTransition => ({
-    d: path0
-    ,
-    transition: {
-      duration: duration
-    }
-  }),
-  rotateLeft: (path: string): TargetAndTransition => ({
-    d: path
-    ,
 
-    transition: {
-      duration: duration
-    }
-  }),
-  rotateRight: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: duration
-    }
-  }),
-  still: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: duration
-    }
-  }),
-
-
-};
-
-
-const CardWrapperVariants: Variants = {
-  enter: (i: ItemData): TargetAndTransition => ({
-    //paddingTop: "10%",
-
-
-    top: "6%",
-    left: 0,
-    right: 0,
-    bottom: 0,
-
-  }),
-  still: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.frame,
-    bottom: 0,
-
-  }),
-  rotateLeft: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.frame,
-
-    bottom: 0,
-    transition: { duration: duration },
-  }),
-  rotateRight: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.frame,
-
-    bottom: 0,
-    transition: { duration: duration },
-  }),
-};
-
-const CardVariants: Variants = {
-  enter: (i: ItemData): TargetAndTransition => ({
-    //paddingTop: "10%",
-
-
-    top: "6%",
-    left: 0,
-    right: 0,
-    bottom: 0,
-
-  }),
-  still: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.frame,
-    bottom: 0,
-
-  }),
-  rotateLeft: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.frame,
-
-    bottom: 0,
-    transition: { duration: duration },
-  }),
-  rotateRight: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.frame,
-
-    bottom: 0,
-    transition: { duration: duration },
-  }),
-};
-
-const rearBgVariant: Variants = {
-  rotate: (i: ItemData): TargetAndTransition => ({
-    backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #515252, #1B3541 )`,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    transition: { duration: duration },
-  }),
-};
-
-const frontBgVariant: Variants = {
-  rotate: (i: ItemData): TargetAndTransition => ({
-    ...i.backgroundProps.front,
-
-    transition: { duration: duration },
-  }),
-};
 
 ProjectItem.displayName = "ProjectItem";
 export default ProjectItem;

@@ -1,6 +1,7 @@
 import { path0, path1, path2, path3, path4, path5 } from "../paths";
-import { BackgroundProps, Dimensions, Frame, ItemBase, ItemData } from "../utils/sharedInterfaces";
+import { BackgroundProps, Dimensions, BoxFrame, ItemBase, ItemData } from "../utils/sharedInterfaces";
 import { InitParam, State, VariantState } from "./coordReducer";
+import { backgroundProps, contentWrapper, frontFrame } from "./defaultValues";
 
 
 export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) => {
@@ -123,51 +124,7 @@ export const enterCoords = (dimensions: Dimensions): { x: number[]; y: number[];
 export const initialState = (): ItemData[] => {
   const zIndexes = [30, 20, 10, 0, 10, 20];
   const paths = [path0, path1, path2, path3, path4, path5];
-  const frame: Frame[] = [
-    {
-      top: "6%", left: "0%", right: "0%",
-      borderTopLeftRadius: 2 + "%",
-      borderTopRightRadius: 2 + "%",
-      borderBottomLeftRadius: 1 + "%",
-      borderBottomRightRadius: 1 + "%",
-    },
 
-    {
-      top: "10%", left: "12.8%", right: "0%",
-      borderTopLeftRadius: 2 + "%",
-      borderTopRightRadius: 2 + "%",
-      borderBottomLeftRadius: 1 + "%",
-      borderBottomRightRadius: 1 + "%",
-    },
-    {
-      top: "10%", left: "0%", right: "10%",
-      borderTopLeftRadius: 2 + "%",
-      borderTopRightRadius: 2 + "%",
-      borderBottomLeftRadius: 1 + "%",
-      borderBottomRightRadius: 1 + "%",
-    },
-    {
-      top: "3%", left: "0%", right: "0%",
-      borderTopLeftRadius: 2 + "%",
-      borderTopRightRadius: 2 + "%",
-      borderBottomLeftRadius: 1 + "%",
-      borderBottomRightRadius: 1 + "%",
-    },
-    {
-      top: "12%", left: "-12.8%", right: "0%",
-      borderTopLeftRadius: 2 + "%",
-      borderTopRightRadius: 2 + "%",
-      borderBottomLeftRadius: 1 + "%",
-      borderBottomRightRadius: 1 + "%",
-    },
-    {
-      top: "12%", left: "-12.8%", right: "12.8%",
-      borderTopLeftRadius: 2 + "%",
-      borderTopRightRadius: 2 + "%",
-      borderBottomLeftRadius: 1 + "%",
-      borderBottomRightRadius: 1 + "%",
-    },
-  ];
   // borderTopLeftRadius: 2 + "%",
   // borderTopRightRadius: 2 + "%",
   // borderBottomLeftRadius: 1 + "%",
@@ -176,74 +133,7 @@ export const initialState = (): ItemData[] => {
   // left: 12.8 + "%",
   // bottom: 0 + "%",
   // right: 0 + "%",
-  const backgroundProps: BackgroundProps[] = [
-    {
-      //   1
-      gradientAngle: 0,
-      front: {
-        top: "9%",
-        left: "0%",
-        right: "8%",
-        bottom: "0%",
-        borderRadius: "1%",
-      },
-    },
-    {
-      //   2
-      gradientAngle: 45,
-      front: {
-        top: "9%",
-        left: "0%",
-        right: "8%",
-        bottom: "0%",
-        borderRadius: "1%",
-      },
-    },
-    {
-      // 3
-      gradientAngle: -45,
-      front: {
-        top: "9%",
-        left: "0%",
-        right: "8%",
-        bottom: "0%",
-        borderRadius: "1%",
-      },
-    },
-    {
-      // 4
-      gradientAngle: 175,
-      front: {
-        top: "9%",
-        left: "0%",
-        right: "8%",
-        bottom: "0%",
-        borderRadius: "1%",
-      },
-    },
-    {
-      // 5
-      gradientAngle: 45,
-      front: {
-        top: "9%",
-        left: "0%",
-        right: "8%",
-        bottom: "0%",
-        borderRadius: "1%",
-      },
-    },
-    {
-      //6
-      gradientAngle: -45,
-      front: {
-        top: "9%",
-        left: "0%",
-        right: "8%",
-        bottom: "0%",
-        borderRadius: "1%",
-      },
-    },
-  ];
+ 
 
   let itemData: ItemData[] = zIndexes.map((z, i) => {
     const itmData: ItemData = {
@@ -259,14 +149,12 @@ export const initialState = (): ItemData[] => {
           visibility: "visible",
           opacity: 1,
         },
-        itemWrapper: {
-          scale: 1,
+       
+        frontFrame: {
+          ...frontFrame[i]
         },
-        cardWrapper: {
-          ...frame[i],
-        },
-        frame: {
-          ...frame[i]
+        contentWrapper: {
+          ...contentWrapper[i],
         }
       },
       enterData: {
@@ -281,12 +169,8 @@ export const initialState = (): ItemData[] => {
           rotateX: 0,
           rotateY: 0,
         },
-        itemWrapper: {
-          scale: 1,
-        },
-        projectWrapper: {
-          ...frame[i],
-        },
+        frontFrame: frontFrame[0],
+        contentWrapper: contentWrapper[0]
       },
       backgroundProps: backgroundProps[i],
       dimension: {

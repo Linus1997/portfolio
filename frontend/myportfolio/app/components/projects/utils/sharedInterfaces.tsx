@@ -23,16 +23,15 @@ export interface ItemData {
   
   export interface RotationData {
     itemBase: ItemBase;
-    itemWrapper: ItemWrapper;
-    frame: Frame;
-    cardWrapper: Frame;
+    frontFrame: BoxFrame;
+    contentWrapper: BoxFrame;
   }
   
   
   export interface EnterAnimationData {
     itemBase: ItemBase;
-    
-    projectWrapper: Frame;
+    frontFrame: BoxFrame;
+    contentWrapper: BoxFrame;
   }
   
   export interface ItemBase extends TargetAndTransition {
@@ -46,7 +45,7 @@ export interface ItemData {
     rotateY: number;
   }
 
-  export interface Frame {
+  export interface BoxFrame {
     top: string;
     left: string;
     right: string;

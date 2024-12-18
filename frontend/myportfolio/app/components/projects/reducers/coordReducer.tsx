@@ -118,9 +118,7 @@ export const coordReducer = (state: State, action: CounterAction): State => {
               itemBase: {
                 ...item,
               },
-              itemWrapper: {
-                scale: 1,
-              },
+           
             },
             enterData: {
               ...state.itemData[i].enterData,
