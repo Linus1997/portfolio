@@ -48,6 +48,7 @@ export interface ItemData {
   export interface BoxFrame {
     top: string;
     left: string;
+    bottom: string;
     right: string;
     borderTopLeftRadius: string;
     borderTopRightRadius: string;

@@ -16,13 +16,19 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
   const backLeftX = Math.round(leftX + level3X);
   const level3Y = 20;
 
-  let rotX2 = 20;
-  let rotXBack3 = 10;
-  let itemRightY = -45;
-  let itemBackRightY = 45;
-  let itemBackLeftY = -45;
-  let itemLeftY = 45;
+  // let rotX2 = 20;
+  // let rotXBack3 = 10;
+  // let itemRightY = -45;
+  // let itemBackRightY = 45;
+  // let itemBackLeftY = -45;
+  // let itemLeftY = 45;
 
+  let rotX2 = 0;
+  let rotXBack3 = 0;
+  let itemRightY = 0;
+  let itemBackRightY = 0;
+  let itemBackLeftY = 0;
+  let itemLeftY = 0;
   const updatedCoord: ItemBase[] = [
     {
       x: frontX,

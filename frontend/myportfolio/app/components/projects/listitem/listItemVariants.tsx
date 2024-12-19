@@ -153,7 +153,7 @@ export const ContentWrapperVariants: Variants = {
   }),
   still: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.frontFrame,
-    bottom: 0,
+    
 
   }),
   rotateLeft: (i: ItemData): TargetAndTransition => ({

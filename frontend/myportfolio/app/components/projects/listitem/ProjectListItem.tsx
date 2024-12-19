@@ -65,7 +65,7 @@ const ProjectItem = forwardRef<
                 :
                 itemData.zIndex === 0 ?
                   1 : itemData.rotationData.itemBase.scale,
-            rotateY: itemData.rotationData.itemBase.rotateY / 1.2,
+            rotateY: itemData.rotationData.itemBase.rotateY / 1.08,
           }
           : {}
       }
