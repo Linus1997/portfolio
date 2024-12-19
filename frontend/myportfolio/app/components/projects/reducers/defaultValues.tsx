@@ -56,21 +56,21 @@ export const contentWrapper: BoxFrame[] = [
   },
 
   {
-    top: "10%", left: "12.8%",bottom: "0%", right: "0%",
+    top: "10%", left: "12.8%", bottom: "0%", right: "0%",
     borderTopLeftRadius: 2 + "%",
     borderTopRightRadius: 2 + "%",
     borderBottomLeftRadius: 1 + "%",
     borderBottomRightRadius: 1 + "%",
   },
   {
-    top: "10%", left: "0%", bottom: "0%",right: "10%",
+    top: "10%", left: "0%", bottom: "0%", right: "10%",
     borderTopLeftRadius: 2 + "%",
     borderTopRightRadius: 2 + "%",
     borderBottomLeftRadius: 1 + "%",
     borderBottomRightRadius: 1 + "%",
   },
   {
-    top: "3%", left: "0%",bottom: "0%", right: "0%",
+    top: "3%", left: "0%", bottom: "0%", right: "0%",
     borderTopLeftRadius: 2 + "%",
     borderTopRightRadius: 2 + "%",
     borderBottomLeftRadius: 1 + "%",
@@ -84,7 +84,7 @@ export const contentWrapper: BoxFrame[] = [
     borderBottomRightRadius: 1 + "%",
   },
   {
-    top: "12%", left: "-12.8%", bottom: "0%",right: "12.8%",
+    top: "12%", left: "-12.8%", bottom: "0%", right: "12.8%",
     borderTopLeftRadius: 2 + "%",
     borderTopRightRadius: 2 + "%",
     borderBottomLeftRadius: 1 + "%",
@@ -94,69 +94,48 @@ export const contentWrapper: BoxFrame[] = [
 
 export const backgroundProps: BackgroundProps[] = [
   {
-    //   1
+
     gradientAngle: 0,
-    front: {
-      top: "9%",
-      left: "0%",
-      right: "8%",
-      bottom: "0%",
-      borderRadius: "1%",
-    },
+
+    rotationXY: {
+      rotateX: 0,
+      rotateY: 0,
+    }
   },
   {
-    //   2
+
     gradientAngle: 45,
-    front: {
-      top: "9%",
-      left: "0%",
-      right: "8%",
-      bottom: "0%",
-      borderRadius: "1%",
-    },
+    rotationXY: {
+      rotateX: 20,
+      rotateY: -45,
+    }
   },
   {
-    // 3
     gradientAngle: -45,
-    front: {
-      top: "9%",
-      left: "0%",
-      right: "8%",
-      bottom: "0%",
-      borderRadius: "1%",
-    },
+    rotationXY: {
+      rotateX: 20,
+      rotateY: 45,
+    }
   },
   {
-    // 4
     gradientAngle: 175,
-    front: {
-      top: "9%",
-      left: "0%",
-      right: "8%",
-      bottom: "0%",
-      borderRadius: "1%",
-    },
+    rotationXY: {
+      rotateX: 0,
+      rotateY: 0,
+    }
   },
   {
-    // 5
     gradientAngle: 45,
-    front: {
-      top: "9%",
-      left: "0%",
-      right: "8%",
-      bottom: "0%",
-      borderRadius: "1%",
-    },
+    rotationXY: {
+      rotateX: 20,
+      rotateY: -45,
+    }
   },
   {
-    //6
     gradientAngle: -45,
-    front: {
-      top: "9%",
-      left: "0%",
-      right: "8%",
-      bottom: "0%",
-      borderRadius: "1%",
-    },
+    rotationXY: {
+      rotateX: 0,
+      rotateY: 45,
+    }
   },
 ];

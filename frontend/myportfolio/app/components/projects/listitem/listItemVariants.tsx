@@ -83,23 +83,23 @@ export const BackgroundVariants: Variants = {
   
   enter: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    
+    ...i.backgroundProps.rotationXY,
     transition: { duration: duration },
   }),
   still: (i: ItemData): TargetAndTransition => ({
     //backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #515252, #1B3541 )`,
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    
+    ...i.backgroundProps.rotationXY,
     transition: { duration: duration },
   }),
   rotateLeft: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8 )`,
-    
+    ...i.backgroundProps.rotationXY,
     transition: { duration: duration },
   }),
   rotateRight: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    
+    ...i.backgroundProps.rotationXY,
     transition: { duration: duration },
   }),
   
@@ -172,10 +172,3 @@ export const ContentWrapperVariants: Variants = {
 
 
 
-export const frontBgVariant: Variants = {
-  rotate: (i: ItemData): TargetAndTransition => ({
-    ...i.backgroundProps.front,
-
-    transition: { duration: duration },
-  }),
-};

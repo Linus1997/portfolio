@@ -23,18 +23,12 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
   // let itemBackLeftY = -45;
   // let itemLeftY = 45;
 
-  let rotX2 = 0;
-  let rotXBack3 = 0;
-  let itemRightY = 0;
-  let itemBackRightY = 0;
-  let itemBackLeftY = 0;
-  let itemLeftY = 0;
+
   const updatedCoord: ItemBase[] = [
     {
       x: frontX,
       y: frontY,
-      rotateX: 0,
-      rotateY: 0,
+   
       scale: 1,
       visibility: "visible",
       opacity: 1,
@@ -42,8 +36,6 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
     {
       x: rightX,
       y: level2Y,
-      rotateX: rotX2,
-      rotateY: itemRightY,
       scale: 0.99,
       visibility: "visible",
       opacity: 1,
@@ -51,8 +43,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
     {
       x: backRightX,
       y: level3Y,
-      rotateX: rotXBack3,
-      rotateY: itemBackRightY,
+      
 
       scale: 0.95,
       visibility: "visible",
@@ -61,8 +52,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
     {
       x: frontX,
       y: 0,
-      rotateX: 0,
-      rotateY: 0,
+     
       scale: 0.9,
       visibility: "visible",
       opacity: 1,
@@ -70,8 +60,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
     {
       x: backLeftX,
       y: level3Y,
-      rotateX: rotXBack3,
-      rotateY: itemBackLeftY,
+ 
       scale: 0.95,
       visibility: "visible",
       opacity: 1,
@@ -79,8 +68,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
     {
       x: leftX,
       y: level2Y,
-      rotateX: rotX2,
-      rotateY: itemLeftY,
+  
       scale: 0.99,
       visibility: "visible",
       opacity: 1,
@@ -149,8 +137,7 @@ export const initialState = (): ItemData[] => {
         itemBase: {
           x: 0,
           y: 0,
-          rotateX: 0,
-          rotateY: 0,
+   
           scale: 1,
           visibility: "visible",
           opacity: 1,
@@ -172,8 +159,6 @@ export const initialState = (): ItemData[] => {
           visibility: "visible",
           opacity: i === 0 ? [0, 0.8] : 0,
 
-          rotateX: 0,
-          rotateY: 0,
         },
         frontFrame: frontFrame[0],
         contentWrapper: contentWrapper[0]

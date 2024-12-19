@@ -14,10 +14,14 @@ export interface ItemData {
     x: number;
     y: number;
   }
-  
+  export interface RotationPair {
+    rotateX: number;
+    rotateY: number;
+  }
   export interface BackgroundProps {
     gradientAngle: number;
-    front: TargetAndTransition;
+    rotationXY: RotationPair;
+    
   }
   
   
@@ -34,15 +38,14 @@ export interface ItemData {
     contentWrapper: BoxFrame;
   }
   
-  export interface ItemBase extends TargetAndTransition {
+  export interface ItemBase {
     x: number[] | number;
     y: number[] | number;
     scale: number[] | number;
     visibility: "visible" | "hidden";
     opacity: number[] | number;
   
-    rotateX: number;
-    rotateY: number;
+
   }
 
   export interface BoxFrame {

@@ -14,7 +14,7 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 import ProjectCard from "../projectcontent/ProjectCard";
 import { path0 } from "../paths";
 import { CoordXY, ItemData } from "../utils/sharedInterfaces";
-import { BaseItemVariants, ContentWrapperVariants, frontBgVariant, FrontFrameVariants, pathVariant, BackgroundVariants } from "./listItemVariants";
+import { BaseItemVariants, ContentWrapperVariants, FrontFrameVariants, pathVariant, BackgroundVariants } from "./listItemVariants";
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
@@ -65,7 +65,7 @@ const ProjectItem = forwardRef<
                 :
                 itemData.zIndex === 0 ?
                   1 : itemData.rotationData.itemBase.scale,
-            rotateY: itemData.rotationData.itemBase.rotateY / 1.08,
+          
           }
           : {}
       }
@@ -106,7 +106,7 @@ const ProjectItem = forwardRef<
 
 
         <motion.div
-          className={" relative w-56 h-56  "}
+          className={" absolute w-56 h-56  "}
 
 
           style={{
