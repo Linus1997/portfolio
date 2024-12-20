@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100"
+   height="100"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1" /><g
+     id="layer1"><path
+       d="M 1, 2.7 C 0.5,2.85 0,3 0,4 L 0, 10 C 0, 10 0, 10 0, 10 L 0, 90 C 0, 90 0, 90 0,90 L 0,98 C 0 , 99 0,100 2, 100 L 10, 100 C 10,100 10,100 10, 100 L 90, 100 C 90, 100 90, 100 90,100 L 98,100 C 99, 100 100,100 100, 98 L 100, 90 C 100, 90 100, 90 100, 90 L 100, 10 C 100, 10 100, 10 100, 10 L 100, 4 C 100,3 99.5, 2.85 99,2.7 L 91, 0.3 C 90.5,0.15 90,0 89,0 L 11, 0 C 10,0 9.5,0.15 9,0.3 Z"
+       id="path0"
+       style="display:inline;fill:#cccccc;stroke-width:0.833333" /><path
+       style="display:inline;opacity:1;fill:#e9afaf;stroke-width:0.918642"
+       d="m 13,30 v 5 58 l 9,7 8.125,-2.375 48.75,-14.25 L 87,81 V 74 18.182 7 L 78,0 13,18.5 Z"
+       id="path1" /><path
+       style="display:none;opacity:1;fill:#e9afaf;stroke-width:0.918642"
+       d="M 13,7 V 18.182 74 81 l 8.125,2.375 48.75,14.25 L 78,100 87,93 V 35 30 18.5 L 22,0 Z"
+       id="path5" /></g></svg>

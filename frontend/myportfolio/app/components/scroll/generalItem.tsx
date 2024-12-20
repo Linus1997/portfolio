@@ -27,21 +27,22 @@ interface dimensions {
 
 
 
-interface props{
- path : string;
- rotX: number;
- rotY: number;
- id: number;
- front: TargetAndTransition;
- path2: string;
- morphState:string
+interface props {
+  path: string;
+  rotX: number;
+  rotY: number;
+  id: number;
+  front: TargetAndTransition;
+  front2: TargetAndTransition;
+  path2: string;
+  morphState: string
 }
 
 
 
-const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: props) => {
+const GeneralItem = ({ path, rotX, rotY, id: key, front, front2, path2, morphState }: props) => {
   const test = useRef<HTMLDivElement>(null);
- 
+
   const [dim, setDim] = useState<dimensions>({ x: 0, y: 0, top: 0, left: 0, right: 0, bottom: 0 });
 
 
@@ -49,8 +50,8 @@ const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: prop
 
   useLayoutEffect(() => {
     const a = test.current?.getBoundingClientRect();
-   
-    if (a ) {
+
+    if (a) {
       setDim({
         x: a?.width,
         y: a?.height,
@@ -59,7 +60,7 @@ const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: prop
         bottom: a.bottom,
         right: a.right,
       });
-   
+
     }
 
   }, []);
@@ -68,7 +69,7 @@ const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: prop
 
 
 
-  
+
   return (
     <div id="HAAAHAAA" className="bg-slate-400 h-[500px] w-[500px] relative py-7 px-7 ">
       {dim &&
@@ -88,8 +89,8 @@ const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: prop
               <motion.path
                 variants={pathVariant}
                 animate={morphState}
-                custom={{path: path, path2: path2}}
-                
+                custom={{ path: path, path2: path2 }}
+
               />
             </motion.clipPath>
 
@@ -99,18 +100,17 @@ const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: prop
         <motion.div
           ref={test}
           className="relative w-96 h-96  "
-          variants={BaseItemVariants}
-          animate={morphState}
-          custom={{rotX, rotY}}
        
+         
+
         >
 
           <motion.div
-            
-            className="absolute  bg-amber-200"
+
+            className="absolute  bg-amber-200 h-full w-full"
             variants={shapeBoxVariant}
             animate={morphState}
-           
+
             style={{
               clipPath: `url(#path-${key})`,
 
@@ -121,15 +121,15 @@ const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: prop
             }}
 
           >
-            {/* <motion.div
+            <motion.div
               className="absolute  bg-blue-700"
               variants={frontVariant}
-              animate={variant}
-              custom={front}
-            
-            /> */}
-            
-            
+              animate={morphState}
+              custom={{ front, front2 }}
+
+            />
+
+
 
           </motion.div>
 
@@ -150,17 +150,17 @@ const GeneralItem = ({path, rotX, rotY, id: key, front, path2, morphState}: prop
 
 const duration = 0.2;
 const pathVariant: Variants = {
-  default: ({path, path2}): TargetAndTransition =>  ({
+  default: ({ path, path2 }): TargetAndTransition => ({
     d: path,
-    transition:{
+    transition: {
       duration: duration
     }
   }),
-  morph: ({path, path2}): TargetAndTransition => ({
+  morph: ({ path, path2 }): TargetAndTransition => ({
     d: path2
     ,
-   
-    transition:{
+
+    transition: {
       duration: duration
     }
   }),
@@ -169,22 +169,18 @@ const pathVariant: Variants = {
 
 
 const BaseItemVariants: Variants = {
-  default: (): TargetAndTransition => ({
-    top: 0 + "%",
-    left: 0 + "%",
-    bottom: 0 + "%",
-    right: 0 + "%",
-
-    scale: 1, 
-    transition:{
+  default: ({ rotX, rotY }: { rotX: string, rotY: string }): TargetAndTransition => ({
+   
+  
+    transition: {
       duration: duration
     }
   }),
 
-  morph: ({rotX, rotY}:{rotX:string, rotY:string}) : TargetAndTransition => ({
-  
-    scale: 1, 
-    transition:{
+  morph: ({ rotX, rotY }: { rotX: string, rotY: string }): TargetAndTransition => ({
+
+
+    transition: {
       duration: duration
     }
   }),
@@ -207,30 +203,19 @@ const shapeBoxVariant: Variants = {
   },
 };
 const frontVariant: Variants = {
-  default: {
-    
-    borderTopLeftRadius: 2 + "%",
-    borderTopRightRadius: 2 + "%",
-    
-    borderBottomLeftRadius: 1 +"%",
-    borderBottomRightRadius: 1 + "%",
+  default: ({ front, front2 }: { front: TargetAndTransition, front2: TargetAndTransition }): TargetAndTransition => ({
+    ...front,
 
-    top: 3 + "%",
-    left: 0 + "%",
-    bottom: 0 + "%",
-    right: 0 + "%",
-    
-    transition:{
-      duration: duration
+    transition: {
+      duration: duration 
     }
+  }),
 
-  },
+  morph: ({ front, front2 }: { front: TargetAndTransition, front2: TargetAndTransition }): TargetAndTransition => ({
+    ...front2,
 
-  morph: (target: TargetAndTransition): TargetAndTransition => ({
-    ...target,
-
-    transition:{
-      duration: duration
+    transition: {
+      duration: duration 
     }
   }),
 };
