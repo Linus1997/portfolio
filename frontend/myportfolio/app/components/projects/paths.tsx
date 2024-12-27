@@ -94,7 +94,7 @@ export const path3 = `
             C 13,0   12.5,0.125   12,0.25
         z
     `;
-export const path2 = "";`
+export const path2 = `
     M 1.5,2.5
         C 0,3  0,4  0,6
     L 0,98
@@ -113,7 +113,7 @@ export const path2 = "";`
         C 13,0   12.5,0.125   12,0.25
     z
 `;
-export const path4 = ""; `
+export const path4 =  `
         M 1.5,2.5
             C 0,3  0,4  0,6
         L 0,98

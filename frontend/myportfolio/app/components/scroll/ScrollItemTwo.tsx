@@ -134,44 +134,48 @@ Z
 ;
 let test1 = `
 M 13, 30
-    C 13,30 13,30 13,30
+C 13,30 13,30 13,30
 L 13, 35
-    C 13, 35 13, 35 13, 35
-L 13, 90.5
-    C 13, 91 13.5,91.5 14,92
+C 13, 35 13, 35 13, 35
+L 13, 92
+C 13, 93 13.5,93.5 14,94
 L 21, 99
-    C 22, 100 23,99.71 23,99.71
-L 30.125, 97.625
-    C 30.125, 97.625 30.125, 97.625 30.125, 97.625
-L 78.875, 83.375
-    C 78.875, 83.375 78.875, 83.375 78.875, 83.375
-L 86, 81.29
-    C 86, 81.29 87, 81 87,80
+C 22, 100 23,99.7 23,99.7
+L 30.1, 97.6
+C 30.1, 97.6 30.1, 97.6 30.1, 97.6
+L 78.9, 84
+C 78.9, 84 78.9, 84 78.9, 84
+L 86, 82.2
+C 86,82.2 87,82 87,80.8
 L 87, 74
-    C 87, 74 87, 74 87, 74
-L 87, 18.182
-    C 87, 18.182 87, 18.182 87, 18.182
-L 87, 9.5
-    C 87, 9 86.5, 8.5 86,8
+C 87, 74 87, 74 87, 74
+L 87, 18.2
+C 87, 18.2 87, 18.2 87, 18.2
+L 87, 7
+C 87,6.8 86.7,6.5 86,6
 L 79, 1
-    C 78, 0 77,0.29 77,0.29
-L 14, 17.71
-    C 13, 18 13, 19 13,20
+C 78, 0 77,0.3 77,0.3
+L 14, 17.7
+C 13, 18 13, 19 13,20
 Z
 `
 let frame1 = 
 `
-m 22,27
-v 73
-L 87,81
-V 9
+M 23,24.8
+C 22.5,24.9 22, 25 22,26
+L 22, 100
+L 87, 82.2
+L 87, 7
+C 87,7 87,7 87,7
 Z
 `
 let frame0 = `
-M 0,6 
-l 0,100
-l 100,100
-l 100,6
+M 0.5, 5.5
+C 0,8 0,9 0,10
+L 0,100
+L 100,100
+L 100,10
+C 100,9 100,8 99.5, 5.5
 z
 `
 
@@ -212,27 +216,27 @@ const ScrollItemTwo = () => {
   const [morph, setMorph] = useState<string>("default")
   return (
     <div className="relative bg-white flex flex-row">
-      {/* <ProjectCarousel /> */}
+      <ProjectCarousel />
       <div>
 
         <div>
 
-          <GeneralItem id={1} path={test5} rotX={0} rotY={0} front={target5} front2={target0} path2={test0} morphState={morph}  />
-          <GeneralItem id={2} path={test0} rotX={0} rotY={0} front={target0} front2={target5}  path2={test5} morphState={morph} />
+          <GeneralItem id={1} path={test5} rotX={0} rotY={0} front={target5} front2={target0} path2={test0} morphState={morph} frame1={""} frame2={""}  />
+          <GeneralItem id={2} path={test0} rotX={0} rotY={0} front={target0} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
         </div>
 
       </div>
 
       <div>
 
-        <GeneralItem id={3} path={test1} rotX={0} rotY={0} front={target1} front2={target0} path2={test0} morphState={morph} />
-        <GeneralItem id={4} path={test0} rotX={0} rotY={0} front={target0} front2={target1} path2={test1} morphState={morph} />
+        <GeneralItem id={3} path={test1} rotX={0} rotY={0} front={target1} front2={target0} path2={test0} morphState={morph} frame1={frame1} frame2={frame0} />
+        <GeneralItem id={4} path={test0} rotX={0} rotY={0} front={target0} front2={target1} path2={test1} morphState={morph} frame1={""} frame2={""} />
       </div>
 
       <div>
 
-        <GeneralItem id={5} path={frame0} rotX={0} rotY={0} front={target5} front2={target1} path2={frame1} morphState={morph} />
-        <GeneralItem id={6} path={test1} rotX={0} rotY={0} front={target1} front2={target5} path2={test5} morphState={morph} />
+        <GeneralItem id={5} path={test5} rotX={0} rotY={0} front={target5} front2={target1} path2={test1} morphState={morph} frame1={""} frame2={""} />
+        <GeneralItem id={6} path={test1} rotX={0} rotY={0} front={target1} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
       </div>
       <div>
         <div>
