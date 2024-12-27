@@ -22,9 +22,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="45.254834"
-     inkscape:cx="92.343726"
-     inkscape:cy="11.181126"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="-37.918601"
+     inkscape:cy="83.085047"
      inkscape:window-width="2540"
      inkscape:window-height="1381"
      inkscape:window-x="0"
@@ -80,4 +80,8 @@
        id="path1" /><path
        style="display:none;opacity:1;fill:#e9afaf;stroke-width:0.918642"
        d="M 13,7 V 18.182 74 81 l 8.125,2.375 48.75,14.25 L 78,100 87,93 V 35 30 18.5 L 22,0 Z"
-       id="path5" /></g></svg>
+       id="path5" /><path
+       d="M 23, 17.71 L 30.125, 97.625 C 30.125, 97.625 30.125, 97.625 30.125, 97.625 L 78.875, 83.375 C 78.875, 83.375 78.875, 83.375 78.875, 83.375 L 86, 81.29 C 86, 81.29 87, 81 87,80 L 87, 74 C 87, 74 87, 74 87, 74 L 87, 18.182 C 87, 18.182 87, 18.182 87, 18.182 L 87, 9.5 C 87, 9 86.5, 8.5 86,8 L 79, 1 C 78, 0 77,0.29 77,0.29 Z"
+       id="path2"
+       style="stroke-width:0.851183"
+       sodipodi:nodetypes="ccccc" /></g></svg>

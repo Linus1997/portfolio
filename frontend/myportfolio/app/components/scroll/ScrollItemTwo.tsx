@@ -159,6 +159,22 @@ L 14, 17.71
     C 13, 18 13, 19 13,20
 Z
 `
+let frame1 = 
+`
+m 22,27
+v 73
+L 87,81
+V 9
+Z
+`
+let frame0 = `
+M 0,6 
+l 0,100
+l 100,100
+l 100,6
+z
+`
+
 // let test5=`M 13, 9.5
 // L 13, 18.182
 // L 13, 74
@@ -215,7 +231,7 @@ const ScrollItemTwo = () => {
 
       <div>
 
-        <GeneralItem id={5} path={test5} rotX={0} rotY={0} front={target5} front2={target1} path2={test1} morphState={morph} />
+        <GeneralItem id={5} path={frame0} rotX={0} rotY={0} front={target5} front2={target1} path2={frame1} morphState={morph} />
         <GeneralItem id={6} path={test1} rotX={0} rotY={0} front={target1} front2={target5} path2={test5} morphState={morph} />
       </div>
       <div>
