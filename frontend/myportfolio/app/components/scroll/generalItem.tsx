@@ -1,9 +1,12 @@
+import { getProjects } from "@/app/utils/helperfunction";
+import { ProjectInterface } from "@/app/utils/interfaces";
 import {
   motion,
   TargetAndTransition,
   Variants,
 } from "framer-motion";
 import { useLayoutEffect, useRef, useState } from "react";
+import ProjectCard from "../projects/projectcontent/ProjectCard";
 
 
 
@@ -42,13 +45,12 @@ interface props {
 
 
 
-const GeneralItem = ({ path, rotX, rotY, id: key, front, front2, path2, morphState , frame1, frame2}: props) => {
+const GeneralItem = ({ path, rotX, rotY, id: key, front, front2, path2, morphState, frame1, frame2 }: props) => {
   const test = useRef<HTMLDivElement>(null);
 
   const [dim, setDim] = useState<dimensions>({ x: 0, y: 0, top: 0, left: 0, right: 0, bottom: 0 });
 
-
-
+  const [projects] = useState<ProjectInterface[]>(getProjects());
 
   useLayoutEffect(() => {
     const a = test.current?.getBoundingClientRect();
@@ -114,8 +116,8 @@ const GeneralItem = ({ path, rotX, rotY, id: key, front, front2, path2, morphSta
         <motion.div
           ref={test}
           className="relative w-96 h-96  "
-       
-         
+
+
 
         >
 
@@ -138,20 +140,28 @@ const GeneralItem = ({ path, rotX, rotY, id: key, front, front2, path2, morphSta
             <motion.div
               className="absolute  bg-blue-700"
               variants={shapeBoxVariant}
-              
+
               // variants={frontVariant}
-               animate={morphState}
+              animate={morphState}
               // custom={{ front, front2 }}
               style={{
                 clipPath: `url(#frame-${key})`,
-  
-  
-  
+
+
+
                 //  rotateY: 2.25+"%",
                 //  rotateX: 2.25 + "%",
               }}
-            />
-
+            >
+              <motion.div 
+              className=" h-full w-full absolute"
+              variants={frontVariant}
+              custom={{ front, front2 }}
+              animate={morphState}
+              >
+              <ProjectCard project={projects[0]} />
+              </motion.div>
+            </motion.div>
 
 
           </motion.div>
@@ -208,8 +218,8 @@ const frameVariant: Variants = {
 
 const BaseItemVariants: Variants = {
   default: ({ rotX, rotY }: { rotX: string, rotY: string }): TargetAndTransition => ({
-   
-  
+
+
     transition: {
       duration: duration
     }
@@ -245,7 +255,7 @@ const frontVariant: Variants = {
     ...front,
 
     transition: {
-      duration: duration 
+      duration: duration
     }
   }),
 
@@ -253,7 +263,7 @@ const frontVariant: Variants = {
     ...front2,
 
     transition: {
-      duration: duration 
+      duration: duration
     }
   }),
 };

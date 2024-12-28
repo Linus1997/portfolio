@@ -13,24 +13,26 @@ const target0 = {
   borderBottomLeftRadius: 1 + "%",
   borderBottomRightRadius: 1 + "%",
  
-  top: 6+ "%",
+  top: 0+ "%",
   left: 0 + "%",
   bottom: 0 + "%",
   right: 0 + "%",
   rotateX: 0,
-  rotateY: 0
+  rotateY: 0,
+ 
 }
 const target1 = {
   borderTopLeftRadius: 2 + "%",
   borderTopRightRadius: 2 + "%",
   borderBottomLeftRadius: 1 + "%",
   borderBottomRightRadius: 1 + "%",
-  top: 15 + "%",
-  left: 13 + "%",
+  top: 0 + "%",
+  left: 0 + "%",
   bottom: 0 + "%",
   right: 0 + "%",
   rotateX: 20,
-  rotateY: -40
+  rotateY: -40,
+
 }
 
 
@@ -39,41 +41,15 @@ const target5 = {
   borderTopRightRadius: 2 + "%",
   borderBottomLeftRadius: 1 + "%",
   borderBottomRightRadius: 1 + "%",
-  top: 13 + "%",
+  top: 0 + "%",
   left: 0 + "%",
   bottom: 0 + "%",
-  right: 12 + "%",
+  right: 0 + "%",
   rotateX: 20,
   rotateY: 40
 }
 ;
-`
-M 1, 2.7
-C 0.5,2.85 0,3 0,4
-L 0, 10
-C 0, 10 0, 10 0, 10
-L 0, 90
-C 0, 90 0, 90 0,90
-L 0,98
-C 0 , 99 0,100 2, 100
-L 10, 100
-C 10,100 10,100 10, 100
-L 90, 100
-C 90, 100 90, 100 90,100
-L 98,100
-C 99, 100 100,100 100, 98
-L 100, 90
-C 100, 90 100, 90 100, 90
-L 100, 10
-C 100, 10 100, 10 100, 10
-L 100, 4
-C 100,3 99.5, 2.85 99,2.7
-L 91, 0.3
-C 90.5,0.15 90,0 89,0
-L 11, 0
-C 10,0 9.5,0.15 9,0.3
-Z
-`;
+
 // const path0 = `
 //  M 0,3
 // L 0, 10
@@ -116,22 +92,7 @@ L 8, 0
 C 7,0 6.5,0.15 6,0.5
 Z
 `
-// const path1 = `
-// M 13, 30
-// L 13, 30
-// L 13, 91
-// L 22, 100
-// L 30.125, 97.625
-// L 78.875, 83.375
-// L 87, 81
-// L 87, 74
-// L 87, 18.182
-// L 87, 8
-// L 78, 0
-// L 13, 18.5
-// Z`
-// path 1
-;
+
 let test1 = `
 M 13, 30
 C 13,30 13,30 13,30
@@ -150,11 +111,11 @@ C 86,82.2 87,82 87,80.8
 L 87, 74
 C 87, 74 87, 74 87, 74
 L 87, 18.2
-C 87, 18.2 87, 18.2 87, 18.2
+C 87, 18.2  87,18.2  87,18.2
 L 87, 7
-C 87,6.8 86.7,6.5 86,6
+C 87,6.8  86.7,6.5   86,6
 L 79, 1
-C 78, 0 77,0.3 77,0.3
+C 78,0 77,0.3 77,0.3
 L 14, 17.7
 C 13, 18 13, 19 13,20
 Z
@@ -171,12 +132,21 @@ Z
 `
 let frame0 = `
 M 0.5, 5.5
-C 0,8 0,9 0,10
+C 0,6 0,6.5 0,7
 L 0,100
 L 100,100
-L 100,10
-C 100,9 100,8 99.5, 5.5
+L 100,7
+C 100,6.5 100,6 99.5, 5.5
 z
+`
+
+let frame5 = `M 13,7
+C 13,7 13,7 13,7
+L 13, 82.2
+L 78, 100
+L 78, 26
+C 78,25 77.5,24.9 77,24.8
+Z
 `
 
 // let test5=`M 13, 9.5
@@ -195,20 +165,47 @@ z
 // Z`
 
 let test5 = `
-M 13, 7
-L 13, 18.182
+M 14, 6
+C 13.3,6.5 13,6.8 13,7
+L 13, 18.2
+C 13, 18.2 13, 18.2 13, 18.2
 L 13, 74
-L 13, 81
-L 21.125, 83.375
-L 69.875, 97.625
-L 78.000, 100
-L 87.000, 93
-L 87.000, 35
+C 13, 74 13, 74 13, 74
+L 13, 80.8
+C 13,80.8 13,82 14,82.2
+L 21.1, 84
+C 21.1, 84 21.1, 84 21.1, 84
+L 69.9, 97.6
+C 69.9, 97.6 69.9, 97.6 69.9, 97.6
+L 77, 99.7
+C 77,99.7 78,100 79,99
+L 86,94
+C 86.5,93.5 87,93 87,92
+L 87, 35
+C 87, 35 87, 35 87, 35
 L 87, 30
-L 87, 18.5
-L 22, 0
+C 87, 30 87, 30 87, 30
+L 87, 20
+C 87,19 87,18 86,17.7
+L 23, 0.3
+C 23,0.3 22,0 21,1
 Z
 `
+//`
+// M 13, 7
+// L 13, 18.182
+// L 13, 74
+// L 13, 81
+// L 21.125, 83.375
+// L 69.875, 97.625
+// L 78.000, 100
+// L 87.000, 93
+// L 87.000, 35
+// L 87, 30
+// L 87, 18.5
+// L 22, 0
+// Z
+// `
 
 
 
@@ -216,12 +213,12 @@ const ScrollItemTwo = () => {
   const [morph, setMorph] = useState<string>("default")
   return (
     <div className="relative bg-white flex flex-row">
-      <ProjectCarousel />
+      {/* <ProjectCarousel /> */}
       <div>
 
         <div>
 
-          <GeneralItem id={1} path={test5} rotX={0} rotY={0} front={target5} front2={target0} path2={test0} morphState={morph} frame1={""} frame2={""}  />
+          <GeneralItem id={1} path={test5} rotX={0} rotY={0} front={target5} front2={target0} path2={test0} morphState={morph} frame1={frame5} frame2={frame0}  />
           <GeneralItem id={2} path={test0} rotX={0} rotY={0} front={target0} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
         </div>
 
@@ -235,7 +232,7 @@ const ScrollItemTwo = () => {
 
       <div>
 
-        <GeneralItem id={5} path={test5} rotX={0} rotY={0} front={target5} front2={target1} path2={test1} morphState={morph} frame1={""} frame2={""} />
+        <GeneralItem id={5} path={test5} rotX={0} rotY={0} front={target5} front2={target1} path2={test1} morphState={morph} frame1={frame5} frame2={frame1} />
         <GeneralItem id={6} path={test1} rotX={0} rotY={0} front={target1} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
       </div>
       <div>

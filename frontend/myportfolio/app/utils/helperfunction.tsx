@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useReducer } from "react";
-
+import testdata from "./testdata.json";
 export const clickHandler = (setHasClicked: Dispatch<SetStateAction<boolean>>) => {
     setHasClicked(true);
     setTimeout(()=>{
@@ -24,5 +24,5 @@ export const rotateArray = <T extends any>(arr: T[], count: number = 1): T[] => 
   return [...arr.slice(a, arr.length), ...arr.slice(0, a)];
 };
 
-
+export const getProjects = () =>  [...testdata]
 
