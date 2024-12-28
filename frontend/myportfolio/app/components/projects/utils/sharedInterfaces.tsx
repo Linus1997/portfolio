@@ -6,8 +6,9 @@ export interface ItemData {
     enterData: EnterAnimationData;
     backgroundProps: BackgroundProps;
     dimension: Dimensions;
-    path: string;
+    shapePath: string;
     zIndex: number;
+    framePath: string;
   
   }
   export interface CoordXY {
@@ -27,15 +28,14 @@ export interface ItemData {
   
   export interface RotationData {
     itemBase: ItemBase;
-    frontFrame: BoxFrame;
-    contentWrapper: BoxFrame;
+   
+    
   }
   
   
   export interface EnterAnimationData {
     itemBase: ItemBase;
-    frontFrame: BoxFrame;
-    contentWrapper: BoxFrame;
+   
   }
   
   export interface ItemBase {

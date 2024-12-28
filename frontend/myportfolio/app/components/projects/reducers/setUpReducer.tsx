@@ -1,7 +1,7 @@
-import { path0, path1, path2, path3, path4, path5 } from "../paths";
+import { frame0, frame1, frame2, frame3, frame4, frame5, path0, path1, path2, path3, path4, path5 } from "../paths";
 import { BackgroundProps, Dimensions, BoxFrame, ItemBase, ItemData } from "../utils/sharedInterfaces";
 import { InitParam, State, VariantState } from "./coordReducer";
-import { backgroundProps, contentWrapper, frontFrame } from "./defaultValues";
+import { backgroundProps} from "./defaultValues";
 
 
 export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) => {
@@ -45,7 +45,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       y: level3Y,
       
 
-      scale: 0.95,
+      scale: 1,
       visibility: "visible",
       opacity: 1,
     },
@@ -53,7 +53,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       x: frontX,
       y: 0,
      
-      scale: 0.9,
+      scale: 0.85,
       visibility: "visible",
       opacity: 1,
     },
@@ -61,7 +61,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
       x: backLeftX,
       y: level3Y,
  
-      scale: 0.95,
+      scale: 1,
       visibility: "visible",
       opacity: 1,
     },
@@ -117,8 +117,8 @@ export const enterCoords = (dimensions: Dimensions): { x: number[]; y: number[];
 };
 export const initialState = (): ItemData[] => {
   const zIndexes = [30, 20, 10, 0, 10, 20];
-  const paths = [path0, path1, path2, path3, path4, path5];
-
+  const shapePaths = [path0, path1, path2, path3, path4, path5];
+  const framePaths = [frame0, frame1, frame2, frame3, frame4, frame5]
   // borderTopLeftRadius: 2 + "%",
   // borderTopRightRadius: 2 + "%",
   // borderBottomLeftRadius: 1 + "%",
@@ -137,18 +137,14 @@ export const initialState = (): ItemData[] => {
         itemBase: {
           x: 0,
           y: 0,
-   
+
           scale: 1,
           visibility: "visible",
           opacity: 1,
         },
-       
-        frontFrame: {
-          ...frontFrame[i]
-        },
-        contentWrapper: {
-          ...contentWrapper[i],
-        }
+
+      
+     
       },
       enterData: {
         itemBase: {
@@ -158,10 +154,8 @@ export const initialState = (): ItemData[] => {
           scale: [0, 1],
           visibility: "visible",
           opacity: i === 0 ? [0, 0.8] : 0,
-
         },
-        frontFrame: frontFrame[0],
-        contentWrapper: contentWrapper[0]
+     
       },
       backgroundProps: backgroundProps[i],
       dimension: {
@@ -174,8 +168,9 @@ export const initialState = (): ItemData[] => {
           y: 0,
         },
       },
-      path: paths[i],
-      zIndex: z
+      shapePath: shapePaths[i],
+      zIndex: z,
+      framePath: framePaths[i]
     };
     return itmData;
   });

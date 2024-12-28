@@ -14,7 +14,7 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 import ProjectCard from "../projectcontent/ProjectCard";
 import { path0 } from "../paths";
 import { CoordXY, ItemData } from "../utils/sharedInterfaces";
-import { BaseItemVariants, ContentWrapperVariants, FrontFrameVariants, pathVariant, BackgroundVariants } from "./listItemVariants";
+import { BaseItemVariants, shapePathVariant, BackgroundVariants, framePathVariant, FrontFrameVariants } from "./listItemVariants";
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
@@ -65,7 +65,7 @@ const ProjectItem = forwardRef<
                 :
                 itemData.zIndex === 0 ?
                   1 : itemData.rotationData.itemBase.scale,
-          
+
           }
           : {}
       }
@@ -80,13 +80,24 @@ const ProjectItem = forwardRef<
         <defs>
 
           <motion.clipPath
-            id={`clippath-${index}`}
+            id={`shape-path-${index}`}
             transform={`scale(${(dimension.x) / 100}, ${(dimension.x) / 100})`}
           >
             <motion.path
-              variants={pathVariant}
+              variants={shapePathVariant}
               animate={props.animate}
-              custom={itemData.path}
+              custom={itemData.shapePath}
+
+            />
+          </motion.clipPath>
+          <motion.clipPath
+            id={`frame-path-${index}`}
+            transform={`scale(${(dimension.x) / 100}, ${(dimension.x) / 100})`}
+          >
+            <motion.path
+              variants={framePathVariant}
+              animate={props.animate}
+              custom={itemData.framePath}
 
             />
           </motion.clipPath>
@@ -106,21 +117,23 @@ const ProjectItem = forwardRef<
 
 
         <motion.div
-          className={" absolute w-56 h-56  "}
-
-
+          className={" absolute w-56 h-56 "}
+          variants={BackgroundVariants}
+          animate={props.animate}
+          custom={itemData}
           style={{
-            clipPath: `url(#clippath-${index})`,
-
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            clipPath: `url(#shape-path-${index})`
           }}
+
         >
 
 
           <motion.div
-            className=" w-full h-full absolute opacity-100     "
-            variants={BackgroundVariants}
-            animate={props.animate}
-            custom={itemData}
+            className="  w-full h-full absolute opacity-100    "
             style={{
               top: 0,
               left: 0,
@@ -128,22 +141,34 @@ const ProjectItem = forwardRef<
               right: 0,
             }}
           >
-            <motion.div className=" absolute   w-full h-full "
-              variants={FrontFrameVariants}
-              animate={props.animate}
-              custom={itemData}
 
+            <motion.div
+              className="  absolute  w-full h-full "
+
+              style={{
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                clipPath: `url(#frame-path-${index})`
+              }}
             >
               <motion.div
-                className="  absolute   w-full h-full "
-                variants={ContentWrapperVariants}
-                animate={props.animate}
-                custom={itemData}
-
-              >
+                 className=" h-full w-full absolute"
+                 variants={FrontFrameVariants}
+                 custom={props.itemData}
+                 animate={props.animate}
+                 style={
+                  {
+                    top:0, left: 0,
+                    bottom: 0, right:0
+                  }
+                 }
+                 >
                 <ProjectCard project={project} />
-              </ motion.div>
-            </motion.div>
+              </motion.div>
+            </ motion.div>
+
           </motion.div>
         </motion.div>
       </motion.div>

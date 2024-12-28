@@ -213,7 +213,7 @@ const ScrollItemTwo = () => {
   const [morph, setMorph] = useState<string>("default")
   return (
     <div className="relative bg-white flex flex-row">
-      {/* <ProjectCarousel /> */}
+      <ProjectCarousel />
       <div>
 
         <div>
