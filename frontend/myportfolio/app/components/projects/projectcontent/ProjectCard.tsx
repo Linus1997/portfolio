@@ -21,7 +21,7 @@ const ProjectCard = ({ project, setBoxShadow }: Props) => {
  
 
   return (
-    <motion.div className="h-full w-full relative">
+    <motion.div className="h-full w-full relative ">
 
       <motion.img
         className=" absolute  m-0 w-full h-full bg-black  self-stretch"

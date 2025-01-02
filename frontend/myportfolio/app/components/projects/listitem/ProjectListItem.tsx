@@ -150,25 +150,35 @@ const ProjectItem = forwardRef<
                 left: 0,
                 bottom: 0,
                 right: 0,
-                clipPath: `url(#frame-path-${index})`
+                clipPath: `url(#frame-path-${index})`,
+                filter: "drop-shadow(0 1px 0.2rem white)"
               }}
             >
               <motion.div
-                 className=" h-full w-full absolute"
-                 variants={FrontFrameVariants}
-                 custom={props.itemData}
-                 animate={props.animate}
-                 style={
-                  {
-                    top:0, left: 0,
-                    bottom: 0, right:0
-                  }
-                 }
-                 >
-                <ProjectCard project={project} />
-              </motion.div>
-            </ motion.div>
+                className=" h-full w-full absolute bg-pink-400  "
 
+                style={
+                  {
+                    top: 0, left: 0,
+                    bottom: 0, right: 0
+                  }}
+              >
+                <motion.div
+                  className=" h-full w-full absolute "
+                  variants={FrontFrameVariants}
+                  custom={props.itemData}
+                  animate={props.animate}
+                  style={
+                    {
+                      top: 0, left: 0,
+                      bottom: 0, right: 0
+                    }
+                  }
+                >
+                  <ProjectCard project={project} />
+                </motion.div>
+              </ motion.div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </motion.div>
