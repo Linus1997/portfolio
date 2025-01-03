@@ -56,20 +56,7 @@ const ProjectItem = forwardRef<
 
         zIndex: itemData.zIndex
       }}
-      // FLYTTA WHILE HOVER till Variant
-      whileHover={
-        isEnterComplete
-          ? {
-            scale:
-              itemData.zIndex === 30
-                ? 1.2
-                :
-                itemData.zIndex === 0 ?
-                  1 : itemData.rotationData.itemBase.scale,
 
-          }
-          : {}
-      }
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

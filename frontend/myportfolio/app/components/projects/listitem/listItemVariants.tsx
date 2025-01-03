@@ -129,7 +129,7 @@ export const framePathVariant: Variants = {
     ,
 
     transition: {
-     duration: 0.2
+     duration: duration
     }
   }),
 

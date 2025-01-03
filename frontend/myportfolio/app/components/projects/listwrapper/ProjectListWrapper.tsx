@@ -14,16 +14,17 @@ import {
 import { ProjectInterface } from "@/app/utils/interfaces";
 
 import {
+  checkData,
   coordReducer,
   CounterAction,
+  VariantState,
 } from "../reducers/coordReducer";
 import { createCoordInitialState } from "../reducers/setUpReducer";
 import { recalculateDimensions } from "../reducers/setUpReducer";
 
 
 interface WrapperProps {
-  rotations: number;
-  direction: number;
+
   projects: ProjectInterface[];
 }
 interface DimChange {
@@ -52,13 +53,13 @@ const onDimChange = ({ parentRef, childRef: itemRef, coordDispatch }: DimChange)
 };
 
 
-const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
+const ProjectListWrapper = ({ projects }: WrapperProps) => {
   const parentRef = useRef<HTMLUListElement>(null);
   const childRef = useRef<HTMLLIElement[]>([]);
   const [clickTimer, setClickTimer] = useState<boolean>(false);
   const [coordState, coordDispatch] = useReducer(
     coordReducer,
-    { initRotation: rotations, projects: projects },
+    { projects: projects },
     createCoordInitialState
   );
 
@@ -75,14 +76,17 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
   }, []);
 
   const resetCoordVariant = (definition: AnimationDefinition) => {
-    coordDispatch({ type: "resetVariant", definition: definition });
+    if (checkData.includes(definition.toString()))
+      coordDispatch({ type: "resetVariant", definition: definition.toLocaleString() });
+    else
+      console.log("NOPE: ", definition)
   };
 
 
 
   if (!projects || projects.length == 0) return <></>;
   return (
-    <div className=" flex flex-row h-96 content-center justify-center bg-gray-900 ">
+    <div className=" flex flex-row flex-grow-1 h-96 w-full content-center justify-center bg-gray-900 ">
       <button
         className={`w-28 `}
         onClick={() => {
@@ -109,7 +113,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
         </svg>
       </button>
       <div>
-        <div className="relative  w-[63em] h-96 py-4">
+        <div className="relative  w-[63em] min-w-96 h-96 py-4">
           <motion.ul ref={parentRef} className="absolute w-full h-full ">
 
 

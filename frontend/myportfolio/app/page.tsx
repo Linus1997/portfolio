@@ -2,12 +2,20 @@
 
 import Image from "next/image";
 import Profile from "./profile/page";
+import ScrollContainer from "./components/scroll/ScrollContainer";
+import ScrollItemTwo from "./components/scroll/ScrollItemTwo";
+import { getProjects } from "./utils/helperfunction";
 
 
 export default function Home() {
+  const projects = getProjects();
+  
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
- 
+    <main className=" min-h-screen min-w-screen  p-2  ">
+        <ScrollContainer projects={projects}/>
+
+
+        
     </main>
   );
 }

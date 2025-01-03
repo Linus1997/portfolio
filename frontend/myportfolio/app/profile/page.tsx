@@ -16,11 +16,7 @@ const Profile = () => {
   return (
     <>
       <Toaster />
-      <ScrollContainer>
-        {/* <ScrollItemOne />
-      <Signature ></Signature> */}
-        <ScrollItemTwo />
-      </ScrollContainer>
+     
     </>
   );
 };

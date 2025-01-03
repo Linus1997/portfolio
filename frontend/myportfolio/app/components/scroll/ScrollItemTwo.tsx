@@ -1,8 +1,9 @@
 
 import { Button } from "@nextui-org/react";
-import ProjectCarousel from "../projects/ProjectCarousel";
 import GeneralItem from "./generalItem";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
+import ProjectListWrapper from "../projects/listwrapper/ProjectListWrapper";
+import { ProjectInterface } from "@/app/utils/interfaces";
 
 
 
@@ -255,12 +256,14 @@ const carouselTest = (morph: string, setMorph: (value:string) =>{}) =>  ( <><div
       > MORPH </Button>
     </div>
   </div></>);
-
-const ScrollItemTwo = () => {
+interface props{
+  projects: ProjectInterface[]
+}
+const ScrollItemTwo = ({projects}: props) => {
   const [morph, setMorph] = useState<string>("default")
   return (
-    <div className="relative bg-white flex flex-row">
-      <ProjectCarousel />
+    <div className=" w-full h-full ">
+   <ProjectListWrapper projects={projects}/>
      
     </div>
   );

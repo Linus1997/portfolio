@@ -11,13 +11,12 @@ import { enterCoords } from "./setUpReducer";
 export const VariantState = Object.freeze({
   INIT: "initial",
   ENTER: "enter",
-  ROTATE: "rotate",
   ROTATELEFT: "rotateLeft",
   ROTATERIGHT: "rotateRight",
   STILL: "still",
   ISSTILL: "isStill",
 });
-
+export const checkData: string[] = [VariantState.ENTER, VariantState.ROTATELEFT, VariantState.ROTATERIGHT, VariantState.STILL]
 /**
  * STATE REDUCER HANDLER
  */
@@ -26,6 +25,7 @@ export interface State {
   hasEntered: boolean;
   isEnterComplete: boolean;
   itemData: ItemData[];
+  stillCount: number;
   rotateLeftCount: number;
   rotateRightCount: number;
   enterCount: number;
@@ -36,7 +36,7 @@ export interface State {
 }
 
 export type CounterAction =
-  | { type: "resetVariant"; definition: AnimationDefinition }
+  | { type: "resetVariant"; definition: string }
   | { type: "setVariant"; definition: string }
   | { type: "setCount" }
   | { type: "moveLeft" }
@@ -45,7 +45,7 @@ export type CounterAction =
   | { type: "rotateRight"; variant: string }
   | { type: "resize"; coords: ItemBase[]; dimensions: Dimensions };
 export interface InitParam {
-  initRotation: number;
+  
   projects: ProjectInterface[];
 }
 
@@ -58,7 +58,32 @@ export interface InitParam {
 export const coordReducer = (state: State, action: CounterAction): State => {
   switch (action.type) {
     case "resetVariant":
-      if (action.definition.toLocaleString() === VariantState.ENTER) {
+      if (action.definition === VariantState.STILL) {
+
+        if (state.stillCount < 5)
+          return { ...state, stillCount: state.stillCount + 1 };
+        return {
+          ...state,
+          enterCount: 0,
+          
+        };
+      } else if (action.definition === VariantState.ROTATELEFT) {
+        if (state.rotateLeftCount < 5)
+          return { ...state, rotateLeftCount: state.rotateLeftCount + 1 };
+        return {
+          ...state,
+          variant: VariantState.STILL,
+          rotateLeftCount: 0,
+        };
+      } else if (action.definition === VariantState.ROTATERIGHT) {
+        if (state.rotateRightCount < 5)
+          return { ...state, rotateRightCount: state.rotateRightCount + 1 };
+        return {
+          ...state,
+          variant: VariantState.STILL,
+          rotateRightCount: 0,
+        };
+      } else if (action.definition === VariantState.ENTER) {
 
         if (state.enterCount < 5)
           return { ...state, enterCount: state.enterCount + 1 };
@@ -67,22 +92,6 @@ export const coordReducer = (state: State, action: CounterAction): State => {
           isEnterComplete: true,
           enterCount: 0,
           variant: VariantState.STILL,
-        };
-      } else if (action.definition.toLocaleString() === VariantState.ROTATELEFT) {
-        if (state.rotateLeftCount < 5)
-          return { ...state, rotateLeftCount: state.rotateLeftCount + 1 };
-        return {
-          ...state,
-          variant: VariantState.STILL,
-          rotateLeftCount: 0,
-        };
-      } else if (action.definition.toLocaleString() === VariantState.ROTATERIGHT) {
-        if (state.rotateRightCount < 5)
-          return { ...state, rotateRightCount: state.rotateRightCount + 1 };
-        return {
-          ...state,
-          variant: VariantState.STILL,
-          rotateRightCount: 0,
         };
       }
 

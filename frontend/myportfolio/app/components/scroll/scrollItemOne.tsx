@@ -6,7 +6,7 @@ import GoogleLogo from "../logos/googleLogo";
 
 const ScrollItemOne = () => {
   return (
-    <div className="flex flex-row gap-x-3 h-fit w-full bg-white">
+    <div className="flex flex-row gap-x-3 h-fit w-full ">
      <div className="flex-1">
       <GoogleLogo />
       </div>

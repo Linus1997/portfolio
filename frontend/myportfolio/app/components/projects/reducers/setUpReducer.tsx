@@ -81,6 +81,7 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
   let svgScale = (0 / 100);
   const state: State = {
     variant: VariantState.INIT,
+    stillCount: 0,
     rotateLeftCount: 0,
     rotateRightCount: 0,
     enterCount: 0,
@@ -100,7 +101,7 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
         y: 0,
       },
     },
-    svgTransform: `scale(${svgScale}, ${svgScale})`
+    svgTransform: `scale(${svgScale}, ${svgScale})`,
   };
   return state;
 };
