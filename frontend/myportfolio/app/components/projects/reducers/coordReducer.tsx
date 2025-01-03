@@ -15,11 +15,7 @@ export const VariantState = Object.freeze({
   ROTATELEFT: "rotateLeft",
   ROTATERIGHT: "rotateRight",
   STILL: "still",
-  GLOW: "glowOn",
-  GLOWOFF: "glowOff",
-  isMorphLeft: "isMoveLeft",
-  isMorphRight: "isMoveRight",
-  isStill: "isStill",
+  ISSTILL: "isStill",
 });
 
 /**
