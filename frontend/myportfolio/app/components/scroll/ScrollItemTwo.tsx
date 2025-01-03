@@ -2,7 +2,7 @@
 import { Button } from "@nextui-org/react";
 import ProjectCarousel from "../projects/ProjectCarousel";
 import GeneralItem from "./generalItem";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 
 
 
@@ -185,6 +185,20 @@ Q 78,25 76.8,24.74
 Z
 `
 
+
+let corner1 = 
+`M 14.2,17.74
+Q 13,18 13,19
+L 23.2,24.74
+Q 22,25 22,26
+Z`
+
+let corner5 = 
+`M 85.8,17.74
+Q 87,18 87,19
+L 76.8,24.74
+Q 78,25 78,26
+Z`
 // let test5=`M 13, 9.5
 // L 13, 18.182
 // L 13, 74
@@ -217,42 +231,37 @@ Z
 // Z
 // `
 
+const carouselTest = (morph: string, setMorph: (value:string) =>{}) =>  ( <><div>
 
+  <div>
+
+    <GeneralItem id={1} path={test5} rotX={0} rotY={0} front={target5} front2={target0} path2={test0} morphState={morph} frame1={frame5} frame2={frame0} />
+    <GeneralItem id={2} path={test0} rotX={0} rotY={0} front={target0} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
+  </div>
+
+</div><div>
+
+    <GeneralItem id={3} path={test1} rotX={0} rotY={0} front={target1} front2={target0} path2={test0} morphState={morph} frame1={frame1} frame2={frame0} />
+    <GeneralItem id={4} path={test0} rotX={0} rotY={0} front={target0} front2={target1} path2={test1} morphState={morph} frame1={""} frame2={""} />
+  </div><div>
+
+    <GeneralItem id={5} path={test5} rotX={0} rotY={0} front={target5} front2={target1} path2={test1} morphState={morph} frame1={frame5} frame2={frame1} corner1={corner5} corner2={corner1} />
+    <GeneralItem id={6} path={test1} rotX={0} rotY={0} front={target1} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
+  </div><div>
+    <div>
+      <Button
+        className="w-56 h-56"
+        onPress={() => morph === "default" ? setMorph("morph") : setMorph("default")}
+      > MORPH </Button>
+    </div>
+  </div></>);
 
 const ScrollItemTwo = () => {
   const [morph, setMorph] = useState<string>("default")
   return (
     <div className="relative bg-white flex flex-row">
-      {/* <ProjectCarousel /> */}
-      <div>
-
-        <div>
-
-          <GeneralItem id={1} path={test5} rotX={0} rotY={0} front={target5} front2={target0} path2={test0} morphState={morph} frame1={frame5} frame2={frame0}  />
-          <GeneralItem id={2} path={test0} rotX={0} rotY={0} front={target0} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
-        </div>
-
-      </div>
-
-      <div>
-
-        <GeneralItem id={3} path={test1} rotX={0} rotY={0} front={target1} front2={target0} path2={test0} morphState={morph} frame1={frame1} frame2={frame0} />
-        <GeneralItem id={4} path={test0} rotX={0} rotY={0} front={target0} front2={target1} path2={test1} morphState={morph} frame1={""} frame2={""} />
-      </div>
-
-      <div>
-
-        <GeneralItem id={5} path={test5} rotX={0} rotY={0} front={target5} front2={target1} path2={test1} morphState={morph} frame1={frame5} frame2={frame1} />
-        <GeneralItem id={6} path={test1} rotX={0} rotY={0} front={target1} front2={target5} path2={test5} morphState={morph} frame1={""} frame2={""} />
-      </div>
-      <div>
-        <div>
-          <Button
-            className="w-56 h-56"
-            onPress={() => morph === "default" ? setMorph("morph") : setMorph("default")}
-          > MORPH </Button>
-        </div>
-      </div>
+      <ProjectCarousel />
+     
     </div>
   );
 };

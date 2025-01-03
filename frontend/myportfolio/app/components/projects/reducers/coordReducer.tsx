@@ -35,7 +35,7 @@ export interface State {
   enterCount: number;
   projects: ProjectInterface[];
   projectSize: number;
-
+  svgTransform: string;
   dimensions: Dimensions;
 }
 
@@ -108,7 +108,7 @@ export const coordReducer = (state: State, action: CounterAction): State => {
     case "resize":
       if (!state.hasEntered) {
         const enterAnimation = enterCoords(action.dimensions);
-
+        let svgScale = (action.dimensions.childDim.x / 100);
         let updatedData: ItemData[] = action.coords.map((item, i) => {
           const itemData: ItemData = {
             ...state.itemData[i],
@@ -136,6 +136,7 @@ export const coordReducer = (state: State, action: CounterAction): State => {
           itemData: updatedData,
           hasEntered: true,
           dimensions: action.dimensions,
+          svgTransform:`scale(${svgScale}, ${svgScale})` 
         };
       } else {
         return { ...state };

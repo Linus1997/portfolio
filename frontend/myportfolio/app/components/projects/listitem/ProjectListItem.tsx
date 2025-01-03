@@ -21,7 +21,7 @@ interface ListProps {
   project: ProjectInterface;
   index: number;
   dimension: CoordXY;
-
+  svgTransform: string;
 
   reset: (definition: string) => void;
 }
@@ -37,6 +37,7 @@ const ProjectItem = forwardRef<
     project,
     dimension,
     index,
+    svgTransform,
     onAnimationComplete,
   } = props;
 
@@ -51,7 +52,7 @@ const ProjectItem = forwardRef<
       animate={props.animate}
       variants={BaseItemVariants}
       style={{
-        filter: "drop-shadow(0 1px 0rem #ccccff)",
+        //filter: "drop-shadow(0 1px 0rem #ccccff)",
 
         zIndex: itemData.zIndex
       }}
@@ -81,7 +82,7 @@ const ProjectItem = forwardRef<
 
           <motion.clipPath
             id={`shape-path-${index}`}
-            transform={`scale(${(dimension.x) / 100}, ${(dimension.x) / 100})`}
+            transform={svgTransform}
           >
             <motion.path
               variants={shapePathVariant}
@@ -92,7 +93,7 @@ const ProjectItem = forwardRef<
           </motion.clipPath>
           <motion.clipPath
             id={`frame-path-${index}`}
-            transform={`scale(${(dimension.x) / 100}, ${(dimension.x) / 100})`}
+            transform={svgTransform} //move calculation into reducer.
           >
             <motion.path
               variants={framePathVariant}
@@ -107,7 +108,7 @@ const ProjectItem = forwardRef<
       <motion.div
         className="absolute"
         style={{
-          filter: "drop-shadow(0 1px 0.2rem white)",
+          //filter: "drop-shadow(0 1px 0.2rem white)",
           top: 0,
           left: 0,
           bottom: 0,
@@ -117,7 +118,7 @@ const ProjectItem = forwardRef<
 
 
         <motion.div
-          className={" absolute w-56 h-56 "}
+          className={" absolute w-full h-full "}
           variants={BackgroundVariants}
           animate={props.animate}
           custom={itemData}
@@ -130,7 +131,57 @@ const ProjectItem = forwardRef<
           }}
 
         >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute w-full h-full"
+            viewBox={`0 0 ${dimension.x} ${dimension.x}`}
 
+
+          >
+
+
+
+            <motion.path
+              variants={shapePathVariant}
+              animate={props.animate}
+              stroke={"#000000"}
+              fill={"none"}
+              strokeOpacity="1"
+              transform={svgTransform}
+              strokeWidth={"2px"}
+              custom={itemData.shapePath}
+
+            />
+
+
+
+
+
+            <motion.path
+              variants={framePathVariant}
+              animate={props.animate}
+              stroke={"#000000"}
+              fill={"none"}
+              strokeOpacity="1"
+              transform={svgTransform}
+              strokeWidth={"1px"}
+              custom={itemData.framePath}
+
+            />
+            {/* <motion.path
+
+
+                fill={"#000000"}
+                fillOpacity={"0.2"}
+
+                transform={svgTransform}
+                animate={{
+                  d: ""                  
+                }}
+              
+
+              /> */}
+          </svg>
 
           <motion.div
             className="  w-full h-full absolute opacity-100    "

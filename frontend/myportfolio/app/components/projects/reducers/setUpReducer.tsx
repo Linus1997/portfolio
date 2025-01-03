@@ -78,7 +78,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
 };
 export const createCoordInitialState = ({ projects }: InitParam): State => {
   const latestProjects = projects.slice(-6).reverse();
-
+  let svgScale = (0 / 100);
   const state: State = {
     variant: VariantState.INIT,
     rotateLeftCount: 0,
@@ -100,6 +100,7 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
         y: 0,
       },
     },
+    svgTransform: `scale(${svgScale}, ${svgScale})`
   };
   return state;
 };

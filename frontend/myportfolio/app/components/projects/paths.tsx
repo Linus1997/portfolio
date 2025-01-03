@@ -1,5 +1,5 @@
 
-export const path0 =  `
+export const path0 =   `
 M 0.5, 4.4
 Q 0,5 0,6
 L 0, 10
@@ -120,14 +120,14 @@ L 22, 99.64
 Q 22.54,99.82 23, 99.7
 L 86, 82.2
 Q 86.92, 82 87,80.8
-L 87, 7
-Q 87,7 87,7
+L 87, 7.2
+Q 87,7.1 86.97,6.99
 Z
 `
 
 export const frame5 = `
-M 13,7
-Q 13,7 13,7
+M 13.03,6.99
+Q 13,7.1 13,7.2
 L 13, 80.8
 Q 13.08,82 14,82.2
 L 77, 99.7
@@ -140,6 +140,20 @@ Z
 export const frame2 = frame5
 export const frame3 = frame0;
 export const frame4 = frame1;
+
+export const corner1 = 
+`M 14.2,17.74
+Q 13,18 13,19
+L 23.2,24.74
+Q 22,25 22,26
+Z`
+
+export const corner5 = 
+`M 85.8,17.74
+Q 87,18 87,19
+L 76.8,24.74
+Q 78,25 78,26
+Z`
 
 // export const path0 = `
 //  M 0,3

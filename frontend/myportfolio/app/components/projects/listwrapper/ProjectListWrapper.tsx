@@ -131,7 +131,7 @@ const ProjectListWrapper = ({ rotations, projects }: WrapperProps) => {
                 onAnimationComplete={resetCoordVariant}
                 dimension={coordState.dimensions.childDim}
                 project={coordState.projects[i]}
-
+                svgTransform={coordState.svgTransform}
 
 
               />
