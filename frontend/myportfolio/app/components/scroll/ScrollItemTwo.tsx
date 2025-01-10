@@ -5,7 +5,7 @@ import { useState } from "react";
 import ProjectListWrapper from "../projects/listwrapper/ProjectListWrapper";
 import { ProjectInterface } from "@/app/utils/interfaces";
 import PulseBlur from "../SvgMotionComponents/PulseBlur";
-import StrokeBorderFilter from "../SvgMotionComponents/AnimatedBorder";
+import StrokeBorderFilter from "../SvgMotionComponents/StrokeBorderFilter";
 
 
 
