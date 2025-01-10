@@ -98,8 +98,8 @@ Z `;
           xmlns="http://www.w3.org/2000/svg"
           className="absolute"
           viewBox={`0 0 ${dim.x} ${dim.y}`}
-          width={0}
-          height={0}
+          vbwidth={0}
+          vbheight={0}
         >
           <defs>
 

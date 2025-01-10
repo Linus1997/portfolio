@@ -11,7 +11,7 @@ export default function Home() {
   const projects = getProjects();
   
   return (
-    <main className=" min-h-screen min-w-screen  p-2  ">
+    <main className=" w-full h-full max-w-[500%]  ">
         <ScrollContainer projects={projects}/>
 
 

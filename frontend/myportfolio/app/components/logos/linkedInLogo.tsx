@@ -10,7 +10,7 @@ const LinkedInSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   return (
-    <SvgWrapper minX={0} minY={0} width={76.624} height={65.326}>
+    <SvgWrapper viewBox="0 0 76.624 65.326" >
       <SvgPath
         isComplete={isComplete}
         fillColor="#0a66c2"

@@ -1,0 +1,1 @@
+export const DURATIONLISTITEMANIMATION: number = 0.4;

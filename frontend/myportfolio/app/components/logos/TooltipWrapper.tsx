@@ -52,7 +52,7 @@ const TooltipWrapper = ({
           }}
           animate={{
             scaleY: 1,
-            height: 20,
+            vbheight: 20,
 
             opacity: 1,
           }}

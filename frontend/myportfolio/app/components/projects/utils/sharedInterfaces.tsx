@@ -6,9 +6,10 @@ export interface ItemData {
     enterData: EnterAnimationData;
     backgroundProps: BackgroundProps;
     dimension: Dimensions;
-    shapePath: string;
     zIndex: number;
+    shapePath: string;
     framePath: string;
+    cornerPath:string ;
   
   }
   export interface CoordXY {

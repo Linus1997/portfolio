@@ -11,7 +11,7 @@ import { openNewTab } from "@/app/utils/helperfunction";
 const DiscordSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
   return (
-    <SvgWrapper minX={0} minY={0} width={127.14} height={96.36}>
+    <SvgWrapper viewBox="0 0 127 96.36" >
       <SvgPath
         isComplete={isComplete}
         fillColor="#5865f2"

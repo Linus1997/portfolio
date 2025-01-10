@@ -1,8 +1,9 @@
-import { Variants, TargetAndTransition } from "framer-motion";
+import { Variants, TargetAndTransition, delay } from "framer-motion";
 import { frame0, path0 } from "../paths";
 import { ItemData } from "../utils/sharedInterfaces";
+import { DURATIONLISTITEMANIMATION } from "@/app/utils/constants";
 
-const duration: number = 0.4;
+
 export const BaseItemVariants: Variants = {
   initial: (): TargetAndTransition => ({
     visibility: "hidden",
@@ -20,7 +21,7 @@ export const BaseItemVariants: Variants = {
     bottom: 0,
     right: 0,
     opacity: 0,
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   rotateLeft: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
@@ -29,7 +30,7 @@ export const BaseItemVariants: Variants = {
     bottom: 0,
     right: 0,
   
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   rotateRight: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
@@ -38,7 +39,7 @@ export const BaseItemVariants: Variants = {
     bottom: 0,
     right: 0,
     
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   still: (i: ItemData): TargetAndTransition => ({
     ...i.rotationData.itemBase,
@@ -47,7 +48,7 @@ export const BaseItemVariants: Variants = {
     bottom: 0,
     right: 0,
     
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
 };
 const backgroundImages = [
@@ -65,7 +66,7 @@ export const shapePathVariant: Variants = {
     d: path0
     ,
     transition: {
-      duration: duration
+      duration: DURATIONLISTITEMANIMATION
     }
   }),
   rotateLeft: (path: string): TargetAndTransition => ({
@@ -73,7 +74,7 @@ export const shapePathVariant: Variants = {
     ,
 
     transition: {
-      duration: duration
+      duration: DURATIONLISTITEMANIMATION
     }
   }),
   rotateRight: (path: string): TargetAndTransition => ({
@@ -81,7 +82,7 @@ export const shapePathVariant: Variants = {
     ,
 
     transition: {
-      duration: duration
+      duration: DURATIONLISTITEMANIMATION
     }
   }),
   still: (path: string): TargetAndTransition => ({
@@ -89,7 +90,7 @@ export const shapePathVariant: Variants = {
     ,
 
     transition: {
-      duration: duration
+      duration: DURATIONLISTITEMANIMATION
     }
   }),
 
@@ -105,7 +106,7 @@ export const framePathVariant: Variants = {
     d: frame0
     ,
     transition: {
-      duration: duration
+      duration: DURATIONLISTITEMANIMATION
     }
   }),
   rotateLeft: (path: string): TargetAndTransition => ({
@@ -113,7 +114,7 @@ export const framePathVariant: Variants = {
     ,
 
     transition: {
-      duration: duration
+      duration: DURATIONLISTITEMANIMATION
     }
   }),
   rotateRight: (path: string): TargetAndTransition => ({
@@ -121,7 +122,7 @@ export const framePathVariant: Variants = {
     ,
 
     transition: {
-      duration: duration
+      duration: DURATIONLISTITEMANIMATION
     }
   }),
   still: (path: string): TargetAndTransition => ({
@@ -129,51 +130,59 @@ export const framePathVariant: Variants = {
     ,
 
     transition: {
-     duration: duration
+     duration: DURATIONLISTITEMANIMATION
     }
   }),
 
 
 };
+export const CornerPathVariants: Variants = {
+
+  still: (): TargetAndTransition => ({
+    pathLength: 1,
+    strokeDasharray: "5, 20, 22 ",
+    stroke: "#ffffff",
+    strokeWidth: 0.1,
+    fill:"#000000",
+    fillOpacity:0.2,
+    transition: {
+     duration: 1, 
+     strokeDasharray: { duration: 1, ease: "easeInOut" },
+     strokeDashoffset: { duration: 2, ease: "easeInOut" },
+     fill:{ delay: 1},
+     fillOpacity:{delay:1, duration: 2, ease: "easeIn", from: 0 }
+    }
+  }),
+
+
+};
+
 export const BackgroundVariants: Variants = {
   
   
   enter: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    //...i.backgroundProps.rotationXY,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    transition: { duration: duration },
+  
+    
+    transition: { duration: DURATIONLISTITEMANIMATION },
+
+   
   }),
   still: (i: ItemData): TargetAndTransition => ({
-    //backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #515252, #1B3541 )`,
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-   // ...i.backgroundProps.rotationXY,
-   top: 0,
-   left: 0,
-   bottom: 0,
-   right: 0,
-    transition: { duration: duration },
+
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   rotateLeft: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8 )`,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    //...i.backgroundProps.rotationXY,
-    transition: { duration: duration },
+  
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   rotateRight: (i: ItemData): TargetAndTransition => ({
     backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    //...i.backgroundProps.rotationXY,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    transition: { duration: duration },
+    
+
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   
 };
@@ -186,22 +195,22 @@ export const FrontFrameVariants: Variants = {
 
     ...i.backgroundProps.rotationXY,
  
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   still: (i: ItemData): TargetAndTransition => ({
 
     ...i.backgroundProps.rotationXY,
    
   
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   rotateLeft: (i: ItemData): TargetAndTransition => ({
     ...i.backgroundProps.rotationXY,
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
   rotateRight: (i: ItemData): TargetAndTransition => ({
     ...i.backgroundProps.rotationXY,
-    transition: { duration: duration },
+    transition: { duration: DURATIONLISTITEMANIMATION },
   }),
 };
 

@@ -55,12 +55,14 @@ export interface InitParam {
    * @param action
    * @returns
    */
+
+const nrAnimations = 29;
 export const coordReducer = (state: State, action: CounterAction): State => {
   switch (action.type) {
     case "resetVariant":
       if (action.definition === VariantState.STILL) {
 
-        if (state.stillCount < 5)
+        if (state.stillCount < nrAnimations)
           return { ...state, stillCount: state.stillCount + 1 };
         return {
           ...state,
@@ -68,7 +70,7 @@ export const coordReducer = (state: State, action: CounterAction): State => {
           
         };
       } else if (action.definition === VariantState.ROTATELEFT) {
-        if (state.rotateLeftCount < 5)
+        if (state.rotateLeftCount < nrAnimations)
           return { ...state, rotateLeftCount: state.rotateLeftCount + 1 };
         return {
           ...state,
@@ -76,7 +78,7 @@ export const coordReducer = (state: State, action: CounterAction): State => {
           rotateLeftCount: 0,
         };
       } else if (action.definition === VariantState.ROTATERIGHT) {
-        if (state.rotateRightCount < 5)
+        if (state.rotateRightCount < nrAnimations)
           return { ...state, rotateRightCount: state.rotateRightCount + 1 };
         return {
           ...state,
@@ -84,8 +86,8 @@ export const coordReducer = (state: State, action: CounterAction): State => {
           rotateRightCount: 0,
         };
       } else if (action.definition === VariantState.ENTER) {
-
-        if (state.enterCount < 5)
+        console.log(state.enterCount)
+        if (state.enterCount < nrAnimations)
           return { ...state, enterCount: state.enterCount + 1 };
         return {
           ...state,

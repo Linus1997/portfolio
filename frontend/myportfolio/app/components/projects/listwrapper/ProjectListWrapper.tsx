@@ -1,6 +1,6 @@
 "use client";
 import ProjectItem from "../listitem/ProjectListItem";
-import { AnimationDefinition, motion } from "framer-motion";
+import { AnimationDefinition, motion, useAnimationFrame } from "framer-motion";
 import {
   Dispatch,
   MutableRefObject,
@@ -67,11 +67,11 @@ const ProjectListWrapper = ({ projects }: WrapperProps) => {
     const clickTimeout = setTimeout(() => {
       setClickTimer(false);
     }, 0.8);
-
+    console.log("ddddd")
     return () => clearTimeout(clickTimeout);
   }, [clickTimer]);
   useLayoutEffect(() => {
-
+    
     onDimChange({ parentRef, childRef, coordDispatch });
   }, []);
 
@@ -86,7 +86,7 @@ const ProjectListWrapper = ({ projects }: WrapperProps) => {
 
   if (!projects || projects.length == 0) return <></>;
   return (
-    <div className=" flex flex-row flex-grow-1 h-96 w-full content-center justify-center bg-gray-900 ">
+    <div className=" flex flex-row  h-96 w-full content-center justify-center bg-gray-900 ">
       <button
         className={`w-28 `}
         onClick={() => {
@@ -113,7 +113,7 @@ const ProjectListWrapper = ({ projects }: WrapperProps) => {
         </svg>
       </button>
       <div>
-        <div className="relative  w-[63em] min-w-96 h-96 py-4">
+        <div className="relative  w-[63em]  h-96 ">
           <motion.ul ref={parentRef} className="absolute w-full h-full ">
 
 

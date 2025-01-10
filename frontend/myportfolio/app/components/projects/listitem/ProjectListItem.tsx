@@ -1,20 +1,23 @@
 import {
+  animate,
+  easeIn,
+  easeInOut,
   HTMLMotionProps,
   motion,
-  TargetAndTransition,
-  Variants,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import React from "react";
 import { ProjectInterface } from "@/app/utils/interfaces";
 
 
 
 import ProjectCard from "../projectcontent/ProjectCard";
-import { path0 } from "../paths";
 import { CoordXY, ItemData } from "../utils/sharedInterfaces";
-import { BaseItemVariants, shapePathVariant, BackgroundVariants, framePathVariant, FrontFrameVariants } from "./listItemVariants";
+import { BaseItemVariants, shapePathVariant, BackgroundVariants, framePathVariant, FrontFrameVariants, CornerPathVariants } from "./listItemVariants";
+import SvgWrapper from "../../SvgMotionComponents/SvgWrapper";
+import ClipPaths from "../SVGs/ClipPaths";
+import SVGStrokes from "../SVGs/SVGStrokes";
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
@@ -38,8 +41,11 @@ const ProjectItem = forwardRef<
     dimension,
     index,
     svgTransform,
+    animate,
     onAnimationComplete,
   } = props;
+
+  const [isHover, setIsHover] = useState<boolean>(false)
 
 
   return (
@@ -52,50 +58,21 @@ const ProjectItem = forwardRef<
       animate={props.animate}
       variants={BaseItemVariants}
       style={{
-        //filter: "drop-shadow(0 1px 0rem #ccccff)",
+        filter: "drop-shadow(0 1px 0rem #ccccff)",
 
         zIndex: itemData.zIndex
       }}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+
 
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="absolute"
-        viewBox={`0 0 ${dimension.x} ${dimension.y}`}
-        width={0}
-        height={0}
-      >
-        <defs>
+      <ClipPaths  vBox={`0 0 ${dimension.x} ${dimension.y}`} index={index} svgTransform={svgTransform} shapePath={itemData.shapePath} framePath={itemData.framePath} animate={animate} onAnimationComplete={onAnimationComplete} /> 
 
-          <motion.clipPath
-            id={`shape-path-${index}`}
-            transform={svgTransform}
-          >
-            <motion.path
-              variants={shapePathVariant}
-              animate={props.animate}
-              custom={itemData.shapePath}
-
-            />
-          </motion.clipPath>
-          <motion.clipPath
-            id={`frame-path-${index}`}
-            transform={svgTransform} //move calculation into reducer.
-          >
-            <motion.path
-              variants={framePathVariant}
-              animate={props.animate}
-              custom={itemData.framePath}
-
-            />
-          </motion.clipPath>
-
-        </defs>
-      </svg>
       <motion.div
         className="absolute"
         style={{
-          //filter: "drop-shadow(0 1px 0.2rem white)",
+          filter: "drop-shadow(0 1px 0.2rem white)",
           top: 0,
           left: 0,
           bottom: 0,
@@ -118,57 +95,10 @@ const ProjectItem = forwardRef<
           }}
 
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="absolute w-full h-full"
-            viewBox={`0 0 ${dimension.x} ${dimension.x}`}
 
 
-          >
+          <SVGStrokes vBox={`0 0 ${dimension.x} ${dimension.x}`} svgTransform={svgTransform} shapePath={itemData.shapePath} framePath={itemData.framePath} cornerPath={itemData.cornerPath} animate={animate} onAnimationComplete={onAnimationComplete} isHover={isHover} />
 
-
-
-            <motion.path
-              variants={shapePathVariant}
-              animate={props.animate}
-              stroke={"#000000"}
-              fill={"none"}
-              strokeOpacity="1"
-              transform={svgTransform}
-              strokeWidth={"2px"}
-              custom={itemData.shapePath}
-
-            />
-
-
-
-
-
-            <motion.path
-              variants={framePathVariant}
-              animate={props.animate}
-              stroke={"#000000"}
-              fill={"none"}
-              strokeOpacity="1"
-              transform={svgTransform}
-              strokeWidth={"1px"}
-              custom={itemData.framePath}
-
-            />
-            {/* <motion.path
-
-
-                fill={"#000000"}
-                fillOpacity={"0.2"}
-
-                transform={svgTransform}
-                animate={{
-                  d: ""                  
-                }}
-              
-
-              /> */}
-          </svg>
 
           <motion.div
             className="  w-full h-full absolute opacity-100    "
@@ -178,6 +108,7 @@ const ProjectItem = forwardRef<
               bottom: 0,
               right: 0,
             }}
+
           >
 
             <motion.div
@@ -189,11 +120,11 @@ const ProjectItem = forwardRef<
                 bottom: 0,
                 right: 0,
                 clipPath: `url(#frame-path-${index})`,
-                filter: "drop-shadow(0 1px 0.2rem white)"
+
               }}
             >
               <motion.div
-                className=" h-full w-full absolute bg-pink-400  "
+                className=" h-full w-full absolute bg-transparent "
 
                 style={
                   {
@@ -210,10 +141,12 @@ const ProjectItem = forwardRef<
                     {
                       top: 0, left: 0,
                       bottom: 0, right: 0
+                      , border: "url(#rainbowGradient)"
+
                     }
                   }
                 >
-                  <ProjectCard project={project} />
+                  {/* <ProjectCard project={project} /> */}
                 </motion.div>
               </ motion.div>
             </motion.div>
@@ -228,4 +161,4 @@ const ProjectItem = forwardRef<
 
 
 ProjectItem.displayName = "ProjectItem";
-export default ProjectItem;
+export default React.memo(ProjectItem);

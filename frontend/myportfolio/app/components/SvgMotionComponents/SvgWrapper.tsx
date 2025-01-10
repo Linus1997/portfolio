@@ -3,39 +3,35 @@ import {
   motion,
 } from "framer-motion";
 import {
+  Attributes,
   FC,
   ReactNode,
+  SVGProps,
 } from "react";
 
-interface Props {
+interface Props  {
   children: ReactNode;
-  minX: number;
-  minY: number;
-  width: number;
-  height: number;
+
 
 }
 
-const SvgWrapper: FC<Props> = ({
+const SvgWrapper: FC<Props &  SVGProps<SVGSVGElement>  > = ({
   children,
-  minX,
-  minY,
-  width,
-  height,
-  
+  ...rest
   
 }) => {
   
 
   return (
-    <motion.svg
+    <svg
 
      
-      viewBox={`${minX} ${minY} ${width} ${height}`}
+      
       xmlns="http://www.w3.org/2000/svg"
+      {...rest}
     >
       {children}
-    </motion.svg>
+    </svg>
   );
 };
 

@@ -23,8 +23,8 @@ const ProfilePicture = () => {
       <div ref={divRef} className="container">
         <motion.svg
           className="svg-border"
-          width={dimensions.width + 100}
-          height={dimensions.height + 100}
+          vbwidth={dimensions.width + 100}
+          vbheight={dimensions.height + 100}
           viewBox={`0 0 ${dimensions.width + 100} ${dimensions.height + 100}`}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -35,8 +35,8 @@ const ProfilePicture = () => {
               filterUnits="userSpaceOnUse"
               x="-50%"
               y="-50%"
-              width="200%"
-              height="200%"
+              vbwidth="200%"
+              vbheight="200%"
             >
               <feGaussianBlur
                 in="SourceGraphic"

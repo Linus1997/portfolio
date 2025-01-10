@@ -11,7 +11,7 @@ const GoogleSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   return (
-    <SvgWrapper minX={52} minY={42} width={88} height={66}>
+    <SvgWrapper viewBox="52 42 88 66" >
       <SvgPath
         isComplete={isComplete}
         fillColor="#4285f4"

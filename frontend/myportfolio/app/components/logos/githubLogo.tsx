@@ -10,7 +10,7 @@ const GithubSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   return (
-    <SvgWrapper minX={0} minY={0} width={98} height={96}>
+    <SvgWrapper viewBox="0 0 98 96" >
       <SvgPath
         isComplete={isComplete}
         fillColor="#5865f2"
