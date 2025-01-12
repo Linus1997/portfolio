@@ -15,11 +15,55 @@ interface Props {
     isHover: boolean;
 }
 
+
+interface LintProps {
+    shapePath: string;
+    svgTransform: string;
+    pathLength?: number[];
+    pathOffset?: number[];
+    strokeWidth?: number[];
+}
+
+const LintPath: FC<LintProps> = ({
+    shapePath,
+    svgTransform,
+    pathLength = [0.1, 0.05, 0.2],
+    pathOffset = [0, 0.55],
+    strokeWidth = [0.4, 0.7, 0.4]
+}) => {
+
+    return (
+        <motion.path
+            d={shapePath}
+            fill="none"
+            stroke="url(#waveGradient)"
+            strokeWidth={0.4}
+            strokeLinecap="round"
+            transform={svgTransform}
+            // strokeDasharray="1 5"
+            filter="url(#blurWave)"
+
+            animate={{
+                pathLength: pathLength,
+                pathOffset: pathOffset,
+                //filter: ["url(#blurWave)", "drop-shadow(16px 16px 20px red) invert(75%)" ], 
+                strokeWidth: strokeWidth,
+                opacity: 1
+            }}
+            transition={{
+                repeat: Infinity,
+                duration: 5,
+                ease: easeIn,
+
+            }}
+        />)
+}
+
 const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
     props
 ) => {
     const {
-        
+
         vBox,
         isHover,
         svgTransform,
@@ -41,7 +85,7 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
             <motion.path
                 variants={framePathVariant}
                 animate={animate}
-                stroke={isHover? "url(#waveGradient)": "#D3D3D3"}
+                stroke={isHover ? "url(#waveGradient)" : "#D3D3D3"}
                 fill={"none"}
                 strokeOpacity="1"
                 transform={svgTransform}
@@ -53,14 +97,14 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
             <motion.path
                 variants={shapePathVariant}
                 animate={animate}
-                stroke={isHover? "url(#waveGradient)": "#D3D3D3"}
+                stroke={isHover ? "url(#waveGradient)" : "#D3D3D3"}
                 fill={"none"}
                 strokeOpacity="1"
                 transform={svgTransform}
                 strokeWidth={"0.4px"}
                 custom={shapePath}
                 onAnimationComplete={onAnimationComplete}
-                
+
             />
 
 
@@ -70,14 +114,17 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
 
 
             {/* ----------------------------------------------- */}
-
-            <motion.path
+            <LintPath shapePath={shapePath} svgTransform={svgTransform}
+                pathOffset={[0.55, 1]} />
+          <LintPath shapePath={shapePath} svgTransform={svgTransform}
+                pathOffset={[0, 0.55]}  />
+            {/* <motion.path
                 d={shapePath}
                 fill="none"
                 stroke="url(#waveGradient)"
                 strokeWidth={0.4}
                 strokeLinecap="round"
-
+                transform={svgTransform}
                 // strokeDasharray="1 5"
                 filter="url(#blurWave)"
 
@@ -95,7 +142,7 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
 
                 }}
             />
-
+  
 
             <motion.path
                 d={shapePath}
@@ -103,7 +150,7 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
                 stroke="url(#waveGradient)"
                 strokeWidth={0.4}
                 strokeLinecap="round"
-
+                transform={svgTransform}
                 // strokeDasharray="1 5"
                 filter="url(#blurWave)"
 
@@ -120,7 +167,7 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
                     ease: easeIn,
 
                 }}
-            />
+            /> */}
         </SvgWrapper>
 
     )
