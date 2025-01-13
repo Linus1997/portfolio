@@ -22,6 +22,7 @@ interface LintProps {
     pathLength?: number[];
     pathOffset?: number[];
     strokeWidth?: number[];
+    filter?: string;
 }
 
 const LintPath: FC<LintProps> = ({
@@ -29,7 +30,8 @@ const LintPath: FC<LintProps> = ({
     svgTransform,
     pathLength = [0.1, 0.05, 0.2],
     pathOffset = [0, 0.55],
-    strokeWidth = [0.4, 0.7, 0.4]
+    strokeWidth = [0.4, 0.7, 0.4],
+    filter="url(#pulseBlur)"
 }) => {
 
     return (
@@ -41,7 +43,7 @@ const LintPath: FC<LintProps> = ({
             strokeLinecap="round"
             transform={svgTransform}
             // strokeDasharray="1 5"
-            filter="url(#blurWave)"
+            filter={filter}
 
             animate={{
                 pathLength: pathLength,
@@ -75,33 +77,33 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
 
     } = props
     return (
-        <SvgWrapper className="absolute w-full h-full" viewBox={vBox}  >
+        <SvgWrapper className="absolute w-full h-full z-20" viewBox={vBox}  >
             <motion.path
 
                 fill="white"
-                style={{ fillOpacity: 0.2 }}
+                style={{ fillOpacity: 0.1 }}
                 transform={svgTransform}
                 d={cornerPath} />
             <motion.path
                 variants={framePathVariant}
                 animate={animate}
-                stroke={isHover ? "url(#waveGradient)" : "#D3D3D3"}
+                stroke={"url(#waveGradient)"}
                 fill={"none"}
                 strokeOpacity="1"
                 transform={svgTransform}
-                strokeWidth={"0.5px"}
+                strokeWidth={"1px"}
                 custom={framePath}
                 onAnimationComplete={onAnimationComplete}
-
+                
             />
             <motion.path
                 variants={shapePathVariant}
                 animate={animate}
-                stroke={isHover ? "url(#waveGradient)" : "#D3D3D3"}
+                stroke={"url(#waveGradient)"}
                 fill={"none"}
                 strokeOpacity="1"
                 transform={svgTransform}
-                strokeWidth={"0.4px"}
+                strokeWidth={"0.5px"}
                 custom={shapePath}
                 onAnimationComplete={onAnimationComplete}
 
@@ -114,10 +116,31 @@ const SVGStrokes: FC<Props & SVGMotionProps<SVGSVGElement> & ScriptProps> = (
 
 
             {/* ----------------------------------------------- */}
-            <LintPath shapePath={shapePath} svgTransform={svgTransform}
+            {/* <LintPath shapePath={shapePath} svgTransform={svgTransform}
                 pathOffset={[0.55, 1]} />
-          <LintPath shapePath={shapePath} svgTransform={svgTransform}
-                pathOffset={[0, 0.55]}  />
+            <LintPath shapePath={shapePath} svgTransform={svgTransform}
+                pathOffset={[0, 0.55]} /> */}
+
+            <LintPath shapePath={framePath} svgTransform={svgTransform}
+                pathLength = {[0.1, 0.01]}
+                pathOffset={[0.53, 0.75]} 
+ filter="url(#pulseTest)"
+                strokeWidth = {[0.5]} // Fortsätt här
+                />
+            <LintPath shapePath={framePath} svgTransform={svgTransform}
+                pathLength = {[0.01]}
+                pathOffset={[1, 0.75]} 
+                strokeWidth = {[1]}
+                 filter="url(#pulseTest)"
+                />
+
+<LintPath shapePath={cornerPath} svgTransform={svgTransform}
+                pathOffset={[0, 1]}
+                pathLength = {[0.01]}
+                filter="url(#pulseTest)"
+                strokeWidth = {[1]}
+                
+                />
             {/* <motion.path
                 d={shapePath}
                 fill="none"

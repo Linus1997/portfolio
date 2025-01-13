@@ -58,7 +58,7 @@ const ProjectItem = forwardRef<
       animate={props.animate}
       variants={BaseItemVariants}
       style={{
-        filter: "drop-shadow(0 1px 0rem #ccccff)",
+        //filter: "drop-shadow(0 1px 0rem #ccccff)",
 
         zIndex: itemData.zIndex
       }}
@@ -67,12 +67,12 @@ const ProjectItem = forwardRef<
 
 
     >
-      <ClipPaths  vBox={`0 0 ${dimension.x} ${dimension.y}`} index={index} svgTransform={svgTransform} shapePath={itemData.shapePath} framePath={itemData.framePath} animate={animate} onAnimationComplete={onAnimationComplete} /> 
+      <ClipPaths vBox={`0 0 ${dimension.x} ${dimension.y}`} index={index} svgTransform={svgTransform} shapePath={itemData.shapePath} framePath={itemData.framePath} animate={animate} onAnimationComplete={onAnimationComplete} />
 
       <motion.div
         className="absolute"
         style={{
-          filter: "drop-shadow(0 1px 0.2rem white)",
+          // filter: "drop-shadow(0 1px 0.2rem white)",
           top: 0,
           left: 0,
           bottom: 0,
@@ -119,10 +119,13 @@ const ProjectItem = forwardRef<
                 left: 0,
                 bottom: 0,
                 right: 0,
+                zIndex: 10,
                 clipPath: `url(#frame-path-${index})`,
 
               }}
             >
+
+           
               <motion.div
                 className=" h-full w-full absolute bg-transparent "
 
@@ -132,6 +135,7 @@ const ProjectItem = forwardRef<
                     bottom: 0, right: 0
                   }}
               >
+
                 <motion.div
                   className=" h-full w-full absolute "
                   variants={FrontFrameVariants}
@@ -146,8 +150,10 @@ const ProjectItem = forwardRef<
                     }
                   }
                 >
-                  {/* <ProjectCard project={project} /> */}
+                  <ProjectCard project={project} />
+
                 </motion.div>
+           
               </ motion.div>
             </motion.div>
           </motion.div>

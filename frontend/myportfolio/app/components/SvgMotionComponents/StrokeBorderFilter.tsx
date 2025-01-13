@@ -31,8 +31,8 @@ const StrokeBorderFilter = ({  }: Props) => {
                 >
                     <stop offset="0%" stopColor="#FFC0CB" />  {/* Light Pink */}
                     <stop offset="10%" stopColor="#FFD9E3" />  {/* Softer Pink */}
-                    <stop offset="20%" stopColor="#FFFFFF" />  {/* White */}
-                    <stop offset="30%" stopColor="#F5F5F5" />  {/* Very Light Gray/White */}
+                    <stop offset="20%" stopColor="#F5F5F5" />  {/* Very Light Gray/White */}
+                    <stop offset="30%" stopColor="#FFFFFF" />  {/* White */}
                     <stop offset="40%" stopColor="#D3D3D3" />  {/* Light Gray */}
                     <stop offset="50%" stopColor="#C0C0C0" />  {/* Silver */}
                     <stop offset="60%" stopColor="#ADD8E6" />  {/* Light Blue */}
@@ -40,6 +40,7 @@ const StrokeBorderFilter = ({  }: Props) => {
                     <stop offset="80%" stopColor="#87CEFA" />  {/* Light Sky Blue */}
                     <stop offset="90%" stopColor="#E0FFFF" />  {/* Light Cyan */}
                     <stop offset="100%" stopColor="#F0FFFF" />  {/* Azure */}
+
 
                 </linearGradient>
                 

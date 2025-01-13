@@ -30,14 +30,14 @@ export const backgroundProps: BackgroundProps[] = [
     }
   },
   {
-    gradientAngle: 175,
+    gradientAngle: 180,
     rotationXY: {
       rotateX: 0,
       rotateY: 0,
     }
   },
   {
-    gradientAngle: 45,
+    gradientAngle: -45,
     rotationXY: {
       rotateX: 20,
       rotateY: -40,
