@@ -77,7 +77,7 @@ export const recalculateDimensions = (wrapperDim: DOMRect, childDim: DOMRect) =>
   return updatedCoord;
 };
 export const createCoordInitialState = ({ projects }: InitParam): State => {
-  const latestProjects = projects.slice(-6).reverse();
+  const latestProjects = projects;
   let svgScale = (0 / 100);
   const state: State = {
     variant: VariantState.INIT,

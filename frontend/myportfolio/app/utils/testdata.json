@@ -145,5 +145,49 @@
             "ada",
             "java"
         ]
+    },
+    {
+        "projectID": 8,
+          "images": [
+            "tapet.png"
+        ],
+        "startDate": "2009-10-06",
+        "shortDesc": "",
+        "courseName": "TDP003",
+        "longDesc": "",
+        "groupSize": 2,
+        "credits": "6 hp",
+        "externalLink": "YY",
+        "projectName": "Packman",
+        "courseID": "TDP003",
+        "endDate": "2009-10-05",
+        "usedTech": [
+            "python",
+            "c++",
+            "ada",
+            "java"
+        ]
+    },
+    {
+        "projectID": 9,
+          "images": [
+            "treepanel.png"
+        ],
+        "startDate": "2009-10-06",
+        "shortDesc": "",
+        "courseName": "TDP003",
+        "longDesc": "",
+        "groupSize": 2,
+        "credits": "6 hp",
+        "externalLink": "YY",
+        "projectName": "Packman",
+        "courseID": "TDP003",
+        "endDate": "2009-10-05",
+        "usedTech": [
+            "python",
+            "c++",
+            "ada",
+            "java"
+        ]
     }
 ]

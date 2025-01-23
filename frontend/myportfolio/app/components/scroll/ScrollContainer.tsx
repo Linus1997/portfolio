@@ -4,6 +4,7 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import ScrollItemTwo from "./ScrollItemTwo";
 import ScrollItemOne from "./scrollItemOne";
 import MovingBorder from "../sandboxtesting/movingborder";
+import TestRFiber from "../sandboxtesting/threeFiberDreiRapier/TestRFiber";
 interface Props {
 
   projects: ProjectInterface[]
@@ -11,17 +12,20 @@ interface Props {
 
 const ScrollContainer: FC<Props> = ({ projects }) => {
   const { scrollYProgress } = useScroll();
-  useEffect(() => {
-    console.log("här")
-  }, [])
+
   return (
-    <motion.div className="">
+    <motion.div className="w-full h-full">
       <ScrollItemOne />
       <ScrollItemTwo projects={projects} />
-    <MovingBorder />
-<div className="">
-      
+
+
+      <MovingBorder />
+      <div className="">
+
       </div>
+
+
+      {/* <TestRFiber></TestRFiber> */}
     </motion.div>
   )
 }
