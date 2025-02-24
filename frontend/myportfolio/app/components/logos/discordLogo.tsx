@@ -34,7 +34,10 @@ const DiscordLogo = () => {
   return (
    
     <LogoButtonWrapper
-    onPress={() => openNewTab()} >
+    onPress={() => {
+//openNewTab()
+
+    }} >
       <DiscordSVG />
     </LogoButtonWrapper>
    

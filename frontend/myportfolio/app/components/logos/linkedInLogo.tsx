@@ -48,7 +48,10 @@ const LinkedInSVG = () => {
 };
 const LinkedInLogo = () => {
   return (
-    <LogoButtonWrapper onPress={() => openNewTab(LINKEDINLINK)}>
+    <LogoButtonWrapper onPress={() => {
+      //openNewTab(LINKEDINLINK)
+
+    }}>
       <LinkedInSVG />
     </LogoButtonWrapper>
   );

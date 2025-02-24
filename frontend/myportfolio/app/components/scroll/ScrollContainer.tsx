@@ -18,14 +18,6 @@ const ScrollContainer: FC<Props> = ({ projects }) => {
       <ScrollItemOne />
       <ScrollItemTwo projects={projects} />
 
-
-      <MovingBorder />
-      <div className="">
-
-      </div>
-
-
-      {/* <TestRFiber></TestRFiber> */}
     </motion.div>
   )
 }

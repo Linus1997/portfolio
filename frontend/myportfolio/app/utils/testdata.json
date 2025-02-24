@@ -17,25 +17,7 @@
             "C++"
         ]
     },
-    {
-        "projectID": 2,
-  "images": [
-            "profilepicture.jpg"
-        ],
-        "startDate": "2009-09-05",
-        "shortDesc": "",
-        "courseName": "TDP003",
-        "longDesc": "",
-        "groupSize": 2,
-        "credits": "6 hp",
-        "externalLink": "YY",
-        "projectName": "Lista med Filips bilar",
-        "courseID": "TDP003",
-        "endDate": "2009-09-06",
-        "usedTech": [
-            "python"
-        ]
-    },
+    
     {
         "projectID": 3,
         "images": [
@@ -83,7 +65,7 @@
     {
         "projectID": 5,
         "images": [
-            "test4.png"
+            "test6.png"
         ],
         "startDate": "2009-10-06",
         "shortDesc": "QuiQuis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",

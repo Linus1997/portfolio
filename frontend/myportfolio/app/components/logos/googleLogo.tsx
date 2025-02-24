@@ -64,11 +64,11 @@ const GoogleSVG = () => {
 
 const GoogleLogo = () => {
   const copyHandler = () => {
-    navigator.clipboard.writeText(GMAIL).then(() => {
-      toast.success(COPIED + " " + GMAIL, {
-        id: "gmail",
-      });
-    });
+    // navigator.clipboard.writeText(GMAIL).then(() => {
+    //   toast.success(COPIED + " " + GMAIL, {
+    //     id: "gmail",
+    //   });
+    // });
   };
   return (
     <LogoButtonWrapper onPress={copyHandler}>

@@ -19,7 +19,7 @@ const ScrollItemTwo = ({ projects }: props) => {
   return (
       <><PulseBlur /><StrokeBorderFilter /><div className=" w-full h-full ">
       <ProjectListWrapper projects={projects} />
- 
+      <TestRFiber />
     </div></>
   );
 };

@@ -3,8 +3,6 @@ import { useState } from "react";
 import SvgPath from "../SvgMotionComponents/SvgPath";
 import SvgWrapper from "../SvgMotionComponents/SvgWrapper";
 import LogoButtonWrapper from "./LogoButtonWrapper";
-import { openNewTab } from "@/app/utils/helperfunction";
-import { GITHUBLINK } from "@/app";
 
 const GithubSVG = () => {
   const [isComplete, setIsComplete] = useState(false);
@@ -28,7 +26,9 @@ const GithubSVG = () => {
 
 const GithubLogo = () => {
   return (
-    <LogoButtonWrapper onPress={() => openNewTab(GITHUBLINK)}>
+    <LogoButtonWrapper onPress={() => { 
+      //openNewTab(GITHUBLINK) 
+      }}>
       <GithubSVG />
     </LogoButtonWrapper>
   );

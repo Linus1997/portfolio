@@ -86,7 +86,7 @@ export const coordReducer = (state: State, action: CounterAction): State => {
           rotateRightCount: 0,
         };
       } else if (action.definition === VariantState.ENTER) {
-        console.log(state.enterCount)
+        
         if (state.enterCount < nrAnimations)
           return { ...state, enterCount: state.enterCount + 1 };
         return {

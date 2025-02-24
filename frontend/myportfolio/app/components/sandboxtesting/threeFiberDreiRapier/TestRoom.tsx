@@ -4,14 +4,13 @@ import { CuboidCollider, RigidBody } from '@react-three/rapier'
 
 export function Model(props : any) {
   const { nodes, materials } = useGLTF('/room.gltf') as any
-  console.log(nodes.floor.geometry)
- console.log(materials['Material.004'])
+
 
  const bbox = nodes.floor.geometry.boundingBox;
 const width = bbox.max.x - bbox.min.x;
 const height = bbox.max.y - bbox.min.y;
 const depth = bbox.max.z - bbox.min.z;
-console.log({ width, height, depth });
+
 
 
   return (

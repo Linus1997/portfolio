@@ -67,7 +67,7 @@ const ProjectListWrapper = ({ projects }: WrapperProps) => {
     const clickTimeout = setTimeout(() => {
       setClickTimer(false);
     }, 0.8);
-    console.log("ddddd")
+   
     return () => clearTimeout(clickTimeout);
   }, [clickTimer]);
   useLayoutEffect(() => {
@@ -78,8 +78,7 @@ const ProjectListWrapper = ({ projects }: WrapperProps) => {
   const resetCoordVariant = (definition: AnimationDefinition) => {
     if (checkData.includes(definition.toString()))
       coordDispatch({ type: "resetVariant", definition: definition.toLocaleString() });
-    else
-      console.log("NOPE: ", definition)
+   
   };
 
 
