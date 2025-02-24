@@ -11,7 +11,7 @@ git clone git@github.com:Linus1997/portfolio.git
 navigate to folder:
 
 ```bash
-cd ~/\<insert-your-path\>/portfolio/frontend/myportfolio
+cd ~/<insert-your-path>/portfolio/frontend/myportfolio
 ```
 
 ```bash
