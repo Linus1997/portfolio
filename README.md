@@ -1,5 +1,9 @@
 # MyPortfolio
 
+## clone repo
+```bash
+git clone git@github.com:Linus1997/portfolio.git
+```
 ## install dependencies
 
 ```bash
