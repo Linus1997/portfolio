@@ -6,6 +6,8 @@ git clone git@github.com:Linus1997/portfolio.git
 ```
 ## install dependencies
 
+navigate to ~/\<your-path-to\>/portfolio/frontend/myportfolio
+
 ```bash
 npm install
 ```
