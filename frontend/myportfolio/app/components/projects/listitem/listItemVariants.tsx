@@ -1,7 +1,7 @@
 import { Variants, TargetAndTransition, delay, hover } from "framer-motion";
 import { frame0, path0 } from "../paths";
 import { ItemData } from "../utils/sharedInterfaces";
-import { SINGLEROTATIONDURATION as SINGLEROTATIONDURATION } from "@/app/utils/constants";
+import {  SINGLEROTATIONDURATION } from "@/app/utils/constants";
 
 /**
  * Contains the default position style used in all item variants.
@@ -26,7 +26,7 @@ export const BaseItemVariants: Variants = {
   enter: (data: ItemData): TargetAndTransition => ({
     ...DEFAULT_POSITION,
     ...data.enterData.itemBase,
-    opacity: 0,
+   
     transition: { duration: SINGLEROTATIONDURATION },
   }),
   rotateLeft: (data: ItemData): TargetAndTransition => ({
@@ -113,6 +113,7 @@ export const framePathVariant: Variants = {
  * fill, and other visual properties in the 'still' state.
  */
 export const CornerPathVariants: Variants = {
+
   still: (): TargetAndTransition => ({
     pathLength: 1,
     strokeDasharray: "5, 20, 22",

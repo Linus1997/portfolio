@@ -65,24 +65,21 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
     } = props;
 
     const [isHover, setIsHover] = useState(false);
-    console.log(props.itemData.rotationData.dist2Front, index)
+
     return (
       <motion.li
         ref={ref}
         className={className}
         onAnimationComplete={onAnimationComplete}
-        custom={itemData}
         initial={initial}
         animate={animate}
+        custom={itemData}
         variants={BaseItemVariants}
-        style={{ zIndex: itemData.zIndex }}
+        style={{
+          zIndex: itemData.zIndex, pointerEvents: "none"
+        }}
 
-        onClick={() =>
-          stateDispatch({
-            type: "moveXTimes",
-            dist2Front: itemData.rotationData.dist2Front,
-          })
-        }
+
       // whileHover={{
       //   scaleX: (x-dimension.x)/dimension.x,
       //   scaleY: (y-100)/dimension.y,
@@ -96,7 +93,7 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
           svgTransform={svgTransform}
           // shapePath={isHover ? focusedPath : itemData.shapePath}
           // framePath={isHover ? focusedFrame : itemData.framePath}
-          shapePath={ itemData.shapePath}
+          shapePath={itemData.shapePath}
           framePath={itemData.framePath}
           animate={animate}
           onAnimationComplete={onAnimationComplete}
@@ -120,7 +117,14 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
               bottom: 0,
               right: 0,
               clipPath: `url(#shape-path-${index})`,
+              pointerEvents: "auto",
             }}
+            onClick={() =>
+              stateDispatch({
+                type: "moveXTimes",
+                dist2Front: itemData.rotationData.dist2Front,
+              })
+            }
           >
             <SVGStrokes
               vBox={`0 0 ${dimension.x} ${dimension.x}`}
@@ -138,6 +142,7 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
             <motion.div
               className="absolute w-full h-full opacity-100"
               style={{ top: 0, left: 0, bottom: 0, right: 0 }}
+
             >
               <motion.div
                 className="absolute w-full h-full"
@@ -148,7 +153,9 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
                   right: 0,
                   zIndex: 10,
                   clipPath: `url(#frame-path-${index})`,
+
                 }}
+
               >
                 <motion.div
                   className="absolute w-full h-full bg-transparent"
@@ -159,7 +166,12 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
                     variants={FrontFrameVariants}
                     custom={itemData}
                     animate={animate}
-                    style={{ top: 0, left: 0, bottom: 0, right: 0 }}
+                    // whileHover={{
+                    //   scaleX: (x - dimension.x) / dimension.x,
+                    //   scaleY: (y - 100) / dimension.y,
+                    //   y: Math.round(y / 2 - dimension.y / 2),
+                    // }}
+                    style={{ top: 0, left: 0, bottom: 0, right: 0}}
                   >
                     <ProjectCard project={project} index={itemData.zIndex} />
                   </motion.div>

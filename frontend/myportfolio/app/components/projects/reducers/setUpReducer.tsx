@@ -99,7 +99,7 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
     rotateRightCount: 0,
     enterCount: 0,
     itemData: defaultItemData,
-    projects,
+    projects: projects,
     projectSize: projects.length,
     hasEntered: false,
     isEnterComplete: false,
@@ -110,8 +110,9 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
     svgTransform: initialScaleTransform,
     onFocusItemData: defaultItemData[0],
     onFocussvgTransform: initialScaleTransform,
-    moveXTimesCount: 0,
-    rotDuration: SINGLEROTATIONDURATION
+    rotXTimesCount: 0,
+    rotDuration: SINGLEROTATIONDURATION,
+    rotTimeout: true
   };
 };
 /**
@@ -173,7 +174,7 @@ export const initialState = (): ItemData[] => {
 
           scale: [0, 1],
           visibility: "visible",
-          opacity: i === 0 ? [0, 0.8] : 0,
+          opacity: 0.8
         },
       },
       backgroundProps: backgroundProps[i],

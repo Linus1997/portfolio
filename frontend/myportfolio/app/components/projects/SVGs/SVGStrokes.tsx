@@ -44,7 +44,7 @@ const LintPath: FC<LintProps> = ({
             transform={svgTransform}
             // strokeDasharray="1 5"
             filter={filter}
-
+            initial={{opacity:0}}
             animate={{
                 pathLength: pathLength,
                 pathOffset: pathOffset,

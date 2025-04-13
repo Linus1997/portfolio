@@ -94,7 +94,7 @@ function handleResetCoordVariant(
 function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
   const parentRef = useRef<HTMLUListElement>(null);
   const childRef = useRef<HTMLLIElement[]>([]);
-  const [rotationDisabled, setRotationDisabled] = useState(false);
+
 
   const [state, dispatch] = useReducer(
     carouselReducer,
@@ -102,12 +102,7 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
     createCarouselInitialState
   );
 
-  useEffect(() => {
-    const rotationTimeout = setTimeout(() => {
-      setRotationDisabled(false);
-    }, 800);
-    return () => clearTimeout(rotationTimeout);
-  }, [rotationDisabled]);
+
 
   useLayoutEffect(() => {
     updateDimensions({ parentRef, childRef, stateDispatch: dispatch });
@@ -120,9 +115,9 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
       <button
         className="w-28"
         onClick={() => {
-          if (!rotationDisabled) {
-            setRotationDisabled(true);
-            dispatch({ type: "moveRight" });
+          if (!state.rotTimeout) {
+            
+            dispatch({ type: "rotateRight" });
           }
         }}
       >
@@ -178,9 +173,9 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
       <button
         className="w-28"
         onClick={() => {
-          if (!rotationDisabled) {
-            setRotationDisabled(true);
-            dispatch({ type: "moveLeft" });
+          if (!state.rotTimeout) {
+            
+            dispatch({ type: "rotateLeft" });
           }
         }}
       >

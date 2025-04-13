@@ -29,7 +29,7 @@ export interface State {
   rotateLeftCount: number;
   rotateRightCount: number;
   enterCount: number;
-  moveXTimesCount: number;
+  rotXTimesCount: number;
   projects: ProjectInterface[];
   projectSize: number;
   svgTransform: string;
@@ -37,17 +37,17 @@ export interface State {
   onFocusItemData: ItemData;
   onFocussvgTransform: string;
   rotDuration: number;
+  rotTimeout: boolean;
 }
 
 export type CounterAction =
   | { type: "resetVariant"; definition: string }
   | { type: "setVariant"; definition: string }
   | { type: "setCount" }
-  | { type: "moveLeft" }
+  | { type: "rotateLeft" }
   | { type: "moveRight" }
-  | { type: "spin"; variant: string }
+  | { type: "rotateRight" }
   | { type: "moveXTimes"; dist2Front: number }
-  | { type: "rotateRight"; variant: string }
   | { type: "resize"; coords: ItemBase[]; dimensions: Dimensions };
 
 export interface InitParam {
@@ -72,49 +72,23 @@ export const carouselReducer = (state: State, action: CounterAction): State => {
       return handleResetVariant(state, action.definition);
     case "setVariant":
       return { ...state, variant: action.definition };
-    case "moveLeft":
+    case "rotateLeft":
       return {
         ...state,
         itemData: rotateArray(state.itemData, -1),
         variant: VariantState.ROTATELEFT,
+        rotTimeout: true
       };
-    case "moveRight":
+    case "rotateRight":
 
-      
-      // const rDistUpdated: ItemData[] = rRotData.map((item, i) => ({
-      //   ...item,
-      //   rotationData: { 
-      //     itemBase: item.rotationData.itemBase,
-      //     dist2Front: getIndex(item.rotationData.dist2Front, -1, state.itemData.length)
-      //   }
-      // }))
-      
-      
       return {
         ...state,
-        itemData:  rotateArray(state.itemData, 1),
+        itemData: rotateArray(state.itemData, 1),
         variant: VariantState.ROTATERIGHT,
+        rotTimeout: true
       };
     case "moveXTimes":
-      if (state.moveXTimesCount !== 0) return { ...state }
-      if (action.dist2Front <= 3) {
-        return {
-          ...state,
-          itemData: rotateArray(state.itemData, -1),
-          moveXTimesCount: action.dist2Front - 1,
-          variant: VariantState.ROTATELEFT
-        }
-      } else if (action.dist2Front > 3) {
-        return {
-          ...state,
-          itemData: rotateArray(state.itemData, 1),
-          moveXTimesCount: action.dist2Front - 5,
-          variant: VariantState.ROTATERIGHT,
-          
-        }
-      } else {
-        return { ...state }
-      }
+      return handleXRotations(state, action.dist2Front)
     case "resize":
       if (!state.hasEntered) {
         const enterAnimation = enterCoords(action.dimensions);
@@ -166,27 +140,44 @@ export const carouselReducer = (state: State, action: CounterAction): State => {
 
 
 function handleResetVariant(state: State, variantName: string): State {
+
   switch (variantName) {
     case VariantState.STILL:
       if (state.stillCount < MAX_ANIMATIONS) {
         return { ...state, stillCount: state.stillCount + 1 };
       }
-      return { ...state, stillCount: 0 };
+      return { ...state, stillCount: 0, rotTimeout:false };
 
     case VariantState.ROTATELEFT:
       if (state.rotateLeftCount < MAX_ANIMATIONS) {
         return { ...state, rotateLeftCount: state.rotateLeftCount + 1 };
       }
+      if (state.rotXTimesCount !== 0)
+        return {
+          ...state,
+          itemData: rotateArray(state.itemData, -1),
+          rotXTimesCount: state.rotXTimesCount - 1,
+          rotateLeftCount: 0,
+          
+        }
       return {
         ...state,
         variant: VariantState.STILL,
         rotateLeftCount: 0,
+        
       };
 
     case VariantState.ROTATERIGHT:
       if (state.rotateRightCount < MAX_ANIMATIONS) {
         return { ...state, rotateRightCount: state.rotateRightCount + 1 };
       }
+      if (state.rotXTimesCount !== 0)
+        return {
+          ...state,
+          itemData: rotateArray(state.itemData, 1),
+          rotXTimesCount: state.rotXTimesCount + 1,
+          rotateRightCount: 0
+        }
       return {
         ...state,
         variant: VariantState.STILL,
@@ -209,77 +200,32 @@ function handleResetVariant(state: State, variantName: string): State {
   }
 }
 
-/*
- console.log(`${action.definition}: ${state.stillCount}`)
-
-      if (action.definition === VariantState.STILL) {
-        if (state.stillCount < MAX_ANIMATIONS)
-          return { ...state, stillCount: state.stillCount + 1 };
-        // if (state.moveXTimesCount === 0)
-        //   return { ...state, stillCount: 0 }
 
 
-        return {
-          ...state,
-          stillCount: 0,
+const handleXRotations = (state: State, dist2Front: number): State => {
+  if (state.rotXTimesCount !== 0 || dist2Front === 0 || state.rotTimeout) return { ...state }
+  const duration = state.rotDuration / 2
+  if (dist2Front <= 3) {
+    return {
+      ...state,
+      itemData: rotateArray(state.itemData, -1),
+      rotXTimesCount: dist2Front - 1,
+      variant: VariantState.ROTATELEFT,
+      rotDuration: duration,
+      rotTimeout: true
+    }
+  } else if (dist2Front > 3) {
 
-        };
-      } else if (action.definition === VariantState.ROTATELEFT) {
-        if (state.rotateLeftCount < MAX_ANIMATIONS)
-          return { ...state, rotateLeftCount: state.rotateLeftCount + 1 };
+    return {
+      ...state,
+      itemData: rotateArray(state.itemData, 1),
+      rotXTimesCount: dist2Front - 5,
+      variant: VariantState.ROTATERIGHT,
+      rotDuration: duration,
+      rotTimeout: true
 
-        if (state.moveXTimesCount === 0)
-          return { ...state, rotateLeftCount: 0 }
+    }
+  }
+  return { ...state }
 
-        if (state.moveXTimesCount > 0) {
-          return {
-            ...state,
-            variant: VariantState.ROTATELEFT,
-            moveXTimesCount: state.moveXTimesCount - 1,
-            itemData: rotateArray(state.itemData, -1),
-            rotateLeftCount: 0,
-          }
-        }
-
-        return {
-          ...state,
-          variant: VariantState.STILL,
-          rotateLeftCount: 0,
-        };
-      } else if (action.definition === VariantState.ROTATERIGHT) {
-        if (state.rotateRightCount < MAX_ANIMATIONS)
-          return { ...state, rotateRightCount: state.rotateRightCount + 1 };
-
-        if (state.moveXTimesCount === 0)
-          return { ...state, rotateRightCount: 0 }
-        if (state.moveXTimesCount < 0) {
-          return {
-            ...state,
-            variant: VariantState.ROTATERIGHT,
-            moveXTimesCount: state.moveXTimesCount + 1,
-            itemData: rotateArray(state.itemData, 1),   //stopped here
-            rotateRightCount: 0,
-          }
-        }
-
-
-        return {
-          ...state,
-          variant: VariantState.STILL,
-          rotateRightCount: 0,
-        };
-      } else if (action.definition === VariantState.ENTER) {
-
-        if (state.enterCount < MAX_ANIMATIONS)
-          return { ...state, enterCount: state.enterCount + 1 };
-        return {
-          ...state,
-          isEnterComplete: true,
-          enterCount: 0,
-          variant: VariantState.STILL,
-        };
-      }
-
-      return { ...state };
-
- */
+}
