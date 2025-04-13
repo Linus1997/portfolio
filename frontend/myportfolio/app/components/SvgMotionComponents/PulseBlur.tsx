@@ -17,7 +17,7 @@ const PulseBlur = () => {
         <defs>
 
 
-            <filter id="pulseBlur" x="-50%" y="-50%" vbwidth="200%" vbheight="200%">
+            <filter id="pulseBlur" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur in="SourceGraphic" stdDeviation="0">
                     <animate
                         attributeName="stdDeviation"
@@ -30,7 +30,7 @@ const PulseBlur = () => {
                 </feGaussianBlur>
             </filter>
 
-            <filter id="pulseTest" x="-15%" y="-5%" vbwidth="100%" vbheight="100%">
+            <filter id="pulseTest" x="-15%" y="-5%" width="100%" height="100%">
                 <feGaussianBlur in="SourceGraphic" stdDeviation="0">
                     <animate
                         attributeName="stdDeviation"

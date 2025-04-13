@@ -7,10 +7,10 @@ export interface ItemData {
     backgroundProps: BackgroundProps;
     dimension: Dimensions;
     zIndex: number;
-    shapePath: string;
-    framePath: string;
-    cornerPath:string ;
-  
+    shapePath:  string;
+    framePath:  string;
+    cornerPath: string;
+    
   }
   export interface CoordXY {
     x: number;
@@ -29,7 +29,7 @@ export interface ItemData {
   
   export interface RotationData {
     itemBase: ItemBase;
-   
+    dist2Front: number;
     
   }
   

@@ -15,11 +15,11 @@ import { ProjectInterface } from "@/app/utils/interfaces";
 
 import {
   checkData,
-  coordReducer,
+  carouselReducer,
   CounterAction,
   VariantState,
 } from "../reducers/coordReducer";
-import { createCoordInitialState } from "../reducers/setUpReducer";
+import { createCoordInitialState as createCarouselInitialState } from "../reducers/setUpReducer";
 import { recalculateDimensions } from "../reducers/setUpReducer";
 
 
@@ -30,69 +30,99 @@ interface WrapperProps {
 interface DimChange {
   parentRef: RefObject<HTMLUListElement>;
   childRef: MutableRefObject<HTMLLIElement[]>;
-  coordDispatch: Dispatch<CounterAction>;
+  stateDispatch: Dispatch<CounterAction>;
 }
 
 
+/**
+ * Recalculates bounding dimensions for the parent UL container and
+ * the first LI item, then dispatches a "resize" action with updated
+ * coordinates and dimensions.
+ *
+ * @param {object} params
+ * @param {RefObject<HTMLUListElement>} params.parentRef - Reference to the UL container.
+ * @param {MutableRefObject<HTMLLIElement[]>} params.childRef - Reference to the array of LI items.
+ * @param {Dispatch<CounterAction>} params.stateDispatch - Dispatch function for the reducer.
+ */
+function updateDimensions({ parentRef, childRef, stateDispatch }: DimChange): void {
+  if (!parentRef.current || !childRef.current || childRef.current.length === 0) {
+    return;
+  }
 
-const onDimChange = ({ parentRef, childRef: itemRef, coordDispatch }: DimChange) => {
-  if (parentRef && parentRef.current && itemRef.current && itemRef.current.length > 0) {
-    const parentDim = parentRef.current.getBoundingClientRect();
-    const childDim = itemRef.current[0].getBoundingClientRect();
-    const updatedCoords = recalculateDimensions(parentDim, childDim);
+  const parentDim = parentRef.current.getBoundingClientRect();
+  const firstChildDim = childRef.current[0].getBoundingClientRect();
+  const updatedCoords = recalculateDimensions(parentDim, firstChildDim);
 
-    coordDispatch({
-      type: "resize",
-      coords: updatedCoords,
-      dimensions: {
-        wrapperDim: { x: parentDim.width, y: parentDim.height },
-        childDim: { x: childDim.width, y: childDim.height },
-      },
+  stateDispatch({
+    type: "resize",
+    coords: updatedCoords,
+    dimensions: {
+      wrapperDim: { x: parentDim.width, y: parentDim.height },
+      childDim: { x: firstChildDim.width, y: firstChildDim.height },
+    },
+  });
+}
+
+
+/**
+ * Dispatches a "resetVariant" action if the provided animation definition
+ * is recognized as one of the valid carousel states in `checkData`.
+ *
+ * @param {AnimationDefinition} definition - The current animation definition from Framer Motion.
+ * @param {Dispatch<CounterAction>} dispatch - The reducer's dispatch function.
+ */
+function handleResetCoordVariant(
+  definition: AnimationDefinition,
+  dispatch: Dispatch<CounterAction>
+): void {
+  const variantString = definition.toString();
+  if (checkData.includes(variantString)) {
+    dispatch({
+      type: "resetVariant",
+      definition: variantString,
     });
   }
-};
+}
 
-
-const ProjectListWrapper = ({ projects }: WrapperProps) => {
+/**
+ * Renders a slideshow carousel of projects, with left/right rotation controls
+ * and a state reducer managing the items' positions and animation variants.
+ *
+ * @param {WrapperProps} props - Contains the array of projects to display.
+ * @returns {JSX.Element|null} The rendered carousel or null if no projects.
+ */
+function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
   const parentRef = useRef<HTMLUListElement>(null);
   const childRef = useRef<HTMLLIElement[]>([]);
-  const [clickTimer, setClickTimer] = useState<boolean>(false);
-  const [coordState, coordDispatch] = useReducer(
-    coordReducer,
-    { projects: projects },
-    createCoordInitialState
+  const [rotationDisabled, setRotationDisabled] = useState(false);
+
+  const [state, dispatch] = useReducer(
+    carouselReducer,
+    { projects },
+    createCarouselInitialState
   );
 
   useEffect(() => {
-    const clickTimeout = setTimeout(() => {
-      setClickTimer(false);
-    }, 0.8);
-   
-    return () => clearTimeout(clickTimeout);
-  }, [clickTimer]);
+    const rotationTimeout = setTimeout(() => {
+      setRotationDisabled(false);
+    }, 800);
+    return () => clearTimeout(rotationTimeout);
+  }, [rotationDisabled]);
+
   useLayoutEffect(() => {
-    
-    onDimChange({ parentRef, childRef, coordDispatch });
+    updateDimensions({ parentRef, childRef, stateDispatch: dispatch });
   }, []);
 
-  const resetCoordVariant = (definition: AnimationDefinition) => {
-    if (checkData.includes(definition.toString()))
-      coordDispatch({ type: "resetVariant", definition: definition.toLocaleString() });
-   
-  };
+  if (!projects || projects.length === 0) return null;
 
-
-
-  if (!projects || projects.length == 0) return <></>;
   return (
-    <div className=" flex flex-row  h-96 w-full content-center justify-center bg-gray-900 ">
+    <div className="flex flex-row h-96 w-full content-center justify-center bg-gray-900">
       <button
-        className={`w-28 `}
+        className="w-28"
         onClick={() => {
-          if (!clickTimer) {
-            setClickTimer(true)
-            coordDispatch({ type: "moveRight" });
-
+          if (!rotationDisabled) {
+            setRotationDisabled(true);
+            dispatch({ type: "moveRight" });
           }
         }}
       >
@@ -111,49 +141,51 @@ const ProjectListWrapper = ({ projects }: WrapperProps) => {
           />
         </svg>
       </button>
+
       <div>
-        <div className="relative  w-[63em]  h-96 ">
-          <motion.ul ref={parentRef} className="absolute w-full h-full ">
-
-
-            {[0, 1, 2, 3, 4, 5].map((item, i) => (
-
+        <div className="relative w-[63em] h-96">
+          <motion.ul ref={parentRef} className="absolute w-full h-full">
+            {[0, 1, 2, 3, 4, 5].map((_, i) => (
               <ProjectItem
                 key={i}
                 ref={(el) => {
                   if (el) childRef.current[i] = el;
                 }}
                 index={i}
-
-                reset={resetCoordVariant}
-                itemData={coordState.itemData[i]}
-                isEnterComplete={coordState.isEnterComplete}
-                className={"absolute  w-56 h-56 "}
+                reset={(definition) =>
+                  handleResetCoordVariant(definition, dispatch)
+                }
+                itemData={state.itemData[i]}
+                isEnterComplete={state.isEnterComplete}
+                className="absolute w-56 h-56"
                 initial="initial"
-                animate={coordState.variant}
-                onAnimationComplete={resetCoordVariant}
-                dimension={coordState.dimensions.childDim}
-                project={coordState.projects[i]}
-                svgTransform={coordState.svgTransform}
-
-
+                animate={state.variant}
+                onAnimationComplete={(definition) =>
+                  handleResetCoordVariant(definition, dispatch)
+                }
+                dimension={state.dimensions.childDim}
+                project={state.projects[i]}
+                svgTransform={state.svgTransform}
+                x={state.dimensions.wrapperDim.x}
+                y={state.dimensions.wrapperDim.y}
+                stateDispatch={dispatch}
               />
             ))}
           </motion.ul>
         </div>
       </div>
-      <button
-        className={`w-28`}
-        onClick={() => {
-          if (!clickTimer) {
-            setClickTimer(true)
-            coordDispatch({ type: "moveLeft" });
 
+      <button
+        className="w-28"
+        onClick={() => {
+          if (!rotationDisabled) {
+            setRotationDisabled(true);
+            dispatch({ type: "moveLeft" });
           }
         }}
       >
         <svg
-          className=" w-full h-full stroke-slate-400"
+          className="w-full h-full stroke-slate-400"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -169,8 +201,10 @@ const ProjectListWrapper = ({ projects }: WrapperProps) => {
       </button>
     </div>
   );
-};
+}
 
 export default ProjectListWrapper;
+
+
 
 

@@ -1,54 +1,48 @@
-import { Variants, TargetAndTransition, delay } from "framer-motion";
+import { Variants, TargetAndTransition, delay, hover } from "framer-motion";
 import { frame0, path0 } from "../paths";
 import { ItemData } from "../utils/sharedInterfaces";
-import { DURATIONLISTITEMANIMATION } from "@/app/utils/constants";
+import { SINGLEROTATIONDURATION as SINGLEROTATIONDURATION } from "@/app/utils/constants";
 
+/**
+ * Contains the default position style used in all item variants.
+ */
+const DEFAULT_POSITION = {
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+};
 
+/**
+ * Motion variants for the base list item. 
+ * Controls the initial, enter, rotation, and 'still' states.
+ */
 export const BaseItemVariants: Variants = {
   initial: (): TargetAndTransition => ({
+    ...DEFAULT_POSITION,
     visibility: "hidden",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
     opacity: 0,
-
   }),
-  enter: (i: ItemData): TargetAndTransition => ({
-    ...i.enterData.itemBase,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+  enter: (data: ItemData): TargetAndTransition => ({
+    ...DEFAULT_POSITION,
+    ...data.enterData.itemBase,
     opacity: 0,
-    transition: { duration: DURATIONLISTITEMANIMATION },
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateLeft: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.itemBase,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  rotateLeft: (data: ItemData): TargetAndTransition => ({
+    ...DEFAULT_POSITION,
+    ...data.rotationData.itemBase,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateRight: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.itemBase,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  rotateRight: (data: ItemData): TargetAndTransition => ({
+    ...DEFAULT_POSITION,
+    ...data.rotationData.itemBase,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  still: (i: ItemData): TargetAndTransition => ({
-    ...i.rotationData.itemBase,
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  still: (data: ItemData): TargetAndTransition => ({
+    ...DEFAULT_POSITION,
+    ...data.rotationData.itemBase,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
 };
 const backgroundImages = [
@@ -57,90 +51,71 @@ const backgroundImages = [
   `linear-gradient(${45}deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4) 100%, rgba(255, 255, 255, 0.1))`,
 ];
 
+/**
+ * Variation definitions for the primary SVG shape path,
+ * controlling visibility, the initial 'd' path, and transition timings.
+ */
 export const shapePathVariant: Variants = {
-  initial: (path: string): TargetAndTransition => ({
+  initial: (): TargetAndTransition => ({
     visibility: "hidden",
     opacity: 0,
   }),
-  enter: (path: string): TargetAndTransition => ({
-    d: path0
-    ,
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+  enter: (): TargetAndTransition => ({
+    d: path0,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
   rotateLeft: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+    d: path,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
   rotateRight: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+    d: path,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
   still: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+    d: path,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-
-
 };
 
+
+
+
+/**
+ * Variation definitions for the item's frame path,
+ * controlling visibility, and transitions across each animation state.
+ */
 export const framePathVariant: Variants = {
-  initial: (path: string): TargetAndTransition => ({
+  initial: (): TargetAndTransition => ({
     visibility: "hidden",
     opacity: 0,
   }),
-  enter: (path: string): TargetAndTransition => ({
-    d: frame0
-    ,
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+  enter: (): TargetAndTransition => ({
+    d: frame0,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
   rotateLeft: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+    d: path,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
   rotateRight: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+    d: path,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
   still: (path: string): TargetAndTransition => ({
-    d: path
-    ,
-
-    transition: {
-      duration: DURATIONLISTITEMANIMATION
-    }
+    d: path,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-
-
 };
-export const CornerPathVariants: Variants = {
 
+/**
+ * Variation definitions for corner lines or shapes, controlling stroke,
+ * fill, and other visual properties in the 'still' state.
+ */
+export const CornerPathVariants: Variants = {
   still: (): TargetAndTransition => ({
     pathLength: 1,
-    strokeDasharray: "5, 20, 22 ",
+    strokeDasharray: "5, 20, 22",
     stroke: "#ffffff",
     strokeWidth: 0.1,
     fill: "#000000",
@@ -150,71 +125,58 @@ export const CornerPathVariants: Variants = {
       strokeDasharray: { duration: 1, ease: "easeInOut" },
       strokeDashoffset: { duration: 2, ease: "easeInOut" },
       fill: { delay: 1 },
-      fillOpacity: { delay: 1, duration: 2, ease: "easeIn", from: 0 }
-    }
+      fillOpacity: { delay: 1, duration: 2, ease: "easeIn" },
+    },
   }),
-
-
 };
 
+/**
+ * Variation definitions for background transitions, updating the
+ * background gradient based on the current animation state.
+ */
 export const BackgroundVariants: Variants = {
-
-
-  enter: (i: ItemData): TargetAndTransition => ({
-    backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-
-
-    transition: { duration: DURATIONLISTITEMANIMATION },
-
-
+  enter: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  still: (i: ItemData): TargetAndTransition => ({
-    //backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
-    // #dda1ab, #CC7080, #702935,
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  still: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateLeft: (i: ItemData): TargetAndTransition => ({
-    //backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8 )`,
-    backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  rotateLeft: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateRight: (i: ItemData): TargetAndTransition => ({
-    //backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg,  #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    backgroundImage: `linear-gradient(${i.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
-
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  rotateRight: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-
 };
 
 
 
+/**
+ * Variation definitions for a 3D “front frame” transform,
+ * applying rotateX/rotateY values from the item’s backgroundProps.
+ */
 export const FrontFrameVariants: Variants = {
-  enter: (i: ItemData): TargetAndTransition => ({
-    //paddingTop: "10%",
-
-    ...i.backgroundProps.rotationXY,
-
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  enter: (item: ItemData): TargetAndTransition => ({
+    ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  still: (i: ItemData): TargetAndTransition => ({
-
-    ...i.backgroundProps.rotationXY,
-
-
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  still: (item: ItemData): TargetAndTransition => ({
+    ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateLeft: (i: ItemData): TargetAndTransition => ({
-    ...i.backgroundProps.rotationXY,
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  rotateLeft: (item: ItemData): TargetAndTransition => ({
+    ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateRight: (i: ItemData): TargetAndTransition => ({
-    ...i.backgroundProps.rotationXY,
-    transition: { duration: DURATIONLISTITEMANIMATION },
+  rotateRight: (item: ItemData): TargetAndTransition => ({
+    ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
   }),
 };
-
 
 
 

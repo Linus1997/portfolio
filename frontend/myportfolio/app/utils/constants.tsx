@@ -1,1 +1,1 @@
-export const DURATIONLISTITEMANIMATION: number = 0.4;
+export const SINGLEROTATIONDURATION: number = 0.4;

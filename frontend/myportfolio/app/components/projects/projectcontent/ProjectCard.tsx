@@ -13,7 +13,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 interface Props {
   project: ProjectInterface | null;
-
+  index: number;
   setBoxShadow?: Dispatch<SetStateAction<string>>;
 }
 

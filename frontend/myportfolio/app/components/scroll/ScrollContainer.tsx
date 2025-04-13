@@ -15,7 +15,7 @@ const ScrollContainer: FC<Props> = ({ projects }) => {
 
   return (
     <motion.div className="w-full h-full">
-      <ScrollItemOne />
+      {/* <ScrollItemOne /> */}
       <ScrollItemTwo projects={projects} />
 
     </motion.div>

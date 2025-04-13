@@ -6,7 +6,7 @@ import {
   motion,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { Dispatch, forwardRef, useEffect, useRef, useState } from "react";
 import React from "react";
 import { ProjectInterface } from "@/app/utils/interfaces";
 
@@ -18,6 +18,8 @@ import { BaseItemVariants, shapePathVariant, BackgroundVariants, framePathVarian
 import SvgWrapper from "../../SvgMotionComponents/SvgWrapper";
 import ClipPaths from "../SVGs/ClipPaths";
 import SVGStrokes from "../SVGs/SVGStrokes";
+import { focusedFrame, focusedPath } from "../paths";
+import { CounterAction } from "../reducers/coordReducer";
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
@@ -25,146 +27,151 @@ interface ListProps {
   index: number;
   dimension: CoordXY;
   svgTransform: string;
-
+  x: number
+  y: number
+  stateDispatch: Dispatch<CounterAction>;
   reset: (definition: string) => void;
 }
+/**
+ * hover -> expandera knapp
+ * 
+ */
 
 
-const ProjectItem = forwardRef<
-  HTMLLIElement,
-  HTMLMotionProps<"li"> & ScriptProps & ListProps
->((props, ref) => {
-  const {
-    itemData,
-    isEnterComplete,
-    project,
-    dimension,
-    index,
-    svgTransform,
-    animate,
-    onAnimationComplete,
-  } = props;
+/**
+ * A carousel item component rendered via Framer Motion,
+ * displaying a background shape, frame, and project content.
+ *
+ * @param {HTMLMotionProps<"li"> & ScriptProps & ListProps} props - The component props, including item data and project info.
+ * @returns {JSX.Element} The rendered carousel item.
+ */
+const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProps & ListProps>(
+  (props, ref) => {
+    const {
+      itemData,
+      project,
+      dimension,
+      index,
+      svgTransform,
+      animate,
+      x,
+      y,
+      stateDispatch,
+      onAnimationComplete,
+      className,
+      initial,
+      isEnterComplete,
+      reset,
+    } = props;
 
-  const [isHover, setIsHover] = useState<boolean>(false)
+    const [isHover, setIsHover] = useState(false);
+    console.log(props.itemData.rotationData.dist2Front, index)
+    return (
+      <motion.li
+        ref={ref}
+        className={className}
+        onAnimationComplete={onAnimationComplete}
+        custom={itemData}
+        initial={initial}
+        animate={animate}
+        variants={BaseItemVariants}
+        style={{ zIndex: itemData.zIndex }}
 
+        onClick={() =>
+          stateDispatch({
+            type: "moveXTimes",
+            dist2Front: itemData.rotationData.dist2Front,
+          })
+        }
+      // whileHover={{
+      //   scaleX: (x-dimension.x)/dimension.x,
+      //   scaleY: (y-100)/dimension.y,
+      //   y: Math.round(y/ 2 - dimension.y / 2),
 
-  return (
-    <motion.li
-      ref={ref}
-      className={props.className}
-      onAnimationComplete={onAnimationComplete}
-      custom={itemData}
-      initial={props.initial}
-      animate={props.animate}
-      variants={BaseItemVariants}
-      style={{
-        //filter: "drop-shadow(0 1px 0rem #ccccff)",
-
-        zIndex: itemData.zIndex
-      }}
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-
-
-    >
-      <ClipPaths vBox={`0 0 ${dimension.x} ${dimension.y}`} index={index} svgTransform={svgTransform} shapePath={itemData.shapePath} framePath={itemData.framePath} animate={animate} onAnimationComplete={onAnimationComplete} />
-
-      <motion.div
-        className="absolute"
-        style={{
-          // filter: "drop-shadow(0 1px 0.2rem white)",
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0
-        }}
+      // }}
       >
-
+        <ClipPaths
+          vBox={`0 0 ${dimension.x} ${dimension.y}`}
+          index={index}
+          svgTransform={svgTransform}
+          // shapePath={isHover ? focusedPath : itemData.shapePath}
+          // framePath={isHover ? focusedFrame : itemData.framePath}
+          shapePath={ itemData.shapePath}
+          framePath={itemData.framePath}
+          animate={animate}
+          onAnimationComplete={onAnimationComplete}
+        />
 
         <motion.div
-          className={" absolute w-full h-full "}
-          variants={BackgroundVariants}
-          animate={props.animate}
-          custom={itemData}
-          style={{
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            clipPath: `url(#shape-path-${index})`
-          }}
+          className="absolute"
+          style={{ top: 0, left: 0, bottom: 0, right: 0 }}
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
 
         >
-
-
-          <SVGStrokes vBox={`0 0 ${dimension.x} ${dimension.x}`} svgTransform={svgTransform} shapePath={itemData.shapePath} framePath={itemData.framePath} cornerPath={itemData.cornerPath} animate={animate} onAnimationComplete={onAnimationComplete} isHover={isHover} />
-
-
           <motion.div
-            className="  w-full h-full absolute opacity-100    "
+            className="absolute w-full h-full"
+            variants={BackgroundVariants}
+            animate={animate}
+            custom={itemData}
             style={{
               top: 0,
               left: 0,
               bottom: 0,
               right: 0,
+              clipPath: `url(#shape-path-${index})`,
             }}
-
           >
+            <SVGStrokes
+              vBox={`0 0 ${dimension.x} ${dimension.x}`}
+              svgTransform={svgTransform}
+              // shapePath={isHover ? focusedPath : itemData.shapePath}
+              // framePath={isHover ? focusedFrame : itemData.framePath}
+              shapePath={itemData.shapePath}
+              framePath={itemData.framePath}
+              cornerPath={itemData.cornerPath}
+              animate={animate}
+              onAnimationComplete={onAnimationComplete}
+              isHover={isHover}
+            />
 
             <motion.div
-              className="  absolute  w-full h-full "
-
-              style={{
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                zIndex: 10,
-                clipPath: `url(#frame-path-${index})`,
-
-              }}
+              className="absolute w-full h-full opacity-100"
+              style={{ top: 0, left: 0, bottom: 0, right: 0 }}
             >
-
-           
               <motion.div
-                className=" h-full w-full absolute bg-transparent "
-
-                style={
-                  {
-                    top: 0, left: 0,
-                    bottom: 0, right: 0
-                  }}
+                className="absolute w-full h-full"
+                style={{
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  zIndex: 10,
+                  clipPath: `url(#frame-path-${index})`,
+                }}
               >
-
                 <motion.div
-                  className=" h-full w-full absolute "
-                  variants={FrontFrameVariants}
-                  custom={props.itemData}
-                  animate={props.animate}
-                  style={
-                    {
-                      top: 0, left: 0,
-                      bottom: 0, right: 0
-                      , border: "url(#rainbowGradient)"
-
-                    }
-                  }
+                  className="absolute w-full h-full bg-transparent"
+                  style={{ top: 0, left: 0, bottom: 0, right: 0 }}
                 >
-                  <ProjectCard project={project} />
-
+                  <motion.div
+                    className="absolute w-full h-full"
+                    variants={FrontFrameVariants}
+                    custom={itemData}
+                    animate={animate}
+                    style={{ top: 0, left: 0, bottom: 0, right: 0 }}
+                  >
+                    <ProjectCard project={project} index={itemData.zIndex} />
+                  </motion.div>
                 </motion.div>
-           
-              </ motion.div>
+              </motion.div>
             </motion.div>
           </motion.div>
         </motion.div>
-      </motion.div>
-    </motion.li>
-  );
-});
-
-
-
+      </motion.li>
+    );
+  }
+);
 
 ProjectItem.displayName = "ProjectItem";
 export default React.memo(ProjectItem);
