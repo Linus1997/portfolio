@@ -3,9 +3,7 @@ import { frame0, path0 } from "../paths";
 import { ItemData } from "../utils/sharedInterfaces";
 import {  SINGLEROTATIONDURATION } from "@/app/utils/constants";
 
-/**
- * Contains the default position style used in all item variants.
- */
+
 const DEFAULT_POSITION = {
   top: 0,
   left: 0,

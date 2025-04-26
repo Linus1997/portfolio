@@ -163,6 +163,7 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
                 svgTransform={state.svgTransform}
                 x={state.dimensions.wrapperDim.x}
                 y={state.dimensions.wrapperDim.y}
+                isTimeOut={state.rotTimeout}
                 stateDispatch={dispatch}
               />
             ))}

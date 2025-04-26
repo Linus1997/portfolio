@@ -6,7 +6,7 @@ import {
   motion,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
-import { Dispatch, forwardRef, useEffect, useRef, useState } from "react";
+import { Dispatch, forwardRef, useEffect, useReducer, useRef, useState } from "react";
 import React from "react";
 import { ProjectInterface } from "@/app/utils/interfaces";
 
@@ -20,6 +20,17 @@ import ClipPaths from "../SVGs/ClipPaths";
 import SVGStrokes from "../SVGs/SVGStrokes";
 import { focusedFrame, focusedPath } from "../paths";
 import { CounterAction } from "../reducers/coordReducer";
+import { initialInteractionState, itemInteractionReducer } from "./itemReducer";
+
+
+const DEFAULT_POSITION = {
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+};
+
+
 interface ListProps {
   itemData: ItemData;
   isEnterComplete: boolean;
@@ -29,6 +40,7 @@ interface ListProps {
   svgTransform: string;
   x: number
   y: number
+  isTimeOut: boolean;
   stateDispatch: Dispatch<CounterAction>;
   reset: (definition: string) => void;
 }
@@ -61,11 +73,15 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
       className,
       initial,
       isEnterComplete,
+      isTimeOut,
       reset,
     } = props;
-
-    const [isHover, setIsHover] = useState(false);
-
+    const [itemState, setItemState] = useReducer(itemInteractionReducer, initialInteractionState)
+    
+    useEffect(()=>{
+      
+     
+    }, [isTimeOut])
     return (
       <motion.li
         ref={ref}
@@ -76,17 +92,29 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
         custom={itemData}
         variants={BaseItemVariants}
         style={{
+         
           zIndex: itemData.zIndex, pointerEvents: "none"
         }}
 
-
-      // whileHover={{
-      //   scaleX: (x-dimension.x)/dimension.x,
-      //   scaleY: (y-100)/dimension.y,
-      //   y: Math.round(y/ 2 - dimension.y / 2),
-
-      // }}
-      >
+        // whileHover={{
+        //   scaleX: (x-dimension.x)/dimension.x,
+        //   scaleY: (y-100)/dimension.y,
+          //   y: Math.round(y/ 2 - dimension.y / 2),
+          
+          // }}
+          >
+        <motion.div
+        className="absolute"
+        style={{
+          ...DEFAULT_POSITION,
+        }}
+        whileHover={{
+          scaleX: (x-dimension.x)/dimension.x,
+          scaleY: (y)/dimension.y,
+          y: Math.round(y/ 2 - dimension.y ),
+       }}
+        
+        >
         <ClipPaths
           vBox={`0 0 ${dimension.x} ${dimension.y}`}
           index={index}
@@ -102,9 +130,10 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
         <motion.div
           className="absolute"
           style={{ top: 0, left: 0, bottom: 0, right: 0 }}
-          onMouseEnter={() => setIsHover(true)}
-          onMouseLeave={() => setIsHover(false)}
+          onMouseEnter={() => {}}
+          onMouseLeave={() => {}}
 
+       
         >
           <motion.div
             className="absolute w-full h-full"
@@ -136,7 +165,7 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
               cornerPath={itemData.cornerPath}
               animate={animate}
               onAnimationComplete={onAnimationComplete}
-              isHover={isHover}
+              isHover={false}
             />
 
             <motion.div
@@ -179,6 +208,7 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
               </motion.div>
             </motion.div>
           </motion.div>
+        </motion.div>
         </motion.div>
       </motion.li>
     );
