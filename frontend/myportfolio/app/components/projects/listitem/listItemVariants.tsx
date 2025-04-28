@@ -1,7 +1,7 @@
 import { Variants, TargetAndTransition, delay, hover } from "framer-motion";
 import { frame0, path0 } from "../paths";
-import { ItemData } from "../utils/sharedInterfaces";
-import {  SINGLEROTATIONDURATION } from "@/app/utils/constants";
+import { Point, Dimensions, ItemData, RotationPair } from "../utils/sharedInterfaces";
+import { SINGLEROTATIONDURATION } from "@/app/utils/constants";
 
 
 const DEFAULT_POSITION = {
@@ -10,6 +10,10 @@ const DEFAULT_POSITION = {
   bottom: 0,
   right: 0,
 };
+
+const circleMovement = ()=> {
+  
+}
 
 /**
  * Motion variants for the base list item. 
@@ -21,33 +25,101 @@ export const BaseItemVariants: Variants = {
     visibility: "hidden",
     opacity: 0,
   }),
-  enter: (data: ItemData): TargetAndTransition => ({
+  enter: ({ data, rotPair }: { data: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
     ...DEFAULT_POSITION,
-    ...data.enterData.itemBase,
-   
+    ...data.rotationData.rotation.rotation.enter,
+    ...data.rotationData.rotation.style,
+    ...rotPair,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateLeft: (data: ItemData): TargetAndTransition => ({
+  rotateLeft: ({ data, rotPair }: { data: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
     ...DEFAULT_POSITION,
-    ...data.rotationData.itemBase,
+    x: data.rotationData.rotation.rotation.moveLeft.map(p => p.x),
+    y: data.rotationData.rotation.rotation.moveLeft.map(p => p.y),
+     
+    ...data.rotationData.rotation.style,
+    ...rotPair,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateRight: (data: ItemData): TargetAndTransition => ({
+  rotateRight: ({ data, rotPair, dim }: { data: ItemData, rotPair: RotationPair, dim: Dimensions }): TargetAndTransition => ({
     ...DEFAULT_POSITION,
-    ...data.rotationData.itemBase,
+    x: data.rotationData.rotation.rotation.moveRight.map(p => p.x),
+    y: data.rotationData.rotation.rotation.moveRight.map(p => p.y),
+    ...data.rotationData.rotation.style,
+    
+    ...rotPair,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
-  still: (data: ItemData): TargetAndTransition => ({
+  still: ({ data, rotPair }: { data: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
     ...DEFAULT_POSITION,
-    ...data.rotationData.itemBase,
+    ...data.rotationData.rotation.rotation.current,
+    ...data.rotationData.rotation.style,
+    ...rotPair,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
+  
 };
 const backgroundImages = [
   `linear-gradient(${45}deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0))`,
 
   `linear-gradient(${45}deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4) 100%, rgba(255, 255, 255, 0.1))`,
 ];
+
+
+
+/**
+ * Variation definitions for background transitions, updating the
+ * background gradient based on the current animation state.
+ */
+export const BackgroundVariants: Variants = {
+  enter: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  still: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  rotateLeft: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  rotateRight: (item: ItemData): TargetAndTransition => ({
+    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+};
+
+
+
+/**
+ * Variation definitions for a 3D “front frame” transform,
+ * applying rotateX/rotateY values from the item’s backgroundProps.
+ */
+export const FrontFrameVariants: Variants = {
+  enter: (item: ItemData): TargetAndTransition => ({
+    // ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  still: (item: ItemData): TargetAndTransition => ({
+    // ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  rotateLeft: (item: ItemData): TargetAndTransition => ({
+    // ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  rotateRight: (item: ItemData): TargetAndTransition => ({
+    // ...item.backgroundProps.rotationXY,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+};
+
+
+
+
+
+// ----------------------------------------------------------------------------
 
 /**
  * Variation definitions for the primary SVG shape path,
@@ -128,55 +200,3 @@ export const CornerPathVariants: Variants = {
     },
   }),
 };
-
-/**
- * Variation definitions for background transitions, updating the
- * background gradient based on the current animation state.
- */
-export const BackgroundVariants: Variants = {
-  enter: (item: ItemData): TargetAndTransition => ({
-    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #666466, #727072, #7d7c7f, #89898c, #959699, #9d9fa3, #a5a9ae, #acb3b8, #b0bdc2, #b4c6cb, #b9d0d2, #bedad8)`,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  still: (item: ItemData): TargetAndTransition => ({
-    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  rotateLeft: (item: ItemData): TargetAndTransition => ({
-    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  rotateRight: (item: ItemData): TargetAndTransition => ({
-    backgroundImage: `linear-gradient(${item.backgroundProps.gradientAngle}deg, #111827, #2f426a, #4662a0)`,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-};
-
-
-
-/**
- * Variation definitions for a 3D “front frame” transform,
- * applying rotateX/rotateY values from the item’s backgroundProps.
- */
-export const FrontFrameVariants: Variants = {
-  enter: (item: ItemData): TargetAndTransition => ({
-    ...item.backgroundProps.rotationXY,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  still: (item: ItemData): TargetAndTransition => ({
-    ...item.backgroundProps.rotationXY,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  rotateLeft: (item: ItemData): TargetAndTransition => ({
-    ...item.backgroundProps.rotationXY,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  rotateRight: (item: ItemData): TargetAndTransition => ({
-    ...item.backgroundProps.rotationXY,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-};
-
-
-
-

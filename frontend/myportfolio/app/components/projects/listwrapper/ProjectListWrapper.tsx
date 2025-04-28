@@ -51,11 +51,12 @@ function updateDimensions({ parentRef, childRef, stateDispatch }: DimChange): vo
 
   const parentDim = parentRef.current.getBoundingClientRect();
   const firstChildDim = childRef.current[0].getBoundingClientRect();
-  const updatedCoords = recalculateDimensions(parentDim, firstChildDim);
+  const rotationData = recalculateDimensions(parentDim, firstChildDim);
 
   stateDispatch({
     type: "resize",
-    coords: updatedCoords,
+    coords: rotationData,
+    
     dimensions: {
       wrapperDim: { x: parentDim.width, y: parentDim.height },
       childDim: { x: firstChildDim.width, y: firstChildDim.height },
@@ -158,6 +159,7 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
                 onAnimationComplete={(definition) =>
                   handleResetCoordVariant(definition, dispatch)
                 }
+                rotationPair={state.angle[i]}
                 dimension={state.dimensions.childDim}
                 project={state.projects[i]}
                 svgTransform={state.svgTransform}

@@ -1,7 +1,22 @@
 import { SINGLEROTATIONDURATION } from "@/app/utils/constants";
 import { corner1, corner5, frame0, frame1, frame2, frame3, frame4, frame5, path0, path1, path2, path3, path4, path5 } from "../paths";
-import { BackgroundProps, Dimensions, BoxFrame, ItemBase, ItemData } from "../utils/sharedInterfaces";
+import { BackgroundProps, Dimensions, BoxFrame, ItemData, RotationPair, Point, Ellipse, Rotation, RotationData, ItemStyle } from "../utils/sharedInterfaces";
 import { InitParam, State, VariantState } from "./coordReducer";
+import { ConstantColorFactor } from "three";
+import { getIndex } from "@/app/utils/helperfunction";
+
+
+const calcEllipsePoints = (centerX: number, centerY: number, a: number, b: number, n: number) => {
+
+  return Array.from({ length: n }, (_, i) => {
+    const angle = -(2 * Math.PI / n) * i + (Math.PI / 2);
+
+
+    const x = centerX + a * Math.cos(angle);
+    const y = centerY + b * Math.sin(angle);
+    return { x, y };
+  });
+}
 
 
 
@@ -16,68 +31,55 @@ import { InitParam, State, VariantState } from "./coordReducer";
 export const recalculateDimensions = (
   wrapperDim: DOMRect,
   childDim: DOMRect
-): ItemBase[] => {
-  
-  const centerX = Math.round(wrapperDim.width / 2 - childDim.width / 2);
-  const centerY = Math.round(wrapperDim.height / 2 - childDim.height / 3);
+): Rotation[] => {
 
- 
-  const offsetX2 = Math.round(childDim.width);
-  const offsetY2 = Math.round(centerY - childDim.height / 4.5);
-  const rightX = Math.round(centerX + offsetX2);
-  const leftX = Math.round(centerX - offsetX2);
+  const centerX = wrapperDim.width / 2 - childDim.width / 2;
+  const centerY = wrapperDim.height / 2 - childDim.height / 1.8;
+  const offsetX2 = childDim.width;
+  const rightX = centerX + offsetX2;
+  const leftX = centerX - offsetX2;
 
- 
-  const offsetX3 = Math.round(childDim.width / 10);
-  const backRightX = Math.round(rightX - offsetX3);
-  const backLeftX = Math.round(leftX + offsetX3);
-  const offsetY3 = 20;
+  const offsetY3 = 0;
+
+  const a = (rightX - leftX) / 2; // halva bredden
+  const b = (centerY - offsetY3) * 0.3; // mindre för plattare ellips
+
+  const ellipsis: Ellipse = {
+    x0: centerX,
+    y0: centerY,
+    a: Math.round(a),
+    b: Math.round(b),
+
+  };
 
 
-  return [
-    {
-      x: centerX,
-      y: centerY,
-      scale: 1,
-      visibility: "visible",
-      opacity: 1,
-    },
-    {
-      x: rightX,
-      y: offsetY2,
-      scale: 1,
-      visibility: "visible",
-      opacity: 1,
-    },
-    {
-      x: backRightX,
-      y: offsetY3,
-      scale: 1,
-      visibility: "visible",
-      opacity: 1,
-    },
-    {
-      x: centerX,
-      y: 0,
-      scale: 0.84, 
-      visibility: "visible",
-      opacity: 1,
-    },
-    {
-      x: backLeftX,
-      y: offsetY3,
-      scale: 1,
-      visibility: "visible",
-      opacity: 1,
-    },
-    {
-      x: leftX,
-      y: offsetY2,
-      scale: 1,
-      visibility: "visible",
-      opacity: 1,
-    },
-  ];
+  const points = calcEllipsePoints(centerX, centerY, a, b, 6)
+  const points2 = calcEllipsePoints(centerX, centerY, a, b, 18)
+
+
+
+  const rotationList: Rotation[] = points.map((point, i) => {
+    const startIndex = i * 3
+
+    const rightTrack = [point, ...points2.slice(startIndex, startIndex + 3), points[getIndex(i, 1, points.length)]]
+    const leftTrack = [point, ...points2.slice(17, 17 - 3), points[getIndex(i, -1, points.length)]]
+
+    console.log(leftTrack)
+    return {
+      current: point,
+      moveRight: rightTrack,
+      moveLeft: leftTrack,
+      enter: points[0]
+    }
+
+  })
+
+
+  /**
+   * @NOTE add Another ellipse to make movement shadow beneath 
+   */
+
+  return rotationList
 };
 /**
  * Creates the initial global state for the coordinate management system,
@@ -87,11 +89,36 @@ export const recalculateDimensions = (
  * @returns A fully constructed State object with default values before any interaction or animation.
  */
 export const createCoordInitialState = ({ projects }: InitParam): State => {
-  const svgScale = 0 / 100;  
+  const svgScale = 0 / 100;
   const initialScaleTransform = `scale(${svgScale}, ${svgScale})`;
 
   const defaultItemData: ItemData[] = initialState();
-
+  const angle: RotationPair[] = [
+    {
+      rotateX: 0,
+      rotateY: 0
+    },
+    {
+      rotateX: -10,
+      rotateY: 60
+    },
+    {
+      rotateX: -10,
+      rotateY: 120
+    },
+    {
+      rotateX: 0,
+      rotateY: 180
+    },
+    {
+      rotateX: -10,
+      rotateY: 240
+    },
+    {
+      rotateX: -10,
+      rotateY: 300
+    }
+  ]
   return {
     variant: VariantState.INIT,
     stillCount: 0,
@@ -112,27 +139,17 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
     onFocussvgTransform: initialScaleTransform,
     rotXTimesCount: 0,
     rotDuration: SINGLEROTATIONDURATION,
-    rotTimeout: true
-  };
-};
-/**
- * Computes the "enter" animation coordinates for an item based on the difference
- * between the wrapper and child element sizes. Returns an object containing
- * arrays for `x` and `y` positions (used in a Framer Motion animation).
- *
- * @param dimensions - The overall dimensions, including wrapper and child DOMRect.
- * @returns An object with `x` and `y` arrays representing the enter animation offset.
- */
-export const enterCoords = (
-  dimensions: Dimensions
-): { x: number[]; y: number[] } => {
-  const { wrapperDim, childDim } = dimensions;
-  const deltaX = wrapperDim.x - childDim.x;
-  const deltaY = wrapperDim.y - childDim.y;
+    rotTimeout: true,
+    angle: angle,
+    ellipse: {
+      x0: 0,
+      y0: 0,
+      a: 0,
+      b: 0,
 
-  return {
-    x: [deltaX / 2],
-    y: [deltaY / 2],
+    }
+
+
   };
 };
 
@@ -146,57 +163,114 @@ export const enterCoords = (
 
 export const initialState = (): ItemData[] => {
   const zIndexes = [30, 20, 10, 0, 10, 20];
-  const shapePaths = [path0, path1, path2, path3, path4, path5];
-  const framePaths = [frame0, frame1, frame2, frame3, frame4, frame5]
-  const cornerPaths = ["M 0, 0 Z", corner1, corner5, "M 0,0 Z", corner1, corner5]
 
- 
+
+
+
+  const rotationList: Rotation[] = points.map((point, i) => {
+    const startIndex = i * 3
+
+    const rightTrack = [point, ...points2.slice(startIndex, startIndex + 3), points[getIndex(i, 1, points.length)]]
+    const leftTrack = [point, ...points2.slice(17, 17 - 3), points[getIndex(i, -1, points.length)]]
+
+    console.log(leftTrack)
+    return {
+      current: point,
+      moveRight: rightTrack,
+      moveLeft: leftTrack,
+      enter: points[0]
+    }
+
+  })
+
+
 
   let itemData: ItemData[] = zIndexes.map((z, i) => {
     const itmData: ItemData = {
       index: i,
 
       rotationData: {
-        itemBase: {
-          x: 0,
-          y: 0,
-
-          scale: 1,
-          visibility: "visible",
-          opacity: 1,
+        rotation: {
+          moveRight: [],
+          moveLeft: [],
+          current: {
+            x: 0,
+            y: 0
+          },
+          enter: {
+            x: 0,
+            y: 0
+          },
         },
-        dist2Front: i
+        dist2Front: i,
+        rotStyle: {
+          current: {
+            scale: 0,
+            visibility: "visible",
+            opacity: 0
+          },
+          moveRight: {
+            scale: 0,
+            visibility: "visible",
+            opacity: 0
+          },
+          moveLeft: {
+            scale: 0,
+            visibility: "visible",
+            opacity: 0
+          },
+          enter: {
+            scale: 0,
+            visibility: "visible",
+            opacity: 0
+          }
+        }
       },
-      enterData: {
-        itemBase: {
-          x: [0],
-          y: [0],
 
-          scale: [0, 1],
-          visibility: "visible",
-          opacity: 0.8
-        },
-      },
       backgroundProps: backgroundProps[i],
-      dimension: {
-        wrapperDim: {
-          x: 0,
-          y: 0,
-        },
-        childDim: {
-          x: 0,
-          y: 0,
-        },
-      },
-      shapePath: shapePaths[i],
+
+
       zIndex: z,
-      framePath: framePaths[i],
-      cornerPath: cornerPaths[i]
+
     };
     return itmData;
   });
   return itemData;
 };
+
+// ended here 
+const rotationsStyles: ItemStyle[] = [
+  {
+    scale: 1,
+    visibility: "visible",
+    opacity: 1
+  },
+  {
+    scale: 0.95,
+    visibility: "visible",
+    opacity: 
+  },
+  {
+    scale: 0.9,
+    visibility: "visible",
+    opacity: 1
+  },
+  {
+    scale: 0.85,
+    visibility: "visible",
+    opacity: 1
+  },
+  {
+    scale: 0.9,
+    visibility: "visible",
+    opacity: 0
+  },
+  {
+    scale: 0.95,
+    visibility: "visible",
+    opacity: 0
+  },
+]
 
 /**
  * Provides default background properties (gradientAngle and 3D rotations)
