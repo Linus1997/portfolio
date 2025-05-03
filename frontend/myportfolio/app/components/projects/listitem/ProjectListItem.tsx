@@ -5,6 +5,7 @@ import {
   HTMLMotionProps,
   motion,
   useMotionValue,
+  useTransform,
 } from "framer-motion";
 import { ScriptProps } from "next/script";
 import { Dispatch, forwardRef, useEffect, useReducer, useRef, useState } from "react";
@@ -37,11 +38,9 @@ interface ListProps {
   isEnterComplete: boolean;
   project: ProjectInterface;
   index: number;
-  dimension: Point;
+
   svgTransform: string;
-  x: number
-  y: number
-  
+
   isTimeOut: boolean;
   rotationPair: RotationPair;
   stateDispatch: Dispatch<CounterAction>;
@@ -65,12 +64,11 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
     const {
       itemData,
       project,
-      dimension,
+
       index,
       svgTransform,
       animate,
-      x,
-      y,
+
       stateDispatch,
       onAnimationComplete,
       className,
@@ -81,121 +79,126 @@ const ProjectItem = forwardRef<HTMLLIElement, HTMLMotionProps<"li"> & ScriptProp
       reset,
     } = props;
     const [itemState, setItemState] = useReducer(itemInteractionReducer, initialInteractionState)
-    
 
-    
+    const x = useMotionValue(0)
+    const opacity = useTransform(
+      x,
+      [-200, 0, 200],
+      [0, 1, 0]
+    )
 
-    useEffect(()=>{
- 
+
+    useEffect(() => {
+
     }, [itemData])
     return (
       <motion.li
         ref={ref}
-        className={className}
+        drag="x"
+        className={className + " border-2 rounded-xl"}
         onAnimationComplete={onAnimationComplete}
         initial={initial}
         animate={animate}
-        custom={{data: itemData, rotPair: rotationPair, parent:{x:x, y:y}}}
+        custom={{ itemData: itemData, rotPair: rotationPair }}
         variants={BaseItemVariants}
         style={{
-      
+          x,
           zIndex: itemData.zIndex, pointerEvents: "none",
-          borderRadius: "10px",
-          border: "1px"
-        
+
+
         }}
 
-        // whileHover={{
-        //   scaleX: (x-dimension.x)/dimension.x,
-        //   scaleY: (y-100)/dimension.y,
-          //   y: Math.round(y/ 2 - dimension.y / 2),
-          
-          // }}
-          >
-        <motion.div
-        className="absolute"
-        style={{
-          ...DEFAULT_POSITION,
-        }}
-        whileHover={{
-          scaleX: (x-dimension.x)/dimension.x,
-          scaleY: (y)/dimension.y,
-          y: Math.round(y/ 2 - dimension.y ),
-       }}
-        
-        >
-  
+      // whileHover={{
+      //   scaleX: (x-dimension.x)/dimension.x,
+      //   scaleY: (y-100)/dimension.y,
+      //   y: Math.round(y/ 2 - dimension.y / 2),
 
+      // }}
+      >
         <motion.div
           className="absolute"
-          style={{ top: 0, left: 0, bottom: 0, right: 0 }}
-          onMouseEnter={() => {}}
-          onMouseLeave={() => {}}
+          style={{
+            ...DEFAULT_POSITION,
+          }}
+        //   whileHover={{
+        //     scaleX: (x-dimension.x)/dimension.x,
+        //     scaleY: (y)/dimension.y,
+        //     y: Math.round(y/ 2 - dimension.y ),
+        //  }}
 
-       
         >
+
+
           <motion.div
-            className="absolute w-full h-full"
-            variants={BackgroundVariants}
-            animate={animate}
-            custom={itemData}
-            style={{
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              // clipPath: `url(#shape-path-${index})`,
-              pointerEvents: "auto",
-            }}
-            onClick={() =>
-              stateDispatch({
-                type: "moveXTimes",
-                dist2Front: itemData.rotationData.dist2Front,
-              })
-            }
+            className="absolute"
+            style={{ top: 0, left: 0, bottom: 0, right: 0 }}
+            onMouseEnter={() => { }}
+            onMouseLeave={() => { }}
+
+
           >
-
             <motion.div
-              className="absolute w-full h-full opacity-100"
-              style={{ top: 0, left: 0, bottom: 0, right: 0 }}
-
+              className="absolute w-full h-full"
+              variants={BackgroundVariants}
+              animate={animate}
+              custom={itemData}
+              style={{
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                // clipPath: `url(#shape-path-${index})`,
+                pointerEvents: "auto",
+              }}
+              onClick={() =>
+                stateDispatch({
+                  type: "moveXTimes",
+                  dist2Front: itemData.rotationData.dist2Front,
+                })
+              }
             >
-              <motion.div
-                className="absolute w-full h-full"
-                style={{
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                  zIndex: 10,
-                  // clipPath: `url(#frame-path-${index})`,
 
-                }}
+              <motion.div
+                className="absolute w-full h-full opacity-100"
+                style={{ top: 0, left: 0, bottom: 0, right: 0 }}
 
               >
                 <motion.div
-                  className="absolute w-full h-full bg-transparent"
-                  style={{ top: 0, left: 0, bottom: 0, right: 0 }}
+                  className="absolute w-full h-full"
+                  style={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    zIndex: 10,
+                    // clipPath: `url(#frame-path-${index})`,
+
+                  }}
+
                 >
                   <motion.div
-                    className="absolute w-full h-full"
-                    variants={FrontFrameVariants}
-                    custom={itemData}
-                    animate={animate}
-                    // whileHover={{
-                    //   scaleX: (x - dimension.x) / dimension.x,
-                    //   scaleY: (y - 100) / dimension.y,
-                    //   y: Math.round(y / 2 - dimension.y / 2),
-                    // }}
-                    style={{ top: 0, left: 0, bottom: 0, right: 0}}
+                    className="absolute w-full h-full bg-transparent"
+                    style={{ top: 0, left: 0, bottom: 0, right: 0 }}
                   >
-                    <ProjectCard project={project} index={itemData.zIndex} />
+                    <motion.div
+                      className="absolute w-full h-full"
+                      variants={FrontFrameVariants}
+                      custom={itemData}
+                      animate={animate}
+                      // whileHover={{
+                      //   scaleX: (x - dimension.x) / dimension.x,
+                      //   scaleY: (y - 100) / dimension.y,
+                      //   y: Math.round(y / 2 - dimension.y / 2),
+                      // }}
+                      style={{ top: 0, left: 0, bottom: 0, right: 0 }}
+                    >
+                      <ProjectCard project={project} index={itemData.zIndex} />
+                    </motion.div>
                   </motion.div>
                 </motion.div>
               </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
         </motion.div>
       </motion.li>
     );

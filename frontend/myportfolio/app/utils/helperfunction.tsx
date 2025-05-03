@@ -26,3 +26,6 @@ export const rotateArray = <T extends any>(arr: T[], count: number = 1): T[] => 
 
 export const getProjects = () =>  [...testdata]
 
+export const printObject =  <T extends any>(t: T) => {
+  console.log(t)
+}

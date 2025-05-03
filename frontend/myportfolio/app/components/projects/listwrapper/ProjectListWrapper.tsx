@@ -18,9 +18,11 @@ import {
   carouselReducer,
   CounterAction,
   VariantState,
+  recalculateDimensions,
 } from "../reducers/coordReducer";
 import { createCoordInitialState as createCarouselInitialState } from "../reducers/setUpReducer";
-import { recalculateDimensions } from "../reducers/setUpReducer";
+import { ItemShadow } from "../listitem/listItemVariants";
+
 
 
 interface WrapperProps {
@@ -49,17 +51,15 @@ function updateDimensions({ parentRef, childRef, stateDispatch }: DimChange): vo
     return;
   }
 
-  const parentDim = parentRef.current.getBoundingClientRect();
-  const firstChildDim = childRef.current[0].getBoundingClientRect();
-  const rotationData = recalculateDimensions(parentDim, firstChildDim);
+  const wrapperDim = parentRef.current.getBoundingClientRect();
+  const childDim = childRef.current[0].getBoundingClientRect();
 
   stateDispatch({
     type: "resize",
-    coords: rotationData,
-    
+   
     dimensions: {
-      wrapperDim: { x: parentDim.width, y: parentDim.height },
-      childDim: { x: firstChildDim.width, y: firstChildDim.height },
+      wrapperDim: wrapperDim,
+      childDim: childDim,
     },
   });
 }
@@ -117,7 +117,7 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
         className="w-28"
         onClick={() => {
           if (!state.rotTimeout) {
-            
+
             dispatch({ type: "rotateRight" });
           }
         }}
@@ -141,33 +141,44 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
       <div>
         <div className="relative w-[63em] h-96">
           <motion.ul ref={parentRef} className="absolute w-full h-full">
-            {[0, 1, 2, 3, 4, 5].map((_, i) => (
-              <ProjectItem
-                key={i}
+            {state.itemData.map((item, i) => (
+              <div key={`item-${i}`}><ProjectItem
                 ref={(el) => {
                   if (el) childRef.current[i] = el;
                 }}
                 index={i}
-                reset={(definition) =>
-                  handleResetCoordVariant(definition, dispatch)
-                }
+                reset={(definition) => handleResetCoordVariant(definition, dispatch)}
                 itemData={state.itemData[i]}
                 isEnterComplete={state.isEnterComplete}
                 className="absolute w-56 h-56"
-                initial="initial"
+                initial={VariantState.INIT}
                 animate={state.variant}
-                onAnimationComplete={(definition) =>
-                  handleResetCoordVariant(definition, dispatch)
-                }
+                onAnimationComplete={(definition) => handleResetCoordVariant(definition, dispatch)}
                 rotationPair={state.angle[i]}
-                dimension={state.dimensions.childDim}
+                
                 project={state.projects[i]}
                 svgTransform={state.svgTransform}
-                x={state.dimensions.wrapperDim.x}
-                y={state.dimensions.wrapperDim.y}
                 isTimeOut={state.rotTimeout}
-                stateDispatch={dispatch}
-              />
+                stateDispatch={dispatch} />
+
+                <motion.div
+                  className="absolute w-56 h-5"
+                  style={{
+
+                    background: 'rgba(0,0,0,1)',
+                    borderRadius: '50%',
+                    filter: 'blur(20px)',
+                    zIndex: 0,
+                  }}
+
+                  animate={state.variant}
+                  initial={VariantState.INIT}
+                  variants={ItemShadow}
+                  custom={{itemData: item}}
+                  />
+
+                  
+              </div>
             ))}
           </motion.ul>
         </div>
@@ -177,7 +188,7 @@ function ProjectListWrapper({ projects }: WrapperProps): JSX.Element | null {
         className="w-28"
         onClick={() => {
           if (!state.rotTimeout) {
-            
+
             dispatch({ type: "rotateLeft" });
           }
         }}

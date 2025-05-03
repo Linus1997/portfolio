@@ -1,4 +1,4 @@
-import { rotateArray } from "@/app/utils/helperfunction";
+import { getIndex, rotateArray } from "@/app/utils/helperfunction";
 import { ProjectInterface } from "@/app/utils/interfaces";
 
 
@@ -32,7 +32,6 @@ export interface State {
   projects: ProjectInterface[];
   projectSize: number;
   svgTransform: string;
-  dimensions: Dimensions;
   onFocusItemData: ItemData;
   onFocussvgTransform: string;
   rotDuration: number;
@@ -49,7 +48,7 @@ export type CounterAction =
   | { type: "moveRight" }
   | { type: "rotateRight" }
   | { type: "moveXTimes"; dist2Front: number }
-  | { type: "resize"; coords: Rotation[]; dimensions: Dimensions };
+  | { type: "resize";  dimensions: Dimensions };
 
 export interface InitParam {
 
@@ -79,72 +78,72 @@ export const carouselReducer = (state: State, action: CounterAction): State => {
       return {
         ...state,
         variant: VariantState.ROTATELEFT,
-        rotTimeout: true
+        rotTimeout: true,
+        angle: editAngle(state.angle, -1)
       };
     case "rotateRight":
-
-       const normalize = (rotPair: RotationPair) : RotationPair => {
-        const newRotY = rotPair.rotateY + 60
-        const modAngle = newRotY % 360
-        if(modAngle  === 180 || modAngle === 0)
-          return {
-        rotateX: 0,
-        rotateY: newRotY
-        }
-        return {
-          rotateX: -10, 
-          rotateY: newRotY
-         }
-       }
-
-
-      const editAngle: RotationPair[] = state.angle.map((rotPair, i) => {
-        
-    
-        return {
-         ...normalize(rotPair)
-        }
-      })
-
-  
-      
 
       return {
         ...state,
         variant: VariantState.ROTATERIGHT,
         rotTimeout: true,
-        angle: editAngle
+        angle: editAngle(state.angle, 1)
       };
     case "moveXTimes":
       return handleXRotations(state, action.dist2Front)
     case "resize":
       if (!state.hasEntered) {
-        
-      
-        const updatedData : ItemData[]= action.coords.map((item, i) => {
-       
+        const itemRotation = recalculateDimensions({
+         dimensions: action.dimensions,
+          count: 6,
+          detailCount: 18
+        });
+        const shadowRotation = recalculateDimensions({
+          dimensions: action.dimensions,
+           count: 6,
+           detailCount: 18,
+           centerYOffset: 250,
+           scaleX: 0.5,
+           scaleY: 0.4
+         });
+
+         
+        const updatedData: ItemData[] = itemRotation.map((item, i) => {
+
 
           return {
-          ...state.itemData[i],
-          dimension: action.dimensions,
-          rotationData: {
-            ...state.itemData[i].rotationData,
-            itemBase: {
-              ...item
-             },
-          },
-          
-        }});
+            ...state.itemData[i],
+            dimension: action.dimensions,
+            rotationData: {
+              ...state.itemData[i].rotationData,
+              rotation: {
+                ...item,
 
-        
-        
+              },
+              rotStyle: {
+                ...state.itemData[i].rotationData.rotStyle,
+
+                enter: {
+                  ...state.itemData[i].rotationData.rotStyle.enter,
+                  opacity: [0, 0.1, 0.2, 1]
+                }
+              }
+            },
+            shadow: shadowRotation[i]
+
+          }
+        });
+
+
+
         return {
           ...state,
           variant: VariantState.ENTER,
           itemData: updatedData,
           hasEntered: true,
-          dimensions: action.dimensions,
-        
+          
+       
+
         };
       } else {
         return { ...state };
@@ -256,4 +255,129 @@ const handleXRotations = (state: State, dist2Front: number): State => {
   }
   return { ...state }
 
+}
+
+
+
+
+
+/**
+ * Calculates and returns the positions (x, y, scale, etc.) for 6 items 
+ * based on the given wrapper and child element dimensions.
+ *
+ * @param wrapperDim - The dimensions of the wrapper DOM element (width, height).
+ * @param childDim   - The dimensions of the child DOM element (width, height).
+ * @returns An array of 6 ItemBase objects containing position and visibility details.
+ */
+interface EllipseConfig {
+  dimensions: Dimensions
+  count: number;      // Number of items
+  detailCount: number; // For the smooth rotation path
+  centerYOffset?: number; // Extra vertical offset
+  scaleX?: number;
+  scaleY?: number;
+}
+export const recalculateDimensions = (
+config: EllipseConfig
+): Rotation[] => {
+  
+  const {
+    dimensions,
+    count,
+    detailCount,
+    centerYOffset = 0,
+    scaleX = 1,
+    scaleY = 1,
+  } = config;
+  
+  const centerX = dimensions.wrapperDim.width / 2 - dimensions.childDim.width / 2;
+  const centerY = dimensions.wrapperDim.height / 2 - dimensions.childDim.height / 1.8 + centerYOffset;
+
+  const offsetX2 = dimensions.childDim.width;
+  const rightX = centerX + offsetX2;
+  const leftX = centerX - offsetX2;
+
+  const offsetY3 = 0;
+  const a = ((rightX - leftX) / 2) * scaleX; // X radius
+  const b = (centerY - offsetY3) * 0.3 * scaleY; // Y radius
+
+  const basePoints = calcEllipsePoints(centerX, centerY, a, b, count);
+  const detailPoints = calcEllipsePoints(centerX, centerY, a, b, detailCount);
+
+  return basePoints.map((point, i) => {
+    const startIndex = i * Math.floor(detailCount / count);
+    return {
+      current: point,
+      moveRight: [
+        point,
+        ...detailPoints.slice(startIndex, startIndex + 3),
+        basePoints[getIndex(i, 1, basePoints.length)],
+      ],
+      moveLeft: [
+        point,
+        ...detailPoints.slice(detailPoints.length - 1, detailPoints.length - 4),
+        basePoints[getIndex(i, -1, basePoints.length)],
+      ],
+      enter: basePoints[0],
+    };
+  });
+};
+
+
+/** 
+  
+const itemShadowPoints = calcEllipsePoints(centerX, centerY+200, a/2, b, 6)
+const itemShadowPoints2 = calcEllipsePoints(centerX, centerY, a/2, b, 18)
+
+const shadwoRotation: Rotation[] = itemShadowPoints.map((point, i) => {
+  const startIndex = i * 3
+  
+  const rightTrack = [point, ...itemShadowPoints2.slice(startIndex, startIndex + 3), itemShadowPoints[getIndex(i, 1, carouselItemPoints.length)]]
+  const leftTrack = [point, ...itemShadowPoints2.slice(17, 17 - 3), itemShadowPoints[getIndex(i, -1, carouselItemPoints.length)]]
+  
+  
+  return {
+    current: point,
+    moveRight: rightTrack,
+    moveLeft: leftTrack,
+    enter: carouselItemPoints[0]
+  }
+  
+})
+*/
+const calcEllipsePoints = (centerX: number, centerY: number, a: number, b: number, n: number) => {
+
+  return Array.from({ length: n }, (_, i) => {
+    const angle = -(2 * Math.PI / n) * i + (Math.PI / 2);
+
+
+    const x = centerX + a * Math.cos(angle);
+    const y = centerY + b * Math.sin(angle);
+    return { x, y };
+  });
+}
+
+
+const editAngle = (angles: RotationPair[], direction: number): RotationPair[] => {
+  const normalize = (rotPair: RotationPair): RotationPair => {
+    const newRotY = rotPair.rotateY + 60 * direction
+    const modAngle = newRotY % 360
+    if (modAngle === 180 || modAngle === 0)
+      return {
+        rotateX: 0,
+        rotateY: newRotY
+      }
+    return {
+      rotateX: -10,
+      rotateY: newRotY
+    }
+  }
+
+  return angles.map((rotPair, i) => {
+
+
+    return {
+      ...normalize(rotPair)
+    }
+  })
 }

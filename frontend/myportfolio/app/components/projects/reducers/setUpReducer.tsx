@@ -1,86 +1,13 @@
 import { SINGLEROTATIONDURATION } from "@/app/utils/constants";
 import { corner1, corner5, frame0, frame1, frame2, frame3, frame4, frame5, path0, path1, path2, path3, path4, path5 } from "../paths";
-import { BackgroundProps, Dimensions, BoxFrame, ItemData, RotationPair, Point, Ellipse, Rotation, RotationData, ItemStyle } from "../utils/sharedInterfaces";
+import { BackgroundProps, Dimensions, BoxFrame, ItemData, RotationPair, Point, Ellipse, Rotation, RotationData, ItemStyle, RotationStyle } from "../utils/sharedInterfaces";
 import { InitParam, State, VariantState } from "./coordReducer";
 import { ConstantColorFactor } from "three";
 import { getIndex } from "@/app/utils/helperfunction";
-
-
-const calcEllipsePoints = (centerX: number, centerY: number, a: number, b: number, n: number) => {
-
-  return Array.from({ length: n }, (_, i) => {
-    const angle = -(2 * Math.PI / n) * i + (Math.PI / 2);
-
-
-    const x = centerX + a * Math.cos(angle);
-    const y = centerY + b * Math.sin(angle);
-    return { x, y };
-  });
-}
+import { get } from "http";
 
 
 
-/**
- * Calculates and returns the positions (x, y, scale, etc.) for 6 items 
- * based on the given wrapper and child element dimensions.
- *
- * @param wrapperDim - The dimensions of the wrapper DOM element (width, height).
- * @param childDim   - The dimensions of the child DOM element (width, height).
- * @returns An array of 6 ItemBase objects containing position and visibility details.
- */
-export const recalculateDimensions = (
-  wrapperDim: DOMRect,
-  childDim: DOMRect
-): Rotation[] => {
-
-  const centerX = wrapperDim.width / 2 - childDim.width / 2;
-  const centerY = wrapperDim.height / 2 - childDim.height / 1.8;
-  const offsetX2 = childDim.width;
-  const rightX = centerX + offsetX2;
-  const leftX = centerX - offsetX2;
-
-  const offsetY3 = 0;
-
-  const a = (rightX - leftX) / 2; // halva bredden
-  const b = (centerY - offsetY3) * 0.3; // mindre för plattare ellips
-
-  const ellipsis: Ellipse = {
-    x0: centerX,
-    y0: centerY,
-    a: Math.round(a),
-    b: Math.round(b),
-
-  };
-
-
-  const points = calcEllipsePoints(centerX, centerY, a, b, 6)
-  const points2 = calcEllipsePoints(centerX, centerY, a, b, 18)
-
-
-
-  const rotationList: Rotation[] = points.map((point, i) => {
-    const startIndex = i * 3
-
-    const rightTrack = [point, ...points2.slice(startIndex, startIndex + 3), points[getIndex(i, 1, points.length)]]
-    const leftTrack = [point, ...points2.slice(17, 17 - 3), points[getIndex(i, -1, points.length)]]
-
-    console.log(leftTrack)
-    return {
-      current: point,
-      moveRight: rightTrack,
-      moveLeft: leftTrack,
-      enter: points[0]
-    }
-
-  })
-
-
-  /**
-   * @NOTE add Another ellipse to make movement shadow beneath 
-   */
-
-  return rotationList
-};
 /**
  * Creates the initial global state for the coordinate management system,
  * defining defaults for animations, item data, and transformations.
@@ -130,10 +57,6 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
     projectSize: projects.length,
     hasEntered: false,
     isEnterComplete: false,
-    dimensions: {
-      wrapperDim: { x: 0, y: 0 },
-      childDim: { x: 0, y: 0 },
-    },
     svgTransform: initialScaleTransform,
     onFocusItemData: defaultItemData[0],
     onFocussvgTransform: initialScaleTransform,
@@ -147,7 +70,7 @@ export const createCoordInitialState = ({ projects }: InitParam): State => {
       a: 0,
       b: 0,
 
-    }
+    },
 
 
   };
@@ -167,18 +90,30 @@ export const initialState = (): ItemData[] => {
 
 
 
-  const rotationList: Rotation[] = points.map((point, i) => {
-    const startIndex = i * 3
+  const rotationStyles: RotationStyle[] = initCurrRotStyles.map((style, i) => {
 
-    const rightTrack = [point, ...points2.slice(startIndex, startIndex + 3), points[getIndex(i, 1, points.length)]]
-    const leftTrack = [point, ...points2.slice(17, 17 - 3), points[getIndex(i, -1, points.length)]]
+    const prevIndex = getIndex(i, -1, 6)
+    const nextIndex = getIndex(i, 1, 6)
+    const nextItemStyle = initCurrRotStyles[nextIndex]
+    const prevItemStyle = initCurrRotStyles[prevIndex]
+    const nextStyle: ItemStyle = {
+      ...nextItemStyle,
+      scale: [...style.scale, ...nextItemStyle.scale],
+      opacity: [...style.opacity, ... nextItemStyle.opacity]
+    }
 
-    console.log(leftTrack)
+    const prevStyle: ItemStyle = {
+      ...prevItemStyle,
+      scale: [...style.scale, ...prevItemStyle.scale],
+      opacity: [...style.opacity, ... prevItemStyle.opacity]
+    }
+
+    console.log(prevStyle, nextStyle)
     return {
-      current: point,
-      moveRight: rightTrack,
-      moveLeft: leftTrack,
-      enter: points[0]
+      current: style,
+      moveRight: nextStyle,
+      moveLeft: prevStyle,
+      enter: style
     }
 
   })
@@ -204,26 +139,7 @@ export const initialState = (): ItemData[] => {
         },
         dist2Front: i,
         rotStyle: {
-          current: {
-            scale: 0,
-            visibility: "visible",
-            opacity: 0
-          },
-          moveRight: {
-            scale: 0,
-            visibility: "visible",
-            opacity: 0
-          },
-          moveLeft: {
-            scale: 0,
-            visibility: "visible",
-            opacity: 0
-          },
-          enter: {
-            scale: 0,
-            visibility: "visible",
-            opacity: 0
-          }
+          ...rotationStyles[i]
         }
       },
 
@@ -231,7 +147,18 @@ export const initialState = (): ItemData[] => {
 
 
       zIndex: z,
-
+      shadow: {
+        current: {
+          x: 0,
+          y: 0
+        },
+        moveRight: [],
+        moveLeft: [],
+        enter: {
+          x: 0,
+          y: 0
+        }
+      } 
     };
     return itmData;
   });
@@ -239,38 +166,39 @@ export const initialState = (): ItemData[] => {
 };
 
 // ended here 
-const rotationsStyles: ItemStyle[] = [
+const initCurrRotStyles: ItemStyle[] = [
   {
-    scale: 1,
+    scale: [1],
     visibility: "visible",
-    opacity: 1
+    opacity: [1],
   },
   {
-    scale: 0.95,
+    scale: [0.95],
     visibility: "visible",
-    opacity: 
+    opacity: [0.5],
   },
   {
-    scale: 0.9,
+    scale: [0.9],
     visibility: "visible",
-    opacity: 1
+    opacity: [0.5],
   },
   {
-    scale: 0.85,
+    scale: [0.85],
     visibility: "visible",
-    opacity: 1
+    opacity: [0.5],
   },
   {
-    scale: 0.9,
+    scale: [0.9],
     visibility: "visible",
-    opacity: 0
+    opacity: [0.5],
   },
   {
-    scale: 0.95,
+    scale: [0.95],
     visibility: "visible",
-    opacity: 0
+    opacity: [0.5],
   },
-]
+];
+
 
 /**
  * Provides default background properties (gradientAngle and 3D rotations)

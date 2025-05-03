@@ -7,6 +7,7 @@ export interface ItemData {
   backgroundProps: BackgroundProps;
   zIndex: number;
 
+  shadow: Rotation
 
 }
 export interface Point {
@@ -35,9 +36,9 @@ export interface RotationData {
 
 export interface ItemStyle extends TargetAndTransition {
 
-  scale: number[] | number;
+  scale: number[];
   visibility: "visible" | "hidden";
-  opacity: number[] | number;
+  opacity: number[];
 
 }
 
@@ -81,7 +82,8 @@ export interface Rotation {
 }
 
 
+
 export interface Dimensions {
-  wrapperDim: Point;
-  childDim: Point;
+  wrapperDim: DOMRect;
+  childDim: DOMRect;
 }

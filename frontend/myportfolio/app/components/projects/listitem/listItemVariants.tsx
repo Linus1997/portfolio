@@ -1,6 +1,6 @@
-import { Variants, TargetAndTransition, delay, hover } from "framer-motion";
+import { Variants, TargetAndTransition } from "framer-motion";
 import { frame0, path0 } from "../paths";
-import { Point, Dimensions, ItemData, RotationPair } from "../utils/sharedInterfaces";
+import { Dimensions, ItemData, RotationPair } from "../utils/sharedInterfaces";
 import { SINGLEROTATIONDURATION } from "@/app/utils/constants";
 
 
@@ -11,9 +11,6 @@ const DEFAULT_POSITION = {
   right: 0,
 };
 
-const circleMovement = ()=> {
-  
-}
 
 /**
  * Motion variants for the base list item. 
@@ -25,45 +22,39 @@ export const BaseItemVariants: Variants = {
     visibility: "hidden",
     opacity: 0,
   }),
-  enter: ({ data, rotPair }: { data: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
+  enter: ({ itemData, rotPair }: { itemData: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
     ...DEFAULT_POSITION,
-    ...data.rotationData.rotation.rotation.enter,
-    ...data.rotationData.rotation.style,
+    ...itemData.rotationData.rotation.enter,
+    ...itemData.rotationData.rotStyle.enter,
     ...rotPair,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateLeft: ({ data, rotPair }: { data: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
+  rotateLeft: ({ itemData, rotPair }: { itemData: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
     ...DEFAULT_POSITION,
-    x: data.rotationData.rotation.rotation.moveLeft.map(p => p.x),
-    y: data.rotationData.rotation.rotation.moveLeft.map(p => p.y),
-     
-    ...data.rotationData.rotation.style,
-    ...rotPair,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  rotateRight: ({ data, rotPair, dim }: { data: ItemData, rotPair: RotationPair, dim: Dimensions }): TargetAndTransition => ({
-    ...DEFAULT_POSITION,
-    x: data.rotationData.rotation.rotation.moveRight.map(p => p.x),
-    y: data.rotationData.rotation.rotation.moveRight.map(p => p.y),
-    ...data.rotationData.rotation.style,
-    
-    ...rotPair,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  still: ({ data, rotPair }: { data: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
-    ...DEFAULT_POSITION,
-    ...data.rotationData.rotation.rotation.current,
-    ...data.rotationData.rotation.style,
-    ...rotPair,
-    transition: { duration: SINGLEROTATIONDURATION },
-  }),
-  
-};
-const backgroundImages = [
-  `linear-gradient(${45}deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0))`,
+    x: itemData.rotationData.rotation.moveLeft.map(p => p.x),
+    y: itemData.rotationData.rotation.moveLeft.map(p => p.y),
 
-  `linear-gradient(${45}deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4) 100%, rgba(255, 255, 255, 0.1))`,
-];
+    ...itemData.rotationData.rotStyle.moveLeft,
+    ...rotPair,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  rotateRight: ({ itemData, rotPair }: { itemData: ItemData, rotPair: RotationPair, dim: Dimensions }): TargetAndTransition => ({
+    ...DEFAULT_POSITION,
+    x: itemData.rotationData.rotation.moveRight.map(p => p.x),
+    y: itemData.rotationData.rotation.moveRight.map(p => p.y),
+    ...itemData.rotationData.rotStyle.moveRight,
+    ...rotPair,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  still: ({ itemData, rotPair }: { itemData: ItemData, rotPair: RotationPair }): TargetAndTransition => ({
+    ...DEFAULT_POSITION,
+    ...itemData.rotationData.rotation.current,
+    ...itemData.rotationData.rotStyle.current,
+    ...rotPair,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+
+};
 
 
 
@@ -97,19 +88,19 @@ export const BackgroundVariants: Variants = {
  * applying rotateX/rotateY values from the item’s backgroundProps.
  */
 export const FrontFrameVariants: Variants = {
-  enter: (item: ItemData): TargetAndTransition => ({
+  enter: (): TargetAndTransition => ({
     // ...item.backgroundProps.rotationXY,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
-  still: (item: ItemData): TargetAndTransition => ({
+  still: (): TargetAndTransition => ({
     // ...item.backgroundProps.rotationXY,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateLeft: (item: ItemData): TargetAndTransition => ({
+  rotateLeft: (): TargetAndTransition => ({
     // ...item.backgroundProps.rotationXY,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
-  rotateRight: (item: ItemData): TargetAndTransition => ({
+  rotateRight: (): TargetAndTransition => ({
     // ...item.backgroundProps.rotationXY,
     transition: { duration: SINGLEROTATIONDURATION },
   }),
@@ -199,4 +190,56 @@ export const CornerPathVariants: Variants = {
       fillOpacity: { delay: 1, duration: 2, ease: "easeIn" },
     },
   }),
+};
+
+const shadowtransition = { type: "spring", stiffness: 50, damping: 20, duration: SINGLEROTATIONDURATION }
+/**
+ * Motion variants for the base list item. 
+ * Controls the initial, enter, rotation, and 'still' states.
+ */
+export const ItemShadow: Variants = {
+  initial: (): TargetAndTransition => ({
+
+    visibility: "hidden",
+    opacity: 0,
+  }),
+  enter: ({ itemData}: { itemData: ItemData }): TargetAndTransition => ({
+    visibility: "visible",
+
+    ...itemData.shadow.enter,
+ 
+
+    opacity: [0, 1],
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  rotateLeft: ({ itemData }: { itemData: ItemData }): TargetAndTransition => ({
+    visibility: "visible",
+
+    x: itemData.shadow.moveLeft.map(p => p.x),
+    y: itemData.shadow.moveLeft.map(p => p.y),
+  
+    opacity: 1,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  rotateRight: ({ itemData}: { itemData: ItemData}): TargetAndTransition => ({
+    visibility: "visible",
+
+    x: itemData.shadow.moveRight.map(p => p.x),
+    y: itemData.shadow.moveRight.map(p => p.y),
+ 
+    opacity: 1,
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+  still: ({ itemData}: { itemData: ItemData}): TargetAndTransition => ({
+    visibility: "visible",
+    x: itemData.shadow.current.x,
+    y: itemData.shadow.current.y,
+    
+    
+    opacity: 1,
+ 
+ 
+    transition: { duration: SINGLEROTATIONDURATION },
+  }),
+
 };
