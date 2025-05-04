@@ -1,16 +1,16 @@
 import { Dispatch, SetStateAction, useReducer } from "react";
 import testdata from "./testdata.json";
 export const clickHandler = (setHasClicked: Dispatch<SetStateAction<boolean>>) => {
-    setHasClicked(true);
-    setTimeout(()=>{
-      setHasClicked(false);
-    }, 3000)
+  setHasClicked(true);
+  setTimeout(() => {
+    setHasClicked(false);
+  }, 3000)
 
-  };
+};
 
 
-export  const openNewTab = (url?: string) => {
-  if(url)
+export const openNewTab = (url?: string) => {
+  if (url)
     window.open(url);
 }
 
@@ -24,8 +24,14 @@ export const rotateArray = <T extends any>(arr: T[], count: number = 1): T[] => 
   return [...arr.slice(a, arr.length), ...arr.slice(0, a)];
 };
 
-export const getProjects = () =>  [...testdata]
+export const getProjects = () => [...testdata]
 
-export const printObject =  <T extends any>(t: T) => {
+export const printObject = <T extends any>(t: T) => {
   console.log(t)
+}
+
+
+export const logItem = <T extends any, O extends any>(rh: T, lh: T, obj: O) => {
+  if (rh === lh)
+    console.log(obj)
 }
